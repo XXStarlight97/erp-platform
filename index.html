@@ -291,7 +291,8 @@
         }
 
         .login-card {
-            padding: 27px 23px 25px;
+            min-height: 380px;
+            padding: 31px 25px 28px;
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.06);
             background:
@@ -306,18 +307,24 @@
         }
 
         .brand {
-            display: flex;
+            display: grid;
+            grid-template-columns: 54px 1fr;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 23px;
+            column-gap: 14px;
+            row-gap: 8px;
+            margin-bottom: 27px;
+        }
+
+        .brand > div:not(.brand-mark) {
+            display: contents;
         }
 
         .brand-mark {
             position: relative;
             flex: 0 0 auto;
-            width: 36px;
-            height: 36px;
-            border-radius: 12px;
+            width: 54px;
+            height: 54px;
+            border-radius: 16px;
             background: linear-gradient(135deg, #2378ff 4%, #35b7ff 58%, #6d43ff 100%);
             box-shadow:
                 0 16px 38px rgba(35, 142, 255, 0.30),
@@ -328,17 +335,17 @@
         .brand-mark::before {
             content: "";
             position: absolute;
-            top: 9px;
-            left: 9px;
-            width: 9px;
-            height: 9px;
+            top: 13px;
+            left: 13px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.93);
             box-shadow: 0 0 18px rgba(255, 255, 255, 0.34);
         }
 
         .brand-title {
-            font-size: clamp(19px, 1.9vw, 23px);
+            font-size: clamp(22px, 2.2vw, 27px);
             line-height: 1;
             font-weight: 900;
             letter-spacing: 0;
@@ -350,21 +357,23 @@
         }
 
         .brand-subtitle {
-            margin-top: 6px;
+            grid-column: 1 / -1;
+            margin-top: 1px;
             color: var(--muted);
-            font-size: clamp(10px, 0.95vw, 12px);
-            line-height: 1.25;
-            font-weight: 800;
+            font-size: clamp(13px, 1.12vw, 15px);
+            line-height: 1.35;
+            font-weight: 500;
             letter-spacing: 0;
         }
 
         .brand-note {
-            margin-top: 5px;
-            max-width: 250px;
+            grid-column: 1 / -1;
+            margin-top: 0;
+            max-width: 286px;
             color: rgba(169, 197, 222, 0.78);
-            font-size: clamp(8px, 0.66vw, 9px);
-            line-height: 1.45;
-            font-weight: 600;
+            font-size: clamp(10px, 0.85vw, 11.5px);
+            line-height: 1.5;
+            font-weight: 500;
             letter-spacing: 0;
         }
 
@@ -487,46 +496,51 @@
             }
 
             .login-card {
-                min-height: auto;
-                padding: 20px 18px 18px;
+                min-height: 390px;
+                padding: 28px 20px 24px;
                 border-radius: 18px;
             }
 
             .brand {
-                align-items: flex-start;
-                gap: 12px;
-                margin-bottom: 16px;
+                grid-template-columns: 48px 1fr;
+                column-gap: 12px;
+                row-gap: 8px;
+                margin-bottom: 24px;
             }
 
             .brand-mark {
-                width: 34px;
-                height: 34px;
-                border-radius: 11px;
+                width: 48px;
+                height: 48px;
+                border-radius: 15px;
             }
 
             .brand-mark::before {
-                top: 8px;
-                left: 8px;
-                width: 9px;
-                height: 9px;
+                top: 12px;
+                left: 12px;
+                width: 11px;
+                height: 11px;
             }
 
             .brand-title {
-                font-size: 21px;
+                font-size: 25px;
             }
 
             .brand-subtitle {
-                margin-top: 8px;
-                font-size: 11px;
+                font-size: 13px;
                 white-space: nowrap;
             }
 
+            .brand-note {
+                max-width: none;
+                font-size: 11px;
+            }
+
             .form {
-                gap: 12px;
+                gap: 14px;
             }
 
             .field {
-                min-height: 38px;
+                min-height: 42px;
                 padding: 0 13px;
                 border-radius: 12px;
             }
@@ -536,8 +550,8 @@
             }
 
             .login-button {
-                min-height: 38px;
-                margin-top: 8px;
+                min-height: 42px;
+                margin-top: 11px;
                 border-radius: 12px;
                 font-size: 13px;
                 letter-spacing: 8px;
@@ -545,7 +559,7 @@
             }
 
             .links {
-                margin-top: 15px;
+                margin-top: 20px;
             }
 
             .links a {
