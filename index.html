@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>蓝鲸ERP平台 - 登录</title>
+    <title>蓝鲸跨境ERP - 中枢汇聚动效登录</title>
     <style>
         :root {
-            --cyan: #46dcff;
-            --blue: #2f7cff;
-            --violet: #a85cff;
-            --text: #f5fbff;
-            --muted: #a9c5de;
-            --panel: rgba(3, 12, 28, 0.78);
-            --panel-deep: rgba(1, 7, 18, 0.84);
-            --line: rgba(111, 205, 255, 0.28);
-            --font: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+            --blue-900: #0b2f8a;
+            --blue-700: #155eef;
+            --blue-500: #2f80ff;
+            --blue-300: #79c6ff;
+            --cyan: #33d5ff;
+            --ink: #10213b;
+            --muted: #61738c;
+            --line: rgba(47, 128, 255, 0.22);
+            --panel: rgba(255, 255, 255, 0.78);
+            --font-family: "Aptos", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
         }
 
         * {
@@ -23,823 +24,1435 @@
             padding: 0;
         }
 
-        html,
-        body {
-            min-height: 100%;
-        }
-
         body {
             min-height: 100vh;
-            display: grid;
-            place-items: center;
-            overflow: hidden;
-            color: var(--text);
-            font-family: var(--font);
-            background: #02040b;
-        }
-
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-
-        .page {
-            position: relative;
-            width: 100vw;
-            min-height: 100vh;
-            display: grid;
-            place-items: center;
-            isolation: isolate;
-            padding: 32px;
-        }
-
-        .page::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            z-index: -4;
-            background: url("assets/login-cosmic-horizon-bg.png") center / cover no-repeat;
-        }
-
-        .page::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            z-index: -3;
-            background:
-                radial-gradient(circle at 50% 45%, rgba(48, 120, 255, 0.12), transparent 34%),
-                radial-gradient(circle at 54% 55%, rgba(168, 92, 255, 0.10), transparent 42%),
-                linear-gradient(180deg, rgba(0, 2, 10, 0.24), rgba(0, 2, 10, 0.18) 42%, rgba(0, 2, 10, 0.08));
-            pointer-events: none;
-        }
-
-        .matrix-layer {
-            position: absolute;
-            inset: 0;
-            z-index: -2;
-            pointer-events: none;
-            overflow: hidden;
-        }
-
-        .matrix-panel {
-            position: absolute;
-            top: 5vh;
-            bottom: 29vh;
             display: flex;
-            align-items: flex-start;
-            gap: clamp(8px, 0.9vw, 14px);
-            opacity: 0.82;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            color: var(--ink);
+            font-family: var(--font-family);
+            background:
+                radial-gradient(circle at 16% 12%, rgba(51, 213, 255, 0.32), transparent 30%),
+                radial-gradient(circle at 86% 18%, rgba(47, 128, 255, 0.26), transparent 34%),
+                linear-gradient(145deg, #f7fbff 0%, #e8f4ff 48%, #d7ebff 100%);
         }
 
-        .matrix-panel.left {
-            left: 4.5vw;
-            right: calc(50% + 250px);
-            justify-content: flex-end;
-        }
-
-        .matrix-panel.right {
-            left: calc(50% + 250px);
-            right: 4.5vw;
-            justify-content: flex-start;
-        }
-
-        .matrix-panel::before {
+        body::after {
             content: "";
-            position: absolute;
-            inset: -8vh -3vw -4vh;
-            background:
-                linear-gradient(90deg, transparent, rgba(38, 117, 255, 0.14), transparent),
-                radial-gradient(circle at 50% 32%, rgba(89, 91, 255, 0.18), transparent 54%);
-            filter: blur(18px);
-            opacity: 0.62;
-        }
-
-        .matrix-column {
-            position: relative;
-            width: clamp(34px, 3.2vw, 50px);
-            display: grid;
-            gap: clamp(12px, 1.45vw, 22px);
-        }
-
-        .matrix-column.c1 { margin-top: 1vh; }
-        .matrix-column.c2 { margin-top: 8vh; }
-        .matrix-column.c3 { margin-top: 3vh; }
-        .matrix-column.c4 { margin-top: 13vh; }
-        .matrix-column.c5 { margin-top: 6vh; }
-        .matrix-column.c6 { margin-top: 16vh; }
-        .matrix-column.c7 { margin-top: 10vh; }
-        .matrix-column.c8 { margin-top: 2vh; }
-        .matrix-column.c9 { margin-top: 12vh; }
-        .matrix-column.c10 { margin-top: 5vh; }
-
-        .matrix-tile {
-            width: 100%;
-            aspect-ratio: 1;
-            border-radius: 10px;
-            opacity: var(--alpha, 0.24);
-            background:
-                linear-gradient(145deg, rgba(82, 199, 255, var(--hi, 0.36)), rgba(43, 115, 255, var(--mid, 0.28)) 58%, rgba(112, 78, 255, var(--lo, 0.22)));
-            box-shadow:
-                inset 0 1px 0 rgba(255, 255, 255, 0.16),
-                0 0 20px rgba(48, 132, 255, 0.20);
-        }
-
-        .matrix-tile.hot {
-            opacity: 0.72;
-            background: linear-gradient(145deg, #65d7ff, #2f7cff 56%, #7561ff);
-            box-shadow:
-                inset 0 1px 0 rgba(255, 255, 255, 0.30),
-                0 0 30px rgba(56, 139, 255, 0.50),
-                0 0 52px rgba(117, 97, 255, 0.22);
-        }
-
-        .matrix-tile.module {
-            position: relative;
-            display: grid;
-            place-items: center;
-            align-content: center;
-            gap: 3px;
-            opacity: 0.88;
-            color: rgba(204, 238, 255, 0.84);
-            background:
-                linear-gradient(145deg, rgba(28, 96, 214, 0.94), rgba(8, 38, 112, 0.92) 56%, rgba(42, 45, 144, 0.88));
-            box-shadow:
-                inset 0 1px 0 rgba(180, 225, 255, 0.22),
-                inset 0 -10px 18px rgba(2, 9, 38, 0.46),
-                0 0 26px rgba(35, 104, 235, 0.32);
-        }
-
-        .module-icon {
-            width: clamp(13px, 1.05vw, 16px);
-            height: clamp(13px, 1.05vw, 16px);
-            stroke: currentColor;
-            stroke-width: 1.8;
-            fill: none;
-            opacity: 0.92;
-            filter: drop-shadow(0 0 6px rgba(74, 204, 255, 0.32));
-        }
-
-        .module-label {
-            font-size: clamp(7px, 0.58vw, 9px);
-            line-height: 1;
-            font-weight: 700;
-            color: rgba(179, 229, 255, 0.78);
-            text-shadow: 0 0 8px rgba(47, 124, 255, 0.55);
-            letter-spacing: 0;
-            white-space: nowrap;
-        }
-
-        .matrix-tile.dim {
-            opacity: 0.14;
-            filter: saturate(0.85);
-        }
-
-        .matrix-tile.blank {
-            visibility: hidden;
-        }
-
-        .energy-layer {
-            position: absolute;
+            position: fixed;
             inset: 0;
-            z-index: -1;
+            pointer-events: none;
+            background:
+                url("assets/bluewhale-page-small-top-bg.png") center bottom / cover no-repeat;
+            opacity: 0.62;
+            mix-blend-mode: multiply;
+            z-index: 0;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(21, 94, 239, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(21, 94, 239, 0.06) 1px, transparent 1px);
+            background-size: 42px 42px;
+            mask-image: radial-gradient(circle at center, #000 0%, transparent 72%);
+            z-index: 1;
+        }
+
+        .ai-regions {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
             pointer-events: none;
             overflow: hidden;
         }
 
-        .energy-layer svg {
+        .ai-region {
+            position: absolute;
+            color: rgba(18, 100, 214, 0.34);
+            font-family: "SFMono-Regular", Consolas, monospace;
+        }
+
+        .matrix-region {
+            left: 2.4vw;
+            top: 15vh;
+            width: 15vw;
+            height: 39vh;
+            overflow: hidden;
+            opacity: 0.86;
+            mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
+        }
+
+        .matrix-region::before,
+        .bottom-code::before {
+            content: "ERP.sync\\A AI.route\\A order.flow\\A gate.pass\\A quality.check\\A user.map\\A 0101 1010\\A ops.ready\\A metric++\\A data.trace\\A";
+            position: absolute;
+            inset: 0;
+            white-space: pre-line;
+            font-size: 15px;
+            line-height: 1.85;
+            letter-spacing: 0.08em;
+            text-shadow: 0 0 12px rgba(51, 213, 255, 0.32);
+            animation: codeColumn 16s linear infinite;
+        }
+
+        .matrix-region::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(47,128,255,0.12) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(47,128,255,0.10) 1px, transparent 1px);
+            background-size: 26px 26px;
+            opacity: 0.34;
+        }
+
+        .bottom-code {
+            display: none;
+            left: 8vw;
+            bottom: 2.6vh;
+            width: 16vw;
+            height: 17vh;
+            overflow: hidden;
+            opacity: 0.78;
+            mask-image: linear-gradient(180deg, transparent, #000 20%, #000 74%, transparent);
+        }
+
+        .bottom-code::before {
+            content: "0101\\A ERP.sync()\\A AI.route\\A ops: true\\A stock[42]\\A order.flow\\A API.ready\\A";
+            font-size: 14px;
+            line-height: 1.7;
+            animation-duration: 12s;
+        }
+
+        .whale-scan {
+            display: none;
+        }
+
+        .whale-scan::before {
+            display: none;
+            content: "";
+            position: absolute;
+            left: -30%;
+            top: 24%;
+            width: 160%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.92), rgba(51,213,255,0.56), transparent);
+            box-shadow: 0 0 18px rgba(51,213,255,0.44);
+            animation: whaleScan 7.5s ease-in-out infinite;
+        }
+
+        .whale-scan::after {
+            display: none;
+            content: "";
+            position: absolute;
+            inset: 18% 4% 18% 8%;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.72) 0 1px, transparent 1.6px);
+            background-size: 22px 22px;
+            opacity: 0.18;
+            animation: dotFlicker 4.8s ease-in-out infinite;
+        }
+
+        .network-pulse {
+            display: none;
+            right: 2.6vw;
+            bottom: 2.8vh;
+            width: 10vw;
+            height: 21vh;
+        }
+
+        .network-pulse span {
+            position: absolute;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.78);
+            box-shadow: 0 0 18px rgba(51, 213, 255, 0.62);
+            animation: networkPulse 4.5s ease-in-out infinite;
+        }
+
+        .network-pulse span:nth-child(1) { left: 12%; top: 72%; animation-delay: -0.4s; }
+        .network-pulse span:nth-child(2) { left: 58%; top: 48%; animation-delay: -1.7s; }
+        .network-pulse span:nth-child(3) { left: 84%; top: 18%; animation-delay: -3s; }
+
+        .network-pulse::before,
+        .network-pulse::after {
+            content: "";
+            position: absolute;
+            height: 1px;
+            transform-origin: left center;
+            background: linear-gradient(90deg, rgba(255,255,255,0), rgba(51,213,255,0.42), rgba(255,255,255,0));
+            animation: linkGlow 4.5s ease-in-out infinite;
+        }
+
+        .network-pulse::before {
+            left: 17%;
+            top: 70%;
+            width: 64%;
+            transform: rotate(-28deg);
+        }
+
+        .network-pulse::after {
+            left: 61%;
+            top: 48%;
+            width: 42%;
+            transform: rotate(-44deg);
+            animation-delay: -1.4s;
+        }
+
+        @keyframes codeColumn {
+            0% { transform: translateY(32%); opacity: 0; }
+            14% { opacity: 1; }
+            86% { opacity: 0.9; }
+            100% { transform: translateY(-70%); opacity: 0; }
+        }
+
+        @keyframes whaleScan {
+            0%, 100% { transform: translateY(-42px); opacity: 0; }
+            18%, 72% { opacity: 0.85; }
+            52% { transform: translateY(120px); opacity: 0.72; }
+        }
+
+        @keyframes dotFlicker {
+            0%, 100% { opacity: 0.12; transform: scale(0.98); }
+            48% { opacity: 0.28; transform: scale(1.02); }
+        }
+
+        @keyframes networkPulse {
+            0%, 100% { transform: scale(0.74); opacity: 0.28; }
+            48% { transform: scale(1.28); opacity: 0.88; }
+        }
+
+        @keyframes linkGlow {
+            0%, 100% { opacity: 0.18; }
+            50% { opacity: 0.74; }
+        }
+
+        .bg-mini-icons {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .data-widget {
+            --delay: 0s;
+            position: absolute;
+            width: 106px;
+            min-height: 82px;
+            padding: 12px;
+            border: 1px solid rgba(47, 128, 255, 0.16);
+            border-radius: 20px;
+            color: rgba(21, 94, 239, 0.46);
+            background:
+                linear-gradient(145deg, rgba(255,255,255,0.44), rgba(235,248,255,0.16)),
+                radial-gradient(circle at 22% 18%, rgba(51,213,255,0.14), transparent 54%);
+            box-shadow:
+                0 18px 46px rgba(47, 128, 255, 0.10),
+                inset 0 1px 0 rgba(255,255,255,0.62);
+            backdrop-filter: blur(8px);
+            opacity: 0.54;
+            animation: miniIconFloat 9s ease-in-out infinite;
+            animation-delay: var(--delay);
+        }
+
+        .data-widget::before {
+            content: "";
+            position: absolute;
+            inset: -16px;
+            border-radius: 28px;
+            background-image: radial-gradient(circle, rgba(21,94,239,0.16) 0 1.4px, transparent 1.8px);
+            background-size: 13px 13px;
+            mask-image: radial-gradient(circle, #000 0 42%, transparent 70%);
+            opacity: 0.34;
+            animation: miniPixels 6.4s ease-in-out infinite;
+            animation-delay: var(--delay);
+        }
+
+        .data-widget::after {
+            content: "";
+            position: absolute;
+            left: 12px;
+            top: 12px;
+            right: 12px;
+            height: 2px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, transparent, rgba(47,128,255,0.58), transparent);
+            animation: widgetScan 4.8s ease-in-out infinite;
+            animation-delay: calc(var(--delay) - 1s);
+        }
+
+        .data-widget.left-top {
+            left: clamp(22px, 5.8vw, 112px);
+            top: 24vh;
+            --delay: -1.2s;
+        }
+
+        .data-widget.left-bottom {
+            left: clamp(34px, 8vw, 150px);
+            bottom: 16vh;
+            width: 96px;
+            min-height: 76px;
+            --delay: -4.6s;
+        }
+
+        .data-widget.right-bottom {
+            right: clamp(40px, 8.6vw, 166px);
+            bottom: 15vh;
+            width: 98px;
+            min-height: 82px;
+            --delay: -6.3s;
+        }
+
+        .finance-curve {
+            position: absolute;
+            left: clamp(24px, 5vw, 98px);
+            bottom: 12vh;
+            width: 210px;
+            height: 138px;
+            color: rgba(21, 94, 239, 0.44);
+            opacity: 0.66;
+            animation: miniIconFloat 10s ease-in-out infinite;
+            animation-delay: -4.6s;
+        }
+
+        .finance-curve::before {
+            content: "";
+            position: absolute;
+            inset: 6px 14px;
+            background-image: radial-gradient(circle, rgba(21,94,239,0.14) 0 1.5px, transparent 1.9px);
+            background-size: 18px 18px;
+            mask-image: linear-gradient(90deg, transparent, #000 18%, #000 78%, transparent);
+            opacity: 0.48;
+        }
+
+        .finance-curve svg {
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
-            display: block;
+            overflow: visible;
+            filter: drop-shadow(0 0 13px rgba(47,128,255,0.18));
         }
 
-        .energy-line {
+        .curve-line {
             fill: none;
-            stroke: url("#energyStroke");
-            stroke-width: 1.35;
+            stroke: url(#moneyCurveGradient);
+            stroke-width: 4;
             stroke-linecap: round;
-            stroke-linejoin: round;
-            opacity: 0.34;
-            filter: url("#softGlow");
+            stroke-dasharray: 360;
+            animation: curveFlow 6.2s ease-in-out infinite;
         }
 
-        .energy-line.secondary {
-            opacity: 0.20;
-            stroke-width: 1;
+        .money-token {
+            position: absolute;
+            display: grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            color: rgba(21,94,239,0.68);
+            border: 1px solid rgba(47,128,255,0.22);
+            background: rgba(255,255,255,0.18);
+            box-shadow: 0 0 18px rgba(47,128,255,0.14);
+            font-size: 15px;
+            font-weight: 900;
+            animation: metricBeat 5s ease-in-out infinite;
         }
 
-        .energy-pulse {
-            fill: none;
-            stroke: url("#pulseStroke");
-            stroke-width: 2.15;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            stroke-dasharray: 22 220;
-            stroke-dashoffset: 240;
-            opacity: 0.78;
-            filter: url("#pulseGlow");
-            animation: energy-flow 4.8s linear infinite;
+        .money-token.t1 { left: 10px; top: 18px; }
+        .money-token.t2 { left: 92px; top: 72px; animation-delay: -1.6s; }
+        .money-token.t3 { right: 28px; top: 34px; animation-delay: -3.1s; }
+
+        .table-icon {
+            position: absolute;
+            right: clamp(30px, 5vw, 96px);
+            bottom: clamp(34px, 8vh, 84px);
+            width: 128px;
+            height: 118px;
+            display: grid;
+            place-items: center;
+            color: rgba(21, 94, 239, 0.42);
+            opacity: 0.68;
+            animation: miniIconFloat 9s ease-in-out infinite;
+            animation-delay: -6.3s;
         }
 
-        .energy-pulse.delay-1 { animation-delay: -1.2s; }
-        .energy-pulse.delay-2 { animation-delay: -2.4s; }
-        .energy-pulse.delay-3 { animation-delay: -3.6s; }
-
-        .energy-node {
-            fill: rgba(83, 193, 255, 0.82);
-            filter: url("#pulseGlow");
-            opacity: 0.56;
-        }
-
-        @keyframes energy-flow {
-            to {
-                stroke-dashoffset: 0;
-            }
-        }
-
-        .login-shell {
-            position: relative;
-            width: min(340px, calc(100vw - 40px));
-            padding: 2px;
-            border-radius: 22px;
-            background:
-                linear-gradient(135deg, rgba(48, 139, 255, 0.72), rgba(41, 91, 214, 0.36) 42%, rgba(111, 67, 255, 0.62));
-            box-shadow:
-                0 28px 82px rgba(0, 0, 0, 0.54),
-                0 0 62px rgba(40, 116, 255, 0.22),
-                0 0 34px rgba(104, 79, 255, 0.14);
-            transform: translateY(-9vh);
-        }
-
-        .login-shell::before {
+        .table-icon::before {
             content: "";
             position: absolute;
-            inset: -24px;
-            z-index: -1;
-            border-radius: 34px;
-            background:
-                radial-gradient(circle at 14% 17%, rgba(48, 139, 255, 0.30), transparent 36%),
-                radial-gradient(circle at 88% 76%, rgba(111, 67, 255, 0.28), transparent 34%);
-            filter: blur(24px);
-            opacity: 0.76;
+            inset: -18px;
+            border-radius: 24px;
+            background-image: radial-gradient(circle, rgba(21,94,239,0.14) 0 1.4px, transparent 1.8px);
+            background-size: 13px 13px;
+            mask-image: radial-gradient(circle, #000 0 42%, transparent 72%);
+            opacity: 0.42;
         }
 
-        .login-card {
-            padding: 27px 23px 25px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+        .table-icon svg {
+            width: 112px;
+            height: 100px;
+            filter: drop-shadow(0 0 16px rgba(47,128,255,0.20));
+        }
+
+        .widget-head {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .widget-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #155eef, #33d5ff);
+            box-shadow: 0 0 14px rgba(47,128,255,0.38);
+        }
+
+        .widget-line {
+            height: 5px;
+            flex: 1;
+            border-radius: 999px;
+            background: rgba(47, 128, 255, 0.18);
+        }
+
+        .widget-grid {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+        }
+
+        .widget-cell {
+            height: 12px;
+            border-radius: 4px;
+            background: rgba(47, 128, 255, 0.16);
+        }
+
+        .widget-cell.is-on {
+            background: linear-gradient(135deg, rgba(21,94,239,0.58), rgba(51,213,255,0.42));
+            box-shadow: 0 0 12px rgba(51,213,255,0.22);
+            animation: cellPulse 3.6s ease-in-out infinite;
+        }
+
+        .widget-bars {
+            position: relative;
+            z-index: 1;
+            height: 44px;
+            display: flex;
+            align-items: end;
+            gap: 8px;
+            padding: 0 6px;
+        }
+
+        .widget-bar {
+            width: 12px;
+            border-radius: 999px 999px 3px 3px;
+            background: linear-gradient(180deg, rgba(51,213,255,0.72), rgba(21,94,239,0.44));
+            box-shadow: 0 0 13px rgba(47,128,255,0.20);
+            animation: barPulse 4s ease-in-out infinite;
+        }
+
+        .widget-bar:nth-child(2) { animation-delay: -1.1s; }
+        .widget-bar:nth-child(3) { animation-delay: -2.2s; }
+
+        .widget-checkrow {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            gap: 7px;
+        }
+
+        .check-line {
+            display: grid;
+            grid-template-columns: 12px 1fr;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .check-line::before {
+            content: "";
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+            border: 1px solid rgba(47,128,255,0.38);
+            background: rgba(255,255,255,0.32);
+        }
+
+        .check-line::after {
+            content: "";
+            height: 5px;
+            border-radius: 999px;
+            background: rgba(47, 128, 255, 0.18);
+        }
+
+        .metric-cluster {
+            position: absolute;
+            right: clamp(24px, 5vw, 104px);
+            top: 18vh;
+            width: 190px;
+            height: 150px;
+            opacity: 0.76;
+            animation: miniIconFloat 10s ease-in-out infinite;
+            animation-delay: -2.2s;
+        }
+
+        .metric-bubble {
+            position: absolute;
+            display: grid;
+            place-items: center;
+            color: rgba(21, 94, 239, 0.54);
+            font-weight: 950;
+            letter-spacing: 0;
+            text-shadow:
+                0 0 18px rgba(51,213,255,0.24),
+                0 10px 28px rgba(47,128,255,0.18);
+            animation: metricBeat 5.2s ease-in-out infinite;
+        }
+
+        .metric-bubble.big {
+            right: 18px;
+            top: 26px;
+            width: 82px;
+            height: 54px;
+            font-size: 19px;
+        }
+
+        .metric-bubble.mid {
+            left: 18px;
+            top: 62px;
+            width: 66px;
+            height: 44px;
+            font-size: 15px;
+            animation-delay: -1.6s;
+        }
+
+        .metric-bubble.small {
+            right: 44px;
+            bottom: 6px;
+            width: 56px;
+            height: 38px;
+            border-radius: 16px;
+            font-size: 13px;
+            animation-delay: -3s;
+        }
+
+        @keyframes miniIconFloat {
+            0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.42; }
+            48% { transform: translate3d(0, -14px, 0) scale(1.03); opacity: 0.68; }
+        }
+
+        @keyframes miniPixels {
+            0%, 100% { transform: translateY(5px); opacity: 0.28; }
+            50% { transform: translateY(-5px); opacity: 0.58; }
+        }
+
+        @keyframes miniRing {
+            0%, 100% { transform: scale(0.86); opacity: 0.32; }
+            50% { transform: scale(1.08); opacity: 0.66; }
+        }
+
+        @keyframes widgetScan {
+            0%, 100% { transform: translateY(0); opacity: 0; }
+            30% { opacity: 0.72; }
+            60% { transform: translateY(46px); opacity: 0.12; }
+        }
+
+        @keyframes cellPulse {
+            0%, 100% { opacity: 0.45; }
+            50% { opacity: 0.92; }
+        }
+
+        @keyframes barPulse {
+            0%, 100% { transform: scaleY(0.74); opacity: 0.54; }
+            50% { transform: scaleY(1); opacity: 0.92; }
+        }
+
+        @keyframes metricBeat {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.56; }
+            50% { transform: translateY(-5px) scale(1.035); opacity: 0.88; }
+        }
+
+        @keyframes curveFlow {
+            0% { stroke-dashoffset: 360; opacity: 0.32; }
+            42%, 78% { opacity: 0.82; }
+            100% { stroke-dashoffset: 0; opacity: 0.42; }
+        }
+
+        @keyframes pointPulse {
+            0%, 100% { transform: scale(0.86); opacity: 0.58; }
+            50% { transform: scale(1.12); opacity: 0.95; }
+        }
+
+        .shell {
+            width: min(1120px, 94vw);
+            min-height: min(680px, 88vh);
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: minmax(0, 1.08fr) 430px;
+            overflow: hidden;
+            border: 1px solid rgba(54, 139, 255, 0.34);
+            border-radius: 30px;
             background:
-                linear-gradient(180deg, rgba(5, 17, 42, 0.82), rgba(1, 7, 20, 0.90)),
-                radial-gradient(circle at 54% 100%, rgba(47, 124, 255, 0.18), transparent 50%),
-                radial-gradient(circle at 90% 0%, rgba(111, 67, 255, 0.13), transparent 36%);
+                linear-gradient(135deg, rgba(255,255,255,0.82), rgba(239,248,255,0.58)),
+                radial-gradient(circle at 18% 84%, rgba(47,128,255,0.12), transparent 42%);
             box-shadow:
-                inset 0 1px 0 rgba(255, 255, 255, 0.14),
-                inset 0 -46px 76px rgba(32, 106, 255, 0.11);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
+                0 36px 100px rgba(42, 109, 202, 0.20),
+                0 0 0 8px rgba(255,255,255,0.42),
+                inset 0 1px 0 rgba(255,255,255,0.86);
+            backdrop-filter: blur(18px);
+        }
+
+        .left-panel {
+            position: relative;
+            padding: 44px 46px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+
+        .left-panel::after {
+            content: "";
+            position: absolute;
+            inset: auto -18% -28% -18%;
+            height: 50%;
+            background: radial-gradient(ellipse at center, rgba(47, 128, 255, 0.22), transparent 66%);
+            pointer-events: none;
         }
 
         .brand {
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo-row {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 23px;
+            gap: 13px;
         }
 
-        .brand-mark {
+        .logo-icon {
+            width: 46px;
+            height: 46px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--blue-700), var(--cyan));
+            box-shadow: 0 14px 34px rgba(21, 94, 239, 0.28);
+        }
+
+        .logo-icon svg {
+            width: 27px;
+            height: 27px;
+            color: white;
+        }
+
+        .logo-text {
+            font-size: 27px;
+            font-weight: 900;
+            color: #1056d8;
+            letter-spacing: 0;
+        }
+
+        .brand-desc {
+            margin-top: 9px;
+            max-width: 520px;
+            color: #51667f;
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.45;
+        }
+
+        .brand-note {
+            margin-top: 8px;
+            max-width: none;
+            color: #6a7c92;
+            font-size: 12px;
+            line-height: 1.5;
+            white-space: nowrap;
+        }
+
+        .flow-area {
             position: relative;
-            flex: 0 0 auto;
-            width: 36px;
-            height: 36px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #2378ff 4%, #35b7ff 58%, #6d43ff 100%);
-            box-shadow:
-                0 16px 38px rgba(35, 142, 255, 0.30),
-                0 0 38px rgba(90, 82, 255, 0.18),
-                inset 0 1px 0 rgba(255, 255, 255, 0.34);
+            z-index: 2;
+            flex: 1;
+            min-height: 458px;
+            margin: 20px 0 0;
         }
 
-        .brand-mark::before {
-            content: "";
+        .flow-line {
             position: absolute;
-            top: 9px;
-            left: 9px;
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.93);
-            box-shadow: 0 0 18px rgba(255, 255, 255, 0.34);
+            inset: 0;
         }
 
-        .brand-title {
-            font-size: clamp(19px, 1.9vw, 23px);
-            line-height: 1;
+        .flow-line svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .route {
+            fill: none;
+            stroke: rgba(47, 128, 255, 0.24);
+            stroke-width: 2;
+            stroke-dasharray: 7 9;
+            stroke-linecap: round;
+        }
+
+        .route-active {
+            fill: none;
+            stroke: url(#flowGradient);
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-dasharray: 70 390;
+            animation: flow 4.2s linear infinite;
+            filter: drop-shadow(0 0 10px rgba(51, 213, 255, 0.62));
+        }
+
+        @keyframes flow {
+            to { stroke-dashoffset: -460; }
+        }
+
+        .node {
+            position: absolute;
+            width: 112px;
+            min-height: 82px;
+            padding: 12px;
+            border: 1px solid rgba(47, 128, 255, 0.18);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.74);
+            box-shadow:
+                0 18px 42px rgba(34, 102, 190, 0.14),
+                inset 0 1px 0 rgba(255,255,255,0.88);
+            backdrop-filter: blur(12px);
+            animation: nodePulse 3.8s ease-in-out infinite;
+        }
+
+        .node:nth-of-type(odd) {
+            animation-delay: -1.2s;
+        }
+
+        @keyframes nodePulse {
+            0%, 100% { transform: translateY(0); box-shadow: 0 18px 42px rgba(34, 102, 190, 0.14), inset 0 1px 0 rgba(255,255,255,0.88); }
+            50% { transform: translateY(-5px); box-shadow: 0 24px 52px rgba(34, 102, 190, 0.20), inset 0 1px 0 rgba(255,255,255,0.94); }
+        }
+
+        .node .icon {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 9px;
+            border-radius: 10px;
+            color: white;
+            background: linear-gradient(135deg, var(--blue-700), var(--cyan));
+        }
+
+        .node .text-icon {
+            font-size: 13px;
             font-weight: 900;
             letter-spacing: 0;
-            color: transparent;
-            background: linear-gradient(100deg, #6fa4ff, #368aff 56%, #8b6dff);
-            background-clip: text;
-            -webkit-background-clip: text;
-            text-shadow: 0 0 24px rgba(55, 128, 255, 0.18);
         }
 
-        .brand-subtitle {
+        .node .icon svg {
+            width: 19px;
+            height: 19px;
+        }
+
+        .node b {
+            display: block;
+            color: #15365f;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+
+        .node span {
+            display: block;
+            margin-top: 5px;
+            color: #6a7d95;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .cognition { left: 2%; top: 20%; }
+        .project { left: 27%; top: 8%; }
+        .ai { left: 51%; top: 20%; }
+        .ops { left: 75%; top: 8%; }
+        .delivery { left: 15%; top: 66%; }
+        .quality { left: 39%; top: 75%; }
+        .user { left: 63%; top: 66%; }
+        .support { left: 78%; top: 41%; }
+
+        .hub-flow {
+            min-height: 430px;
+            margin-top: 28px;
+        }
+
+        .hub-flow::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: 51%;
+            width: 310px;
+            height: 310px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            background:
+                radial-gradient(circle, rgba(47,128,255,0.13), transparent 58%),
+                conic-gradient(from 90deg, rgba(51,213,255,0), rgba(47,128,255,0.18), rgba(255,255,255,0), rgba(47,128,255,0.14), rgba(51,213,255,0));
+            filter: blur(0.2px);
+            opacity: 0.72;
+            pointer-events: none;
+            animation: hubAura 10s linear infinite;
+        }
+
+        .hub-flow .flow-line {
+            inset: 8px 18px 0;
+            opacity: 0.92;
+        }
+
+        .hub-line {
+            fill: none;
+            stroke: rgba(111, 180, 255, 0.26);
+            stroke-width: 1.45;
+            stroke-linecap: round;
+        }
+
+        .hub-line.energy {
+            stroke: url(#hubGradient);
+            stroke-width: 2.1;
+            stroke-dasharray: 34 260;
+            filter: drop-shadow(0 0 8px rgba(51, 213, 255, 0.55));
+            animation: hubCurrent 4.6s linear infinite;
+        }
+
+        .hub-line.energy:nth-of-type(10) { animation-delay: -0.5s; }
+        .hub-line.energy:nth-of-type(11) { animation-delay: -1.0s; }
+        .hub-line.energy:nth-of-type(12) { animation-delay: -1.5s; }
+        .hub-line.energy:nth-of-type(13) { animation-delay: -2.0s; }
+        .hub-line.energy:nth-of-type(14) { animation-delay: -2.5s; }
+        .hub-line.energy:nth-of-type(15) { animation-delay: -3.0s; }
+        .hub-line.energy:nth-of-type(16) { animation-delay: -3.5s; }
+        .hub-line.energy:nth-of-type(17) { animation-delay: -4.0s; }
+
+        .hub-node {
+            position: absolute;
+            left: 50%;
+            top: 51%;
+            z-index: 3;
+            width: 126px;
+            height: 126px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(47, 128, 255, 0.28);
+            border-radius: 32px;
+            transform: translate(-50%, -50%);
+            background:
+                linear-gradient(145deg, rgba(255,255,255,0.78), rgba(231,246,255,0.58)),
+                radial-gradient(circle at 30% 24%, rgba(255,255,255,0.96), transparent 42%);
+            box-shadow:
+                0 24px 58px rgba(47, 128, 255, 0.18),
+                inset 0 0 0 1px rgba(255,255,255,0.72),
+                inset 0 -18px 42px rgba(47,128,255,0.08);
+            backdrop-filter: blur(14px);
+            animation: hubBreathe 4.8s ease-in-out infinite;
+        }
+
+        .hub-node::before {
+            content: "";
+            position: absolute;
+            inset: -10px;
+            border-radius: 38px;
+            border: 1px solid rgba(51, 213, 255, 0.20);
+            box-shadow: 0 0 42px rgba(51, 213, 255, 0.18);
+        }
+
+        .hub-icon {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 8px;
+            border-radius: 15px;
+            color: #fff;
+            background: linear-gradient(135deg, #155eef, #25c7ff);
+            box-shadow: 0 16px 30px rgba(21, 94, 239, 0.26);
+        }
+
+        .hub-icon svg {
+            width: 27px;
+            height: 27px;
+        }
+
+        .hub-title {
+            color: #1056d8;
+            font-size: 22px;
+            line-height: 1;
+            font-weight: 950;
+            letter-spacing: 0;
+            text-align: center;
+        }
+
+        .hub-sub {
             margin-top: 6px;
-            color: var(--muted);
-            font-size: clamp(10px, 0.95vw, 12px);
-            line-height: 1.25;
+            color: #6a7d95;
+            font-size: 10px;
             font-weight: 800;
+            text-align: center;
+        }
+
+        .hub-flow .node {
+            width: 138px;
+            min-height: 54px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 16px;
+            background:
+                linear-gradient(145deg, rgba(255,255,255,0.76), rgba(242,250,255,0.46));
+            box-shadow:
+                0 16px 38px rgba(34, 102, 190, 0.11),
+                inset 0 1px 0 rgba(255,255,255,0.92);
+            animation: nodeFloat 4.6s ease-in-out infinite;
+        }
+
+        .hub-flow .node:nth-of-type(odd) {
+            animation-delay: -1.1s;
+        }
+
+        .hub-flow .node .icon {
+            width: 31px;
+            height: 31px;
+            flex: 0 0 auto;
+            margin: 0;
+            border-radius: 10px;
+        }
+
+        .hub-flow .node .icon svg {
+            width: 17px;
+            height: 17px;
+        }
+
+        .node-copy {
+            min-width: 0;
+        }
+
+        .hub-flow .node b {
+            font-size: 13px;
+            line-height: 1.1;
+            white-space: nowrap;
+        }
+
+        .hub-flow .node span {
+            margin-top: 4px;
+            font-size: 10px;
+        }
+
+        .hub-flow .cognition { left: 2%; top: 8%; }
+        .hub-flow .project { left: 8%; top: 31%; }
+        .hub-flow .delivery { left: 8%; top: 59%; }
+        .hub-flow .quality { left: 2%; top: 82%; }
+        .hub-flow .ai { left: auto; right: 2%; top: 8%; }
+        .hub-flow .ops { left: auto; right: 8%; top: 31%; }
+        .hub-flow .user { left: auto; right: 8%; top: 59%; }
+        .hub-flow .support { left: auto; right: 2%; top: 82%; }
+
+        @keyframes hubCurrent {
+            to { stroke-dashoffset: -294; }
+        }
+
+        @keyframes hubBreathe {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.025); }
+        }
+
+        @keyframes nodeFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
+        @keyframes hubAura {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .right-panel {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 54px 48px;
+            border-left: 1px solid rgba(47, 128, 255, 0.16);
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.84), rgba(245,250,255,0.72)),
+                radial-gradient(circle at 80% 18%, rgba(51,213,255,0.14), transparent 38%);
+        }
+
+        .login-header {
+            margin-bottom: 34px;
+        }
+
+        .login-title {
+            color: #10213b;
+            font-size: 31px;
+            font-weight: 900;
             letter-spacing: 0;
         }
 
-        .form {
-            display: grid;
-            gap: 16px;
+        .login-subtitle {
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 15px;
         }
 
-        .field {
-            position: relative;
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34465d;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .input-wrapper {
             display: flex;
             align-items: center;
-            min-height: 40px;
-            padding: 0 13px;
-            border: 2px solid rgba(67, 151, 255, 0.24);
-            border-radius: 12px;
-            background: rgba(0, 6, 18, 0.72);
-            box-shadow:
-                inset 0 0 0 1px rgba(255, 255, 255, 0.02),
-                0 0 0 rgba(70, 220, 255, 0);
-            transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+            min-height: 52px;
+            padding: 0 15px;
+            border: 1px solid rgba(47, 128, 255, 0.18);
+            border-radius: 14px;
+            background: rgba(255,255,255,0.72);
+            transition: border-color .2s, box-shadow .2s, background .2s;
         }
 
-        .field:focus-within {
-            border-color: rgba(73, 151, 255, 0.76);
-            background: rgba(0, 9, 24, 0.82);
-            box-shadow: 0 0 0 5px rgba(73, 151, 255, 0.08);
+        .input-wrapper:focus-within {
+            border-color: rgba(21, 94, 239, 0.62);
+            background: rgba(255,255,255,0.90);
+            box-shadow: 0 0 0 4px rgba(47, 128, 255, 0.11);
         }
 
-        .field input {
-            width: 100%;
+        .input-icon {
+            width: 19px;
+            height: 19px;
+            margin-right: 11px;
+            color: #6f86a3;
+        }
+
+        .input-field {
+            flex: 1;
             min-width: 0;
             border: 0;
             outline: 0;
-            color: #ffffff;
+            padding: 15px 0;
+            color: #10213b;
             background: transparent;
             font: inherit;
-            font-size: clamp(11px, 1.05vw, 13px);
-            font-weight: 800;
-            letter-spacing: 0;
+            font-size: 15px;
         }
 
-        .field input::placeholder {
-            color: rgba(202, 227, 248, 0.50);
+        .input-field::placeholder {
+            color: #9caabe;
         }
 
-        .password {
-            letter-spacing: 4px;
-        }
-
-        .login-button {
-            width: 100%;
-            min-height: 42px;
-            margin-top: 12px;
+        .action-icon {
+            width: 22px;
+            height: 22px;
             border: 0;
-            border-radius: 13px;
-            color: rgba(1, 15, 33, 0.94);
+            display: grid;
+            place-items: center;
+            color: #7b8fa8;
+            background: transparent;
             cursor: pointer;
-            background: linear-gradient(100deg, #39b9ff, #2f7cff 58%, #8066ff);
-            box-shadow:
-                0 18px 46px rgba(50, 132, 255, 0.32),
-                inset 0 1px 0 rgba(255, 255, 255, 0.28);
-            font: inherit;
-            font-size: clamp(11px, 1.1vw, 13px);
-            font-weight: 900;
-            letter-spacing: 8px;
-            text-indent: 8px;
-            transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
         }
 
-        .login-button:hover {
-            filter: brightness(1.08);
-            transform: translateY(-1px);
-            box-shadow:
-                0 22px 58px rgba(50, 132, 255, 0.40),
-                0 0 30px rgba(128, 102, 255, 0.22),
-                inset 0 1px 0 rgba(255, 255, 255, 0.32);
-        }
-
-        .links {
+        .form-options {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            gap: 24px;
-            margin-top: 20px;
+            justify-content: space-between;
+            gap: 16px;
+            margin: -4px 0 30px;
+            color: var(--muted);
+            font-size: 13px;
         }
 
-        .links a {
-            color: #9df2ff;
+        .remember-me {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checkbox {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 1px solid rgba(47, 128, 255, 0.34);
+            border-radius: 4px;
+            background: white;
+        }
+
+        .checkbox:checked {
+            background: linear-gradient(135deg, var(--blue-700), var(--cyan));
+        }
+
+        a {
+            color: #155eef;
             text-decoration: none;
-            font-size: clamp(10px, 1vw, 12px);
-            line-height: 1;
+        }
+
+        .btn-submit {
+            width: 100%;
+            min-height: 52px;
+            border: 0;
+            border-radius: 14px;
+            color: white;
+            background: linear-gradient(180deg, #3d92ff, #155eef);
+            box-shadow: 0 16px 36px rgba(21, 94, 239, 0.28), inset 0 1px 0 rgba(255,255,255,0.34);
+            font-size: 17px;
             font-weight: 900;
-            letter-spacing: 0;
-            text-shadow: 0 0 22px rgba(70, 220, 255, 0.22);
-            transition: color .2s ease, text-shadow .2s ease;
+            cursor: pointer;
         }
 
-        .links a:hover {
-            color: #d7fbff;
-            text-shadow: 0 0 26px rgba(70, 220, 255, 0.44);
+        .register-link {
+            margin-top: 34px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
         }
 
-        @media (max-width: 720px) {
-            .page {
-                padding: 18px;
-            }
+        .mobile-logo {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 34px;
+        }
 
-            .matrix-layer {
-                display: none;
-            }
-
-            .energy-layer {
-                display: none;
-            }
-
-            .login-shell {
-                width: min(310px, calc(100vw - 28px));
-                border-radius: 20px;
-            }
-
-            .login-card {
+        @media (max-width: 980px) {
+            body { overflow: auto; }
+            .shell {
+                grid-template-columns: 1fr;
                 min-height: auto;
-                padding: 20px 18px 18px;
-                border-radius: 18px;
             }
-
-            .brand {
-                align-items: flex-start;
-                gap: 12px;
-                margin-bottom: 16px;
+            .left-panel {
+                min-height: 560px;
             }
-
-            .brand-mark {
-                width: 34px;
-                height: 34px;
-                border-radius: 11px;
+            .right-panel {
+                border-left: 0;
+                border-top: 1px solid rgba(47, 128, 255, 0.16);
+                padding: 38px 30px 44px;
             }
-
-            .brand-mark::before {
-                top: 8px;
-                left: 8px;
-                width: 9px;
-                height: 9px;
+            .mobile-logo {
+                display: flex;
             }
-
-            .brand-title {
-                font-size: 21px;
-            }
-
-            .brand-subtitle {
-                margin-top: 8px;
-                font-size: 11px;
-                white-space: nowrap;
-            }
-
-            .form {
-                gap: 12px;
-            }
-
-            .field {
-                min-height: 38px;
-                padding: 0 13px;
-                border-radius: 12px;
-            }
-
-            .field input {
-                font-size: 12px;
-            }
-
-            .login-button {
-                min-height: 38px;
-                margin-top: 8px;
-                border-radius: 12px;
-                font-size: 13px;
-                letter-spacing: 8px;
-                text-indent: 8px;
-            }
-
-            .links {
-                margin-top: 15px;
-            }
-
-            .links a {
-                font-size: 12px;
+            .bg-mini-icons {
+                display: none;
             }
         }
 
-        @media (max-height: 700px) and (min-width: 721px) {
-            .login-card {
-                padding: 20px 25px 19px;
+        @media (max-width: 640px) {
+            body { align-items: stretch; }
+            .shell {
+                width: 100%;
+                min-height: 100vh;
+                border-radius: 0;
+                box-shadow: none;
             }
-
-            .brand {
-                margin-bottom: 16px;
+            .left-panel {
+                display: none;
             }
-
-            .form {
-                gap: 11px;
+            .right-panel {
+                min-height: 100vh;
             }
-
-            .field {
-                min-height: 38px;
+            .form-options {
+                align-items: flex-start;
+                flex-direction: column;
             }
+        }
 
-            .login-button {
-                min-height: 40px;
-                margin-top: 9px;
-            }
-
-            .links {
-                margin-top: 14px;
+        @media (prefers-reduced-motion: reduce) {
+            .matrix-region::before,
+            .bottom-code::before,
+            .whale-scan::before,
+            .whale-scan::after,
+            .network-pulse,
+            .network-pulse span,
+            .network-pulse::before,
+            .network-pulse::after,
+            .route-active,
+            .hub-line.energy,
+            .hub-node,
+            .hub-flow::before,
+            .data-widget,
+            .data-widget::before,
+            .data-widget::after,
+            .widget-cell.is-on,
+            .widget-bar,
+            .metric-cluster,
+            .metric-bubble,
+            .finance-curve,
+            .finance-curve::before,
+            .curve-line,
+            .money-token,
+            .table-icon,
+            .node {
+                animation: none;
             }
         }
     </style>
 </head>
 <body>
-    <svg class="sr-only" aria-hidden="true" focusable="false">
-        <symbol id="icon-cognition" viewBox="0 0 24 24">
-            <path d="M5 15c1.8-4.2 4.2-6.3 7-6.3s5.2 2.1 7 6.3c-1.8 2.5-4.2 3.8-7 3.8S6.8 17.5 5 15z"/>
-            <path d="M12 11.5a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
-        </symbol>
-        <symbol id="icon-project" viewBox="0 0 24 24">
-            <path d="M7 4.5h8.5L19 8v11.5H7z"/>
-            <path d="M15.5 4.5V8H19M10 11h6M10 15h5"/>
-        </symbol>
-        <symbol id="icon-ai" viewBox="0 0 24 24">
-            <path d="M12 4.5 13.8 9l4.7 1.8-4.7 1.8L12 17l-1.8-4.4-4.7-1.8L10.2 9z"/>
-            <path d="M18 15.5 18.8 18l2.2.8-2.2.8L18 22l-.8-2.4-2.2-.8 2.2-.8z"/>
-        </symbol>
-        <symbol id="icon-operation" viewBox="0 0 24 24">
-            <path d="M5 13h3.5l7.5 4V7l-7.5 4H5z"/>
-            <path d="M8.5 13.2 10 19M18 10.5c1.1.8 1.6 2.2 1.2 3.5"/>
-        </symbol>
-        <symbol id="icon-delivery" viewBox="0 0 24 24">
-            <path d="M4.5 8.5 12 4l7.5 4.5v7L12 20l-7.5-4.5z"/>
-            <path d="M4.8 8.7 12 13l7.2-4.3M12 13v6.6"/>
-        </symbol>
-        <symbol id="icon-quality" viewBox="0 0 24 24">
-            <path d="M12 4.5 18.5 7v5.2c0 3.6-2.5 6.5-6.5 7.8-4-1.3-6.5-4.2-6.5-7.8V7z"/>
-            <path d="m9 12.5 2 2 4-4"/>
-        </symbol>
-        <symbol id="icon-user" viewBox="0 0 24 24">
-            <path d="M12 11.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
-            <path d="M5.5 20c.8-3.7 3-5.5 6.5-5.5s5.7 1.8 6.5 5.5"/>
-        </symbol>
-        <symbol id="icon-support" viewBox="0 0 24 24">
-            <path d="M5 13v-1a7 7 0 0 1 14 0v1"/>
-            <path d="M5 13.5h3v4H6.5A1.5 1.5 0 0 1 5 16zM19 13.5h-3v4h1.5A1.5 1.5 0 0 0 19 16z"/>
-            <path d="M16 17.5c-.8 1.5-2 2.2-4 2.2"/>
-        </symbol>
-    </svg>
-    <main class="page">
-        <div class="matrix-layer" aria-hidden="true">
-            <div class="matrix-panel left">
-                <div class="matrix-column c1">
-                    <span class="matrix-tile dim"></span>
-                    <span class="matrix-tile module">
-                        <svg class="module-icon"><use href="#icon-cognition"></use></svg>
-                        <span class="module-label">认知</span>
-                    </span>
-                    <span class="matrix-tile" style="--alpha:.34;--hi:.42;--mid:.30;--lo:.22"></span>
-                    <span class="matrix-tile blank"></span>
-                    <span class="matrix-tile" style="--alpha:.26"></span>
-                    <span class="matrix-tile dim"></span>
-                </div>
-                <div class="matrix-column c2">
-                    <span class="matrix-tile" style="--alpha:.20"></span>
-                    <span class="matrix-tile" style="--alpha:.38;--hi:.44;--mid:.32;--lo:.26"></span>
-                    <span class="matrix-tile blank"></span>
-                    <span class="matrix-tile dim"></span>
-                    <span class="matrix-tile" style="--alpha:.30"></span>
-                </div>
-                <div class="matrix-column c3">
-                    <span class="matrix-tile dim"></span>
-                    <span class="matrix-tile blank"></span>
-                    <span class="matrix-tile module">
-                        <svg class="module-icon"><use href="#icon-project"></use></svg>
-                        <span class="module-label">项目</span>
-                    </span>
-                    <span class="matrix-tile" style="--alpha:.18"></span>
-                    <span class="matrix-tile blank"></span>
-                    <span class="matrix-tile dim"></span>
-                </div>
-                <div class="matrix-column c7">
-                    <span class="matrix-tile" style="--alpha:.16"></span>
-                    <span class="matrix-tile dim"></span>
-                    <span class="matrix-tile blank"></span>
-                    <span class="matrix-tile" style="--alpha:.28;--hi:.38;--mid:.28;--lo:.22"></span>
-                    <span class="matrix-tile dim"></span>
-                </div>
-                <div class="matrix-column c4">
-                    <span class="matrix-tile module">
-                        <svg class="module-icon"><use href="#icon-ai"></use></svg>
-                        <span class="module-label">AI</span>
-                    </span>
-                    <span class="matrix-tile blank"></span>
-                    <span class="matrix-tile dim"></span>
-                    <span class="matrix-tile" style="--alpha:.22"></span>
-                </div>
-                <div class="matrix-column c8">
-                    <span class="matrix-tile dim"></span>
-                    <span class="matrix-tile" style="--alpha:.22"></span>
-                    <span class="matrix-tile blank"></span>
-                    <span class="matrix-tile module">
-                        <svg class="module-icon"><use href="#icon-operation"></use></svg>
-                        <span class="module-label">运营</span>
-                    </span>
-                    <span class="matrix-tile dim"></span>
-                    <span class="matrix-tile blank"></span>
-                </div>
-                <div class="matrix-column c9">
-                    <span class="matrix-tile" style="--alpha:.18"></span>
-                    <span class="matrix-tile blank"></span>
-                    <span class="matrix-tile dim"></span>
-                    <span class="matrix-tile" style="--alpha:.23"></span>
-                </div>
-                <div class="matrix-column c10">
-                    <span class="matrix-tile dim"></span>
-                    <span class="matrix-tile" style="--alpha:.20"></span>
-                    <span class="matrix-tile blank"></span>
-                    <span class="matrix-tile" style="--alpha:.16"></span>
-                    <span class="matrix-tile dim"></span>
-                </div>
-            </div>
-
-            <div class="matrix-panel right">
-                <div class="matrix-column c3">
-                    <span class="matrix-tile dim"></span>
-                    <span class="matrix-tile module">
-                        <svg class="module-icon"><use href="#icon-delivery"></use></svg>
-                        <span class="module-label">交付</span>
-                    </span>
-                    <span class="matrix-tile blank"></span>
-                    <span class="matrix-tile" style="--alpha:.18"></span>
-                    <span class="matrix-tile dim"></span>
-                </div>
-                <div class="matrix-column c5">
-                    <span class="matrix-tile" style="--alpha:.20"></span>
-                    <span class="matrix-tile blank"></span>
-                    <span class="matrix-tile module">
-                        <svg class="module-icon"><use href="#icon-quality"></use></svg>
-                        <span class="module-label">质量</span>
-                    </span>
-                    <span class="matrix-tile dim"></span>
-                    <span class="matrix-tile" style="--alpha:.18"></span>
-                </div>
-                <div class="matrix-column c8">
-                    <span class="matrix-tile" style="--alpha:.18"></span>
-                    <span class="matrix-tile dim"></span>
-                    <span class="matrix-tile" style="--alpha:.26;--hi:.38;--mid:.29;--lo:.22"></span>
-                    <span class="matrix-tile blank"></span>
-                    <span class="matrix-tile dim"></span>
-                </div>
-                <div class="matrix-column c1">
-                    <span class="matrix-tile dim"></span>
-                    <span class="matrix-tile module">
-                        <svg class="module-icon"><use href="#icon-user"></use></svg>
-                        <span class="module-label">用户</span>
-                    </span>
-                    <span class="matrix-tile" style="--alpha:.22"></span>
-                    <span class="matrix-tile blank"></span>
-                    <span class="matrix-tile dim"></span>
-                </div>
-                <div class="matrix-column c7">
-                    <span class="matrix-tile blank"></span>
-                    <span class="matrix-tile" style="--alpha:.24"></span>
-                    <span class="matrix-tile dim"></span>
-                    <span class="matrix-tile" style="--alpha:.22"></span>
-                    <span class="matrix-tile dim"></span>
-                </div>
-                <div class="matrix-column c6">
-                    <span class="matrix-tile" style="--alpha:.26"></span>
-                    <span class="matrix-tile" style="--alpha:.20"></span>
-                    <span class="matrix-tile blank"></span>
-                    <span class="matrix-tile" style="--alpha:.32"></span>
-                    <span class="matrix-tile dim"></span>
-                </div>
-                <div class="matrix-column c9">
-                    <span class="matrix-tile dim"></span>
-                    <span class="matrix-tile" style="--alpha:.21"></span>
-                    <span class="matrix-tile blank"></span>
-                    <span class="matrix-tile" style="--alpha:.17"></span>
-                </div>
-                <div class="matrix-column c10">
-                    <span class="matrix-tile" style="--alpha:.16"></span>
-                    <span class="matrix-tile blank"></span>
-                    <span class="matrix-tile dim"></span>
-                    <span class="matrix-tile module">
-                        <svg class="module-icon"><use href="#icon-support"></use></svg>
-                        <span class="module-label">支持</span>
-                    </span>
-                    <span class="matrix-tile dim"></span>
-                </div>
-            </div>
+    <div class="ai-regions" aria-hidden="true">
+        <div class="ai-region matrix-region"></div>
+        <div class="ai-region bottom-code"></div>
+        <div class="ai-region network-pulse">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
-
-        <div class="energy-layer" aria-hidden="true">
-            <svg viewBox="0 0 1000 560" preserveAspectRatio="none">
+    </div>
+    <div class="bg-mini-icons" aria-hidden="true">
+        <div class="finance-curve">
+            <svg viewBox="0 0 210 138" aria-hidden="true">
                 <defs>
-                    <linearGradient id="energyStroke" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stop-color="#286fff" stop-opacity="0.18"/>
-                        <stop offset="46%" stop-color="#47d9ff" stop-opacity="0.72"/>
-                        <stop offset="100%" stop-color="#7b63ff" stop-opacity="0.46"/>
+                    <linearGradient id="moneyCurveGradient" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stop-color="#33d5ff" stop-opacity="0.16"/>
+                        <stop offset="42%" stop-color="#155eef" stop-opacity="0.72"/>
+                        <stop offset="100%" stop-color="#33d5ff" stop-opacity="0.28"/>
                     </linearGradient>
-                    <linearGradient id="pulseStroke" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stop-color="#5ee7ff" stop-opacity="0"/>
-                        <stop offset="44%" stop-color="#5ee7ff" stop-opacity="1"/>
-                        <stop offset="100%" stop-color="#8d72ff" stop-opacity="0"/>
-                    </linearGradient>
-                    <filter id="softGlow" x="-40%" y="-80%" width="180%" height="260%">
-                        <feGaussianBlur stdDeviation="2.2" result="blur"/>
-                        <feMerge>
-                            <feMergeNode in="blur"/>
-                            <feMergeNode in="SourceGraphic"/>
-                        </feMerge>
-                    </filter>
-                    <filter id="pulseGlow" x="-60%" y="-120%" width="220%" height="340%">
-                        <feGaussianBlur stdDeviation="3.2" result="blur"/>
-                        <feMerge>
-                            <feMergeNode in="blur"/>
-                            <feMergeNode in="SourceGraphic"/>
-                        </feMerge>
-                    </filter>
                 </defs>
-
-                <path class="energy-line" d="M 112 82 L 112 128 L 162 128 L 162 176 L 228 176 L 228 214 L 304 214 L 304 238 L 366 238"/>
-                <path class="energy-line" d="M 194 150 L 194 190 L 246 190 L 246 224 L 366 224"/>
-                <path class="energy-line secondary" d="M 74 238 L 138 238 L 138 286 L 220 286 L 220 310 L 366 310"/>
-                <path class="energy-line secondary" d="M 292 118 L 340 118 L 340 174 L 366 174"/>
-
-                <path class="energy-pulse" d="M 112 82 L 112 128 L 162 128 L 162 176 L 228 176 L 228 214 L 304 214 L 304 238 L 366 238"/>
-                <path class="energy-pulse delay-1" d="M 194 150 L 194 190 L 246 190 L 246 224 L 366 224"/>
-                <path class="energy-pulse delay-2" d="M 74 238 L 138 238 L 138 286 L 220 286 L 220 310 L 366 310"/>
-                <path class="energy-pulse delay-3" d="M 292 118 L 340 118 L 340 174 L 366 174"/>
-
-                <path class="energy-line" d="M 888 82 L 888 128 L 838 128 L 838 176 L 772 176 L 772 214 L 696 214 L 696 238 L 634 238"/>
-                <path class="energy-line" d="M 806 150 L 806 190 L 754 190 L 754 224 L 634 224"/>
-                <path class="energy-line secondary" d="M 926 238 L 862 238 L 862 286 L 780 286 L 780 310 L 634 310"/>
-                <path class="energy-line secondary" d="M 708 118 L 660 118 L 660 174 L 634 174"/>
-
-                <path class="energy-pulse" d="M 888 82 L 888 128 L 838 128 L 838 176 L 772 176 L 772 214 L 696 214 L 696 238 L 634 238"/>
-                <path class="energy-pulse delay-1" d="M 806 150 L 806 190 L 754 190 L 754 224 L 634 224"/>
-                <path class="energy-pulse delay-2" d="M 926 238 L 862 238 L 862 286 L 780 286 L 780 310 L 634 310"/>
-                <path class="energy-pulse delay-3" d="M 708 118 L 660 118 L 660 174 L 634 174"/>
-
-                <circle class="energy-node" cx="366" cy="238" r="2.1"/>
-                <circle class="energy-node" cx="366" cy="224" r="1.7"/>
-                <circle class="energy-node" cx="366" cy="310" r="1.7"/>
-                <circle class="energy-node" cx="366" cy="174" r="1.7"/>
-                <circle class="energy-node" cx="634" cy="238" r="2.1"/>
-                <circle class="energy-node" cx="634" cy="224" r="1.7"/>
-                <circle class="energy-node" cx="634" cy="310" r="1.7"/>
-                <circle class="energy-node" cx="634" cy="174" r="1.7"/>
+                <path id="moneyCurvePath" class="curve-line" d="M6 82 C32 24 58 112 88 58 C116 8 132 132 166 84 C184 58 194 62 204 68"/>
+            </svg>
+            <span class="money-token t1">$</span>
+            <span class="money-token t2">$</span>
+            <span class="money-token t3">$</span>
+        </div>
+        <div class="metric-cluster">
+            <span class="metric-bubble big">+88%</span>
+            <span class="metric-bubble mid">99.9%</span>
+            <span class="metric-bubble small">3.2s</span>
+        </div>
+        <div class="table-icon">
+            <svg viewBox="0 0 90 78" fill="none" aria-hidden="true">
+                <rect x="18" y="44" width="12" height="22" rx="5" fill="currentColor" opacity="0.32"/>
+                <rect x="38" y="30" width="12" height="36" rx="5" fill="currentColor" opacity="0.50"/>
+                <rect x="58" y="18" width="12" height="48" rx="5" fill="currentColor" opacity="0.70"/>
+                <path d="M12 68h64" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity="0.20"/>
             </svg>
         </div>
-
-        <section class="login-shell" aria-label="蓝鲸ERP平台登录">
-            <div class="login-card">
-                <header class="brand">
-                    <div class="brand-mark" aria-hidden="true"></div>
-                    <div>
-                        <h1 class="brand-title">蓝鲸ERP平台</h1>
-                        <p class="brand-subtitle">亚马逊卖家必备的专精智的系统</p>
+    </div>
+    <main class="shell">
+        <section class="left-panel" aria-label="蓝鲸跨境ERP业务流">
+            <div class="brand">
+                <div class="logo-row">
+                    <div class="logo-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 12h4l3-9 5 18 3-9h5"/>
+                        </svg>
                     </div>
-                </header>
+                    <span class="logo-text">蓝鲸跨境ERP</span>
+                </div>
+                <p class="brand-desc">一站式跨境业务协同入口</p>
+                <p class="brand-note">由企业认知、项目、AI、运营、交付、质量、用户和支持八个平台，组成跨境业务的一站式协同入口。</p>
+            </div>
 
-                <form class="form">
-                    <label class="field">
-                        <span class="sr-only">邮箱</span>
-                        <input type="email" value="user@example.com" autocomplete="username">
+            <div class="flow-area hub-flow">
+                <div class="flow-line" aria-hidden="true">
+                    <svg viewBox="0 0 680 440" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="hubGradient" x1="0" y1="0" x2="1" y2="0">
+                                <stop offset="0%" stop-color="#155eef" stop-opacity="0"/>
+                                <stop offset="42%" stop-color="#33d5ff"/>
+                                <stop offset="72%" stop-color="#155eef"/>
+                                <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+                            </linearGradient>
+                        </defs>
+                        <path class="hub-line" d="M120 66 C212 68 258 132 315 196" />
+                        <path class="hub-line" d="M158 166 C232 166 276 190 315 214" />
+                        <path class="hub-line" d="M158 286 C232 286 276 250 315 226" />
+                        <path class="hub-line" d="M120 386 C210 374 254 304 315 244" />
+                        <path class="hub-line" d="M560 66 C468 68 422 132 365 196" />
+                        <path class="hub-line" d="M522 166 C448 166 404 190 365 214" />
+                        <path class="hub-line" d="M522 286 C448 286 404 250 365 226" />
+                        <path class="hub-line" d="M560 386 C470 374 426 304 365 244" />
+                        <path class="hub-line energy" d="M120 66 C212 68 258 132 315 196" />
+                        <path class="hub-line energy" d="M158 166 C232 166 276 190 315 214" />
+                        <path class="hub-line energy" d="M158 286 C232 286 276 250 315 226" />
+                        <path class="hub-line energy" d="M120 386 C210 374 254 304 315 244" />
+                        <path class="hub-line energy" d="M560 66 C468 68 422 132 365 196" />
+                        <path class="hub-line energy" d="M522 166 C448 166 404 190 365 214" />
+                        <path class="hub-line energy" d="M522 286 C448 286 404 250 365 226" />
+                        <path class="hub-line energy" d="M560 386 C470 374 426 304 365 244" />
+                    </svg>
+                </div>
+
+                <div class="hub-node">
+                    <div>
+                        <div class="hub-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 7h16"/>
+                                <path d="M4 12h16"/>
+                                <path d="M4 17h10"/>
+                                <rect x="3" y="4" width="18" height="16" rx="3"/>
+                            </svg>
+                        </div>
+                        <div class="hub-title">ERP</div>
+                        <div class="hub-sub">业务中枢</div>
+                    </div>
+                </div>
+
+                <div class="node cognition">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 18h6"/>
+                            <path d="M10 22h4"/>
+                            <path d="M8.5 14.5A6 6 0 1 1 15.5 14.5c-.9.55-1.5 1.45-1.5 2.5h-4c0-1.05-.6-1.95-1.5-2.5Z"/>
+                        </svg>
+                    </div>
+                    <div class="node-copy"><b>认知平台</b><span>知识沉淀</span></div>
+                </div>
+                <div class="node project">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M8 6h13"/>
+                            <path d="M8 12h13"/>
+                            <path d="M8 18h13"/>
+                            <path d="M3 6h.01"/>
+                            <path d="M3 12h.01"/>
+                            <path d="M3 18h.01"/>
+                        </svg>
+                    </div>
+                    <div class="node-copy"><b>项目平台</b><span>项目协同</span></div>
+                </div>
+                <div class="node delivery">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14"/>
+                            <path d="m13 6 6 6-6 6"/>
+                            <path d="M5 6v12"/>
+                        </svg>
+                    </div>
+                    <div class="node-copy"><b>交付平台</b><span>履约推进</span></div>
+                </div>
+                <div class="node quality">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>
+                            <path d="m9 12 2 2 4-5"/>
+                        </svg>
+                    </div>
+                    <div class="node-copy"><b>质量平台</b><span>准入准出</span></div>
+                </div>
+                <div class="node ai">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2v3"/>
+                            <path d="M12 19v3"/>
+                            <path d="M4.93 4.93 7.05 7.05"/>
+                            <path d="M16.95 16.95 19.07 19.07"/>
+                            <path d="M2 12h3"/>
+                            <path d="M19 12h3"/>
+                            <circle cx="12" cy="12" r="4"/>
+                        </svg>
+                    </div>
+                    <div class="node-copy"><b>AI 平台</b><span>智能助手</span></div>
+                </div>
+                <div class="node ops">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 20V10"/>
+                            <path d="M10 20V4"/>
+                            <path d="M16 20v-7"/>
+                            <path d="M22 20H2"/>
+                        </svg>
+                    </div>
+                    <div class="node-copy"><b>运营平台</b><span>渠道作战</span></div>
+                </div>
+                <div class="node user">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-8 0v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </div>
+                    <div class="node-copy"><b>用户平台</b><span>体验关系</span></div>
+                </div>
+                <div class="node support">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+                            <path d="M21 19a2 2 0 0 1-2 2h-2v-7h4v5Z"/>
+                            <path d="M3 19a2 2 0 0 0 2 2h2v-7H3v5Z"/>
+                        </svg>
+                    </div>
+                    <div class="node-copy"><b>支持平台</b><span>后台职能</span></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="right-panel" aria-label="登录表单">
+            <div class="mobile-logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2 12h4l3-9 5 18 3-9h5"/>
+                    </svg>
+                </div>
+                <span class="logo-text">蓝鲸跨境ERP</span>
+            </div>
+
+            <div class="login-header">
+                <h2 class="login-title">欢迎登录</h2>
+                <p class="login-subtitle">登录您的账号以继续使用系统</p>
+            </div>
+
+            <form>
+                <div class="form-group">
+                    <label class="form-label" for="account">用户名 / 手机号码</label>
+                    <div class="input-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <input id="account" type="text" class="input-field" placeholder="请输入用户名或手机号" autocomplete="username" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">密码</label>
+                    <div class="input-wrapper">
+                        <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        <input id="password" type="password" class="input-field" placeholder="请输入密码" autocomplete="current-password" required>
+                        <button type="button" class="action-icon" aria-label="显示密码">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" class="checkbox">
+                        记住我
                     </label>
+                    <a href="#">忘记密码？</a>
+                </div>
 
-                    <label class="field">
-                        <span class="sr-only">密码</span>
-                        <input class="password" type="password" value="123456789" autocomplete="current-password">
-                    </label>
+                <button type="submit" class="btn-submit">登 录</button>
+            </form>
 
-                    <button class="login-button" type="button">登录</button>
-                </form>
-
-                <nav class="links" aria-label="账号操作">
-                    <a href="#">忘记密码?</a>
-                    <a href="#">注册</a>
-                </nav>
+            <div class="register-link">
+                还没有账号？ <a href="#">立即注册</a>
             </div>
         </section>
     </main>
