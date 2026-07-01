@@ -650,24 +650,41 @@
         /* 顶部 Logo */
         .brand-logo-top {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 10px;
             margin-bottom: auto; /* 推到顶部 */
             position: relative;
             z-index: 2;
         }
         .brand-logo-top .icon {
-            width: 32px; height: 32px;
+            width: 38px; height: 38px;
             background: var(--primary-gradient);
-            border-radius: 8px;
+            border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
             color: white;
+            flex: 0 0 auto;
+            box-shadow: 0 12px 28px rgba(37, 99, 235, 0.20);
+        }
+        .brand-logo-top .icon svg {
+            width: 22px !important;
+            height: 22px !important;
+        }
+        .brand-logo-top .brand-copy {
+            display: grid;
+            gap: 4px;
         }
         .brand-logo-top .text {
             font-size: 20px;
             font-weight: 700;
             color: var(--text-dark);
             letter-spacing: -0.5px;
+        }
+        .brand-logo-top .tagline {
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--text-muted);
+            letter-spacing: 0;
         }
 
         /* 居中表单区域 */
@@ -1023,8 +1040,8 @@
 
             <!-- 文本描述 -->
             <div class="text-content">
-                <h2>驱动 Govee 全球业务增长</h2>
-                <p>蓝鲸跨境ERP由企业认知、项目、AI、运营、交付、质量、用户和支持八个平台组成，赋能内部高效协同，提升跨境业务运营效率。</p>
+                <h2>驱动品牌全球业务增长</h2>
+                <p>由企业认知、项目、AI、运营、交付、质量、用户和支持八个平台，组成跨境业务的一站式协同入口。</p>
             </div>
 
             <!-- 轮播指示点 -->
@@ -1060,7 +1077,10 @@
                         <path d="M2 12h4l3-9 5 18 3-9h5"/>
                     </svg>
                 </div>
-                <span class="text">蓝鲸跨境ERP</span>
+                <div class="brand-copy">
+                    <span class="text">蓝鲸跨境ERP</span>
+                    <span class="tagline">一站式品牌出海精细化协同</span>
+                </div>
             </div>
 
             <!-- 居中表单 -->
