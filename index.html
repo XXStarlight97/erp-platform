@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>蓝鲸跨境ERP - 登录</title>
+    <title>蓝鲸ERP平台 - 登录</title>
     <style>
-        /* 基础重置与变量 */
         :root {
-            --bg-body: linear-gradient(135deg, #0ea66b 0%, #3b82f6 48%, #7c3aed 100%);
-            --panel-left-bg: linear-gradient(145deg, #0b132b 0%, #112240 50%, #0f172a 100%);
-            --panel-right-bg: linear-gradient(145deg, #fbfff8 0%, #effaf3 46%, #eef7ff 100%);
-            --primary: #2563eb;
-            --primary-gradient: linear-gradient(90deg, #10b981, #2563eb);
-            --text-dark: #0f172a;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
-            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --cyan: #46dcff;
+            --blue: #2f7cff;
+            --violet: #a85cff;
+            --text: #f5fbff;
+            --muted: #a9c5de;
+            --panel: rgba(3, 12, 28, 0.78);
+            --panel-deep: rgba(1, 7, 18, 0.84);
+            --line: rgba(111, 205, 255, 0.28);
+            --font: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
         }
 
         * {
@@ -24,1102 +23,825 @@
             padding: 0;
         }
 
+        html,
         body {
-            background:
-                radial-gradient(circle at 18% 18%, rgba(16, 185, 129, 0.78), transparent 34%),
-                radial-gradient(circle at 82% 86%, rgba(124, 58, 237, 0.74), transparent 38%),
-                var(--bg-body);
-            color: var(--text-dark);
-            font-family: var(--font-family);
+            min-height: 100%;
+        }
+
+        body {
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 32px;
-            overflow: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            inset: -20%;
-            background:
-                radial-gradient(circle at 70% 18%, rgba(255, 255, 255, 0.2), transparent 22%),
-                radial-gradient(circle at 24% 82%, rgba(255, 255, 255, 0.16), transparent 26%);
-            filter: blur(28px);
-            pointer-events: none;
-        }
-
-        a {
-            text-decoration: none;
-            color: var(--primary);
-            transition: color 0.3s;
-        }
-        a:hover {
-            color: #1d4ed8;
-        }
-
-        /* ---------------- 主容器 (左右分栏) ---------------- */
-        .main-container {
-            width: 100%;
-            max-width: 1200px;
-            height: 85vh;
-            min-height: 700px;
-            max-height: 850px;
-            background: rgba(255, 255, 255, 0.88);
-            border: 1px solid rgba(255, 255, 255, 0.82);
-            border-radius: 28px;
-            box-shadow: 0 34px 80px rgba(15, 23, 42, 0.26);
-            display: flex;
-            overflow: hidden; /* 裁剪圆角 */
-            padding: 8px;
-            position: relative;
-            z-index: 1;
-            backdrop-filter: blur(18px);
-        }
-
-        /* ---------------- 左侧视觉面板 (深色科技风) ---------------- */
-        .left-panel {
-            flex: 1;
-            background: var(--panel-left-bg);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            padding: 40px;
-            color: white;
-            border-radius: 21px 0 0 21px;
-        }
-
-        /* 背景装饰：微弱的网格线 */
-        .left-panel::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: 
-                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* 背景装饰：发光星点 (十字星) */
-        .star {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1;
-            animation: pulse-star 3s infinite alternate;
-        }
-        .star::before, .star::after {
-            content: '';
-            position: absolute;
-            background: linear-gradient(90deg, transparent, rgba(147, 197, 253, 0.8), transparent);
-        }
-        .star::before { width: 100%; height: 2px; }
-        .star::after { height: 100%; width: 2px; background: linear-gradient(180deg, transparent, rgba(147, 197, 253, 0.8), transparent); }
-        
-        .star-1 { top: 20%; right: 20%; transform: scale(1.5); }
-        .star-2 { bottom: 40%; left: 15%; transform: scale(1); animation-delay: 1s; }
-        .star-3 { top: 30%; left: 25%; transform: scale(0.8); animation-delay: 2s; }
-
-        @keyframes pulse-star {
-            0% { opacity: 0.3; transform: scale(0.8) rotate(0deg); }
-            100% { opacity: 1; transform: scale(1.2) rotate(45deg); }
-        }
-
-        /* 浮动 3D 视觉元素 */
-        .visual-showcase {
-            position: relative;
-            width: 100%;
-            height: 360px;
-            margin-bottom: 40px;
-            perspective: 1000px;
-            z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* 主浮动卡片 */
-        .floating-card {
-            position: absolute;
-            width: 340px;
-            height: 228px;
-            background: transparent;
-            border-radius: 16px;
-            box-shadow: none;
-            transform: rotateX(20deg) rotateY(-15deg) rotateZ(5deg);
-            animation: float-card 6s infinite alternate ease-in-out;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            text-align: center;
-            overflow: visible;
-            transform-style: preserve-3d;
-        }
-
-        .platform-slide {
-            position: absolute;
-            inset: 0;
             display: grid;
             place-items: center;
-            opacity: 0;
-            transform: translateX(54px) rotateY(-22deg) scale(0.96);
-            transform-origin: center left;
-            animation: platform-page 27s infinite cubic-bezier(0.65, 0, 0.35, 1);
-            backface-visibility: hidden;
-        }
-
-        .platform-slide:nth-child(1) {
-            --platform-gradient: linear-gradient(135deg, #3b82f6, #2563eb);
-            --platform-accent: rgba(59, 130, 246, 0.48);
-            --platform-soft: rgba(59, 130, 246, 0.18);
-            animation-delay: 0s;
-        }
-        .platform-slide:nth-child(2) {
-            --platform-gradient: linear-gradient(135deg, #06b6d4, #0e7490);
-            --platform-accent: rgba(6, 182, 212, 0.48);
-            --platform-soft: rgba(6, 182, 212, 0.18);
-            animation-delay: 3s;
-        }
-        .platform-slide:nth-child(3) {
-            --platform-gradient: linear-gradient(135deg, #f59e0b, #d97706);
-            --platform-accent: rgba(245, 158, 11, 0.5);
-            --platform-soft: rgba(245, 158, 11, 0.18);
-            animation-delay: 6s;
-        }
-        .platform-slide:nth-child(4) {
-            --platform-gradient: linear-gradient(135deg, #8b5cf6, #6d28d9);
-            --platform-accent: rgba(139, 92, 246, 0.48);
-            --platform-soft: rgba(139, 92, 246, 0.18);
-            animation-delay: 9s;
-        }
-        .platform-slide:nth-child(5) {
-            --platform-gradient: linear-gradient(135deg, #22c55e, #15803d);
-            --platform-accent: rgba(34, 197, 94, 0.46);
-            --platform-soft: rgba(34, 197, 94, 0.18);
-            animation-delay: 12s;
-        }
-        .platform-slide:nth-child(6) {
-            --platform-gradient: linear-gradient(135deg, #f97316, #c2410c);
-            --platform-accent: rgba(249, 115, 22, 0.48);
-            --platform-soft: rgba(249, 115, 22, 0.18);
-            animation-delay: 15s;
-        }
-        .platform-slide:nth-child(7) {
-            --platform-gradient: linear-gradient(135deg, #14b8a6, #0f766e);
-            --platform-accent: rgba(20, 184, 166, 0.48);
-            --platform-soft: rgba(20, 184, 166, 0.18);
-            animation-delay: 18s;
-        }
-        .platform-slide:nth-child(8) {
-            --platform-gradient: linear-gradient(135deg, #ec4899, #be185d);
-            --platform-accent: rgba(236, 72, 153, 0.46);
-            --platform-soft: rgba(236, 72, 153, 0.18);
-            animation-delay: 21s;
-        }
-        .platform-slide:nth-child(9) {
-            --platform-gradient: linear-gradient(135deg, #64748b, #334155);
-            --platform-accent: rgba(148, 163, 184, 0.5);
-            --platform-soft: rgba(148, 163, 184, 0.18);
-            animation-delay: 24s;
-        }
-
-        .platform-content {
-            width: 100%;
-            height: 100%;
-            padding: 18px 22px;
-            border-radius: 16px;
-            border: 1px solid rgba(147, 197, 253, 0.2);
-            background:
-                radial-gradient(circle at 26% 20%, var(--platform-soft), transparent 34%),
-                linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(12, 20, 38, 0.72));
-            backdrop-filter: blur(12px);
-            box-shadow:
-                0 22px 44px rgba(0, 0, 0, 0.36),
-                inset 0 0 24px rgba(59, 130, 246, 0.12);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .mini-window {
-            width: 100%;
-            height: 78px;
-            margin-top: 12px;
-            border-radius: 12px;
-            border: 1px solid rgba(147, 197, 253, 0.18);
-            background:
-                linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018)),
-                rgba(15, 23, 42, 0.38);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 10px 24px rgba(0, 0, 0, 0.16);
             overflow: hidden;
-            position: relative;
-            padding: 9px 10px 10px;
+            color: var(--text);
+            font-family: var(--font);
+            background: #02040b;
         }
 
-        .mini-top {
-            height: 9px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            margin-bottom: 7px;
-        }
-        .mini-top span {
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: rgba(226, 232, 240, 0.28);
-        }
-        .mini-top i {
-            display: block;
-            height: 4px;
-            width: 58px;
-            margin-left: auto;
-            border-radius: 999px;
-            background: rgba(226, 232, 240, 0.16);
-        }
-        .mini-body {
-            height: 48px;
-            display: grid;
-            gap: 6px;
-        }
-        .mini-line,
-        .mini-bar,
-        .mini-pill,
-        .mini-node {
-            display: block;
-            border-radius: 999px;
-            background: rgba(226, 232, 240, 0.24);
-        }
-        .mini-line {
-            height: 5px;
-        }
-        .mini-bar {
-            height: 7px;
-        }
-        .mini-pill {
-            height: 8px;
-        }
-        .mini-line.is-accent,
-        .mini-bar.is-accent,
-        .mini-pill.is-accent,
-        .mini-node.is-accent {
-            background: var(--platform-accent);
-            box-shadow: 0 0 14px var(--platform-soft);
-        }
-        .mini-erp .mini-body {
-            grid-template-columns: 58px 1fr 44px;
-            grid-template-rows: repeat(3, 1fr);
-            align-items: center;
-        }
-        .mini-erp .mini-line:nth-child(1) { width: 44px; }
-        .mini-erp .mini-line:nth-child(2) { width: 128px; }
-        .mini-erp .mini-line:nth-child(3) { width: 32px; }
-        .mini-erp .mini-line:nth-child(4) { width: 50px; opacity: 0.75; }
-        .mini-erp .mini-line:nth-child(5) { width: 104px; opacity: 0.65; }
-        .mini-erp .mini-line:nth-child(6) { width: 28px; opacity: 0.55; }
-        .mini-erp .mini-line:nth-child(7) { width: 38px; opacity: 0.5; }
-        .mini-erp .mini-line:nth-child(8) { width: 118px; opacity: 0.46; }
-        .mini-erp .mini-line:nth-child(9) { width: 36px; opacity: 0.4; }
-        .mini-cognition .mini-body {
-            position: relative;
-            display: block;
-        }
-        .mini-cognition .mini-node {
+        .sr-only {
             position: absolute;
-            width: 9px;
-            height: 9px;
-        }
-        .mini-cognition .mini-node:nth-child(1) { left: 18px; top: 18px; width: 12px; height: 12px; }
-        .mini-cognition .mini-node:nth-child(2) { left: 92px; top: 6px; }
-        .mini-cognition .mini-node:nth-child(3) { left: 150px; top: 27px; }
-        .mini-cognition .mini-node:nth-child(4) { left: 218px; top: 13px; }
-        .mini-cognition .mini-line {
-            position: absolute;
+            width: 1px;
             height: 1px;
-            transform-origin: left center;
-            background: rgba(147, 197, 253, 0.24);
-        }
-        .mini-cognition .mini-line:nth-child(5) { left: 30px; top: 23px; width: 70px; transform: rotate(-10deg); }
-        .mini-cognition .mini-line:nth-child(6) { left: 101px; top: 13px; width: 62px; transform: rotate(22deg); }
-        .mini-cognition .mini-line:nth-child(7) { left: 159px; top: 31px; width: 66px; transform: rotate(-14deg); }
-        .mini-project .mini-body {
-            grid-template-columns: 52px 1fr;
-            grid-template-rows: repeat(3, 1fr);
-            align-items: center;
-        }
-        .mini-project .mini-line { width: 36px; opacity: 0.55; }
-        .mini-project .mini-bar:nth-child(2) { width: 126px; }
-        .mini-project .mini-bar:nth-child(4) { width: 92px; margin-left: 28px; }
-        .mini-project .mini-bar:nth-child(6) { width: 152px; margin-left: 12px; opacity: 0.5; }
-        .mini-ai .mini-body {
-            grid-template-columns: 28px 1fr 34px;
-            grid-template-rows: repeat(3, 1fr);
-            align-items: center;
-        }
-        .mini-ai .mini-node { width: 18px; height: 18px; grid-row: span 2; }
-        .mini-ai .mini-pill:nth-child(2) { width: 116px; }
-        .mini-ai .mini-pill:nth-child(3) { width: 28px; height: 18px; border-radius: 7px; }
-        .mini-ai .mini-pill:nth-child(4) { width: 144px; opacity: 0.52; }
-        .mini-ai .mini-pill:nth-child(5) { width: 76px; opacity: 0.34; }
-        .mini-ops .mini-body {
-            grid-template-columns: repeat(6, 1fr);
-            align-items: end;
-        }
-        .mini-ops .mini-bar { width: 100%; border-radius: 5px 5px 2px 2px; }
-        .mini-ops .mini-bar:nth-child(1) { height: 16px; opacity: 0.42; }
-        .mini-ops .mini-bar:nth-child(2) { height: 26px; opacity: 0.5; }
-        .mini-ops .mini-bar:nth-child(3) { height: 34px; }
-        .mini-ops .mini-bar:nth-child(4) { height: 22px; opacity: 0.5; }
-        .mini-ops .mini-bar:nth-child(5) { height: 38px; }
-        .mini-ops .mini-bar:nth-child(6) { height: 29px; opacity: 0.55; }
-        .mini-delivery .mini-body {
-            position: relative;
-            display: block;
-        }
-        .mini-delivery .mini-line {
-            position: absolute;
-            left: 28px;
-            right: 28px;
-            top: 24px;
-            height: 2px;
-            background: linear-gradient(90deg, var(--platform-accent), rgba(226, 232, 240, 0.18));
-        }
-        .mini-delivery .mini-node {
-            position: absolute;
-            top: 18px;
-            width: 14px;
-            height: 14px;
-            border: 2px solid rgba(15, 23, 42, 0.55);
-        }
-        .mini-delivery .mini-node:nth-child(2) { left: 20px; }
-        .mini-delivery .mini-node:nth-child(3) { left: 86px; opacity: 0.78; }
-        .mini-delivery .mini-node:nth-child(4) { left: 152px; opacity: 0.58; }
-        .mini-delivery .mini-node:nth-child(5) { right: 20px; opacity: 0.42; }
-        .mini-quality .mini-body {
-            grid-template-columns: 16px 1fr 34px;
-            grid-template-rows: repeat(3, 1fr);
-            align-items: center;
-        }
-        .mini-quality .mini-node { width: 9px; height: 9px; border-radius: 3px; }
-        .mini-quality .mini-line:nth-child(2) { width: 132px; }
-        .mini-quality .mini-pill:nth-child(3) { width: 26px; height: 10px; }
-        .mini-quality .mini-line:nth-child(5) { width: 112px; opacity: 0.54; }
-        .mini-quality .mini-pill:nth-child(6) { width: 22px; height: 10px; opacity: 0.45; }
-        .mini-quality .mini-line:nth-child(8) { width: 148px; opacity: 0.42; }
-        .mini-user .mini-body {
-            grid-template-columns: repeat(3, 1fr);
-            align-items: end;
-        }
-        .mini-user .person {
-            height: 42px;
-            border-radius: 10px;
-            background:
-                radial-gradient(circle at 50% 28%, rgba(226, 232, 240, 0.55) 0 7px, transparent 8px),
-                radial-gradient(ellipse at 50% 86%, rgba(226, 232, 240, 0.2) 0 24px, transparent 25px);
-        }
-        .mini-user .person.is-accent {
-            background:
-                radial-gradient(circle at 50% 28%, var(--platform-accent) 0 7px, transparent 8px),
-                radial-gradient(ellipse at 50% 86%, rgba(236, 72, 153, 0.25) 0 24px, transparent 25px);
-        }
-        .mini-support .mini-body {
-            grid-template-columns: 22px 1fr 34px;
-            grid-template-rows: repeat(3, 1fr);
-            align-items: center;
-        }
-        .mini-support .ticket {
-            width: 14px;
-            height: 12px;
-            border-radius: 4px;
-            background: rgba(226, 232, 240, 0.28);
-        }
-        .mini-support .ticket.is-accent { background: var(--platform-accent); }
-        .mini-support .mini-line:nth-child(2) { width: 126px; }
-        .mini-support .mini-pill:nth-child(3) { width: 28px; height: 10px; }
-        .mini-support .mini-line:nth-child(5) { width: 104px; opacity: 0.5; }
-        .mini-support .mini-pill:nth-child(6) { width: 24px; height: 10px; opacity: 0.42; }
-        .mini-support .mini-line:nth-child(8) { width: 138px; opacity: 0.4; }
-
-        @keyframes platform-page {
-            0% {
-                opacity: 0;
-                transform: translateX(54px) rotateY(-22deg) scale(0.96);
-            }
-            1.8%, 9.8% {
-                opacity: 1;
-                transform: translateX(0) rotateY(0deg) scale(1);
-            }
-            11.11%, 100% {
-                opacity: 0;
-                transform: translateX(-58px) rotateY(18deg) scale(0.95);
-            }
-        }
-
-        /* 卡片层叠效果 (底部的假卡片) */
-        .floating-card::before, .floating-card::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 16px;
-            border: 1px solid rgba(147, 197, 253, 0.1);
-            background: rgba(15, 23, 42, 0.4);
-            z-index: -1;
-        }
-        .floating-card::before { transform: translateZ(-20px) translateY(10px); }
-        .floating-card::after { transform: translateZ(-40px) translateY(20px); opacity: 0.5; }
-
-        .card-logo {
-            width: 42px; height: 42px;
-            background: var(--platform-gradient, var(--primary-gradient));
-            border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 12px;
-            box-shadow: 0 0 22px var(--platform-accent, rgba(37, 99, 235, 0.5));
-        }
-        .card-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
-        .card-subtitle { font-size: 12px; color: #94a3b8; }
-        
-        /* 悬浮小标签 (Badges) */
-        .badge {
-            position: absolute;
-            background: rgba(30, 41, 59, 0.8);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            z-index: 20;
-        }
-        .badge-1 { top: 20%; left: 5%; animation: float-badge 5s infinite alternate ease-in-out; }
-        .badge-2 { bottom: 20%; right: 5%; animation: float-badge 4s infinite alternate-reverse ease-in-out; }
-
-        @keyframes float-card {
-            0% { transform: rotateX(20deg) rotateY(-15deg) rotateZ(5deg) translateY(0); }
-            100% { transform: rotateX(20deg) rotateY(-15deg) rotateZ(5deg) translateY(-20px); }
-        }
-        @keyframes float-badge {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-15px); }
-        }
-
-        /* 文本区域 */
-        .text-content {
-            text-align: center;
-            z-index: 10;
-            max-width: 80%;
-        }
-        .text-content h2 {
-            font-size: 28px;
-            font-weight: 600;
-            margin-bottom: 16px;
-            letter-spacing: 0.5px;
-        }
-        .text-content p {
-            font-size: 15px;
-            color: #94a3b8;
-            line-height: 1.6;
-            margin-bottom: 32px;
-        }
-
-        /* 轮播指示点 */
-        .carousel-dots {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 40px;
-        }
-        .dot {
-            width: 6px; height: 6px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            transition: all 0.3s;
-        }
-        .dot.active {
-            background: white;
-            box-shadow: 0 0 8px white;
-        }
-        .dot:nth-child(1) { animation: dot-switch 27s infinite 0s; }
-        .dot:nth-child(2) { animation: dot-switch 27s infinite 3s; }
-        .dot:nth-child(3) { animation: dot-switch 27s infinite 6s; }
-        .dot:nth-child(4) { animation: dot-switch 27s infinite 9s; }
-        .dot:nth-child(5) { animation: dot-switch 27s infinite 12s; }
-        .dot:nth-child(6) { animation: dot-switch 27s infinite 15s; }
-        .dot:nth-child(7) { animation: dot-switch 27s infinite 18s; }
-        .dot:nth-child(8) { animation: dot-switch 27s infinite 21s; }
-        .dot:nth-child(9) { animation: dot-switch 27s infinite 24s; }
-
-        @keyframes dot-switch {
-            0%, 9.8% {
-                width: 18px;
-                border-radius: 999px;
-                background: white;
-                box-shadow: 0 0 8px white;
-            }
-            11.11%, 100% {
-                width: 6px;
-                background: rgba(255, 255, 255, 0.2);
-                box-shadow: none;
-            }
-        }
-
-        /* 底部信任品牌 */
-        .trusted-brands {
-            text-align: center;
-            width: 100%;
-            z-index: 10;
-        }
-        .trusted-title {
-            font-size: 12px;
-            color: #64748b;
-            margin-bottom: 16px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .brand-logos {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            opacity: 0.6;
-            flex-wrap: wrap;
-        }
-        .brand-logos span {
-            font-size: 18px;
-            font-weight: 700;
-            font-family: 'Arial', sans-serif;
-            letter-spacing: -0.5px;
-        }
-
-        /* ---------------- 右侧表单面板 (参考图式浅色渐变) ---------------- */
-        .right-panel {
-            flex: 1;
-            padding: 48px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
+            padding: 0;
+            margin: -1px;
             overflow: hidden;
-            border-radius: 0 21px 21px 0;
-            background:
-                radial-gradient(circle at 14% 18%, rgba(34, 197, 94, 0.11), transparent 30%),
-                radial-gradient(circle at 86% 28%, rgba(59, 130, 246, 0.12), transparent 34%),
-                radial-gradient(circle at 18% 90%, rgba(147, 197, 253, 0.18), transparent 28%),
-                var(--panel-right-bg);
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
         }
 
-        .right-panel::before {
-            content: '';
+        .page {
+            position: relative;
+            width: 100vw;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            isolation: isolate;
+            padding: 32px;
+        }
+
+        .page::before {
+            content: "";
             position: absolute;
             inset: 0;
-            background:
-                linear-gradient(115deg, rgba(255, 255, 255, 0.62) 0%, transparent 45%),
-                radial-gradient(circle at 78% 76%, rgba(255, 255, 255, 0.54), transparent 30%);
-            pointer-events: none;
+            z-index: -4;
+            background: url("assets/login-cosmic-horizon-bg.png") center / cover no-repeat;
         }
 
-        .right-panel::after {
-            content: '';
+        .page::after {
+            content: "";
             position: absolute;
-            right: -120px;
-            bottom: -140px;
-            width: 340px;
-            height: 340px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.34);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: inset 0 0 60px rgba(59, 130, 246, 0.06);
+            inset: 0;
+            z-index: -3;
+            background:
+                radial-gradient(circle at 50% 45%, rgba(48, 120, 255, 0.12), transparent 34%),
+                radial-gradient(circle at 54% 55%, rgba(168, 92, 255, 0.10), transparent 42%),
+                linear-gradient(180deg, rgba(0, 2, 10, 0.24), rgba(0, 2, 10, 0.18) 42%, rgba(0, 2, 10, 0.08));
             pointer-events: none;
         }
 
-        /* 顶部 Logo */
-        .brand-logo-top {
+        .matrix-layer {
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .matrix-panel {
+            position: absolute;
+            top: 5vh;
+            bottom: 29vh;
+            display: flex;
+            align-items: flex-start;
+            gap: clamp(8px, 0.9vw, 14px);
+            opacity: 0.82;
+        }
+
+        .matrix-panel.left {
+            left: 4.5vw;
+            right: calc(50% + 250px);
+            justify-content: flex-end;
+        }
+
+        .matrix-panel.right {
+            left: calc(50% + 250px);
+            right: 4.5vw;
+            justify-content: flex-start;
+        }
+
+        .matrix-panel::before {
+            content: "";
+            position: absolute;
+            inset: -8vh -3vw -4vh;
+            background:
+                linear-gradient(90deg, transparent, rgba(38, 117, 255, 0.14), transparent),
+                radial-gradient(circle at 50% 32%, rgba(89, 91, 255, 0.18), transparent 54%);
+            filter: blur(18px);
+            opacity: 0.62;
+        }
+
+        .matrix-column {
+            position: relative;
+            width: clamp(34px, 3.2vw, 50px);
+            display: grid;
+            gap: clamp(12px, 1.45vw, 22px);
+        }
+
+        .matrix-column.c1 { margin-top: 1vh; }
+        .matrix-column.c2 { margin-top: 8vh; }
+        .matrix-column.c3 { margin-top: 3vh; }
+        .matrix-column.c4 { margin-top: 13vh; }
+        .matrix-column.c5 { margin-top: 6vh; }
+        .matrix-column.c6 { margin-top: 16vh; }
+        .matrix-column.c7 { margin-top: 10vh; }
+        .matrix-column.c8 { margin-top: 2vh; }
+        .matrix-column.c9 { margin-top: 12vh; }
+        .matrix-column.c10 { margin-top: 5vh; }
+
+        .matrix-tile {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 10px;
+            opacity: var(--alpha, 0.24);
+            background:
+                linear-gradient(145deg, rgba(82, 199, 255, var(--hi, 0.36)), rgba(43, 115, 255, var(--mid, 0.28)) 58%, rgba(112, 78, 255, var(--lo, 0.22)));
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.16),
+                0 0 20px rgba(48, 132, 255, 0.20);
+        }
+
+        .matrix-tile.hot {
+            opacity: 0.72;
+            background: linear-gradient(145deg, #65d7ff, #2f7cff 56%, #7561ff);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.30),
+                0 0 30px rgba(56, 139, 255, 0.50),
+                0 0 52px rgba(117, 97, 255, 0.22);
+        }
+
+        .matrix-tile.module {
+            position: relative;
+            display: grid;
+            place-items: center;
+            align-content: center;
+            gap: 3px;
+            opacity: 0.88;
+            color: rgba(204, 238, 255, 0.84);
+            background:
+                linear-gradient(145deg, rgba(28, 96, 214, 0.94), rgba(8, 38, 112, 0.92) 56%, rgba(42, 45, 144, 0.88));
+            box-shadow:
+                inset 0 1px 0 rgba(180, 225, 255, 0.22),
+                inset 0 -10px 18px rgba(2, 9, 38, 0.46),
+                0 0 26px rgba(35, 104, 235, 0.32);
+        }
+
+        .module-icon {
+            width: clamp(13px, 1.05vw, 16px);
+            height: clamp(13px, 1.05vw, 16px);
+            stroke: currentColor;
+            stroke-width: 1.8;
+            fill: none;
+            opacity: 0.92;
+            filter: drop-shadow(0 0 6px rgba(74, 204, 255, 0.32));
+        }
+
+        .module-label {
+            font-size: clamp(7px, 0.58vw, 9px);
+            line-height: 1;
+            font-weight: 700;
+            color: rgba(179, 229, 255, 0.78);
+            text-shadow: 0 0 8px rgba(47, 124, 255, 0.55);
+            letter-spacing: 0;
+            white-space: nowrap;
+        }
+
+        .matrix-tile.dim {
+            opacity: 0.14;
+            filter: saturate(0.85);
+        }
+
+        .matrix-tile.blank {
+            visibility: hidden;
+        }
+
+        .energy-layer {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .energy-layer svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .energy-line {
+            fill: none;
+            stroke: url("#energyStroke");
+            stroke-width: 1.35;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 0.34;
+            filter: url("#softGlow");
+        }
+
+        .energy-line.secondary {
+            opacity: 0.20;
+            stroke-width: 1;
+        }
+
+        .energy-pulse {
+            fill: none;
+            stroke: url("#pulseStroke");
+            stroke-width: 2.15;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 22 220;
+            stroke-dashoffset: 240;
+            opacity: 0.78;
+            filter: url("#pulseGlow");
+            animation: energy-flow 4.8s linear infinite;
+        }
+
+        .energy-pulse.delay-1 { animation-delay: -1.2s; }
+        .energy-pulse.delay-2 { animation-delay: -2.4s; }
+        .energy-pulse.delay-3 { animation-delay: -3.6s; }
+
+        .energy-node {
+            fill: rgba(83, 193, 255, 0.82);
+            filter: url("#pulseGlow");
+            opacity: 0.56;
+        }
+
+        @keyframes energy-flow {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .login-shell {
+            position: relative;
+            width: min(340px, calc(100vw - 40px));
+            padding: 2px;
+            border-radius: 22px;
+            background:
+                linear-gradient(135deg, rgba(48, 139, 255, 0.72), rgba(41, 91, 214, 0.36) 42%, rgba(111, 67, 255, 0.62));
+            box-shadow:
+                0 28px 82px rgba(0, 0, 0, 0.54),
+                0 0 62px rgba(40, 116, 255, 0.22),
+                0 0 34px rgba(104, 79, 255, 0.14);
+            transform: translateY(-9vh);
+        }
+
+        .login-shell::before {
+            content: "";
+            position: absolute;
+            inset: -24px;
+            z-index: -1;
+            border-radius: 34px;
+            background:
+                radial-gradient(circle at 14% 17%, rgba(48, 139, 255, 0.30), transparent 36%),
+                radial-gradient(circle at 88% 76%, rgba(111, 67, 255, 0.28), transparent 34%);
+            filter: blur(24px);
+            opacity: 0.76;
+        }
+
+        .login-card {
+            padding: 27px 23px 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background:
+                linear-gradient(180deg, rgba(5, 17, 42, 0.82), rgba(1, 7, 20, 0.90)),
+                radial-gradient(circle at 54% 100%, rgba(47, 124, 255, 0.18), transparent 50%),
+                radial-gradient(circle at 90% 0%, rgba(111, 67, 255, 0.13), transparent 36%);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.14),
+                inset 0 -46px 76px rgba(32, 106, 255, 0.11);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+
+        .brand {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: auto; /* 推到顶部 */
+            gap: 12px;
+            margin-bottom: 23px;
+        }
+
+        .brand-mark {
             position: relative;
-            z-index: 2;
-        }
-        .brand-logo-top .icon {
-            width: 32px; height: 32px;
-            background: var(--primary-gradient);
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            color: white;
-        }
-        .brand-logo-top .text {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-dark);
-            letter-spacing: -0.5px;
+            flex: 0 0 auto;
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #2378ff 4%, #35b7ff 58%, #6d43ff 100%);
+            box-shadow:
+                0 16px 38px rgba(35, 142, 255, 0.30),
+                0 0 38px rgba(90, 82, 255, 0.18),
+                inset 0 1px 0 rgba(255, 255, 255, 0.34);
         }
 
-        /* 居中表单区域 */
-        .form-wrapper {
-            max-width: 400px;
-            width: 100%;
-            margin: auto; /* 垂直居中 */
-            position: relative;
-            z-index: 2;
-        }
-
-        .form-header {
-            margin-bottom: 32px;
-            text-align: center;
-        }
-        .form-header h2 {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 8px;
-        }
-        .form-header p {
-            font-size: 14px;
-            color: var(--text-muted);
-        }
-
-        /* 输入框样式 */
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-label {
-            display: block;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-dark);
-            margin-bottom: 8px;
-        }
-        .input-wrapper {
-            position: relative;
-        }
-        .input-field {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 10px; /* 稍微小一点的圆角 */
-            font-size: 14px;
-            color: var(--text-dark);
-            background: rgba(255, 255, 255, 0.72);
-            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.045);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
-        }
-        .input-field::placeholder {
-            color: #94a3b8;
-        }
-        .input-field:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-        }
-
-        .action-icon {
+        .brand-mark::before {
+            content: "";
             position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
+            top: 9px;
+            left: 9px;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.93);
+            box-shadow: 0 0 18px rgba(255, 255, 255, 0.34);
         }
-        .action-icon:hover { color: var(--text-dark); }
 
-        /* 记住我 & 忘记密码 */
-        .form-options {
+        .brand-title {
+            font-size: clamp(19px, 1.9vw, 23px);
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: 0;
+            color: transparent;
+            background: linear-gradient(100deg, #6fa4ff, #368aff 56%, #8b6dff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            text-shadow: 0 0 24px rgba(55, 128, 255, 0.18);
+        }
+
+        .brand-subtitle {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: clamp(10px, 0.95vw, 12px);
+            line-height: 1.25;
+            font-weight: 800;
+            letter-spacing: 0;
+        }
+
+        .form {
+            display: grid;
+            gap: 16px;
+        }
+
+        .field {
+            position: relative;
+            display: flex;
+            align-items: center;
+            min-height: 40px;
+            padding: 0 13px;
+            border: 2px solid rgba(67, 151, 255, 0.24);
+            border-radius: 12px;
+            background: rgba(0, 6, 18, 0.72);
+            box-shadow:
+                inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+                0 0 0 rgba(70, 220, 255, 0);
+            transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+        }
+
+        .field:focus-within {
+            border-color: rgba(73, 151, 255, 0.76);
+            background: rgba(0, 9, 24, 0.82);
+            box-shadow: 0 0 0 5px rgba(73, 151, 255, 0.08);
+        }
+
+        .field input {
+            width: 100%;
+            min-width: 0;
+            border: 0;
+            outline: 0;
+            color: #ffffff;
+            background: transparent;
+            font: inherit;
+            font-size: clamp(11px, 1.05vw, 13px);
+            font-weight: 800;
+            letter-spacing: 0;
+        }
+
+        .field input::placeholder {
+            color: rgba(202, 227, 248, 0.50);
+        }
+
+        .password {
+            letter-spacing: 4px;
+        }
+
+        .login-button {
+            width: 100%;
+            min-height: 42px;
+            margin-top: 12px;
+            border: 0;
+            border-radius: 13px;
+            color: rgba(1, 15, 33, 0.94);
+            cursor: pointer;
+            background: linear-gradient(100deg, #39b9ff, #2f7cff 58%, #8066ff);
+            box-shadow:
+                0 18px 46px rgba(50, 132, 255, 0.32),
+                inset 0 1px 0 rgba(255, 255, 255, 0.28);
+            font: inherit;
+            font-size: clamp(11px, 1.1vw, 13px);
+            font-weight: 900;
+            letter-spacing: 8px;
+            text-indent: 8px;
+            transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
+        }
+
+        .login-button:hover {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+            box-shadow:
+                0 22px 58px rgba(50, 132, 255, 0.40),
+                0 0 30px rgba(128, 102, 255, 0.22),
+                inset 0 1px 0 rgba(255, 255, 255, 0.32);
+        }
+
+        .links {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 32px;
-            font-size: 13px;
-        }
-        .remember-me {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            color: var(--text-dark);
-            font-weight: 500;
-        }
-        .checkbox {
-            appearance: none;
-            width: 16px; height: 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            background: #ffffff;
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s;
-        }
-        .checkbox:checked {
-            background: var(--primary);
-            border-color: var(--primary);
-        }
-        .checkbox:checked::after {
-            content: '';
-            width: 4px; height: 8px;
-            border: solid white;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
-            margin-bottom: 2px;
-        }
-        .forgot-link {
-            font-weight: 500;
+            gap: 24px;
+            margin-top: 20px;
         }
 
-        /* 登录按钮 (胶囊形状) */
-        .btn-submit {
-            width: 100%;
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 30px; /* 胶囊形状 */
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 24px rgba(16, 185, 129, 0.24), 0 8px 20px rgba(37, 99, 235, 0.2);
-        }
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 14px 30px rgba(16, 185, 129, 0.26), 0 10px 24px rgba(37, 99, 235, 0.26);
+        .links a {
+            color: #9df2ff;
+            text-decoration: none;
+            font-size: clamp(10px, 1vw, 12px);
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: 0;
+            text-shadow: 0 0 22px rgba(70, 220, 255, 0.22);
+            transition: color .2s ease, text-shadow .2s ease;
         }
 
-        /* 底部注册链接 */
-        .register-link {
-            text-align: center;
-            margin-top: auto; /* 推到底部 */
-            font-size: 14px;
-            color: var(--text-muted);
-            position: relative;
-            z-index: 2;
-        }
-        .register-link a {
-            font-weight: 600;
-            text-decoration: underline;
-            text-underline-offset: 4px;
+        .links a:hover {
+            color: #d7fbff;
+            text-shadow: 0 0 26px rgba(70, 220, 255, 0.44);
         }
 
-        /* 响应式设计 */
-        @media (max-width: 900px) {
-            .main-container {
-                flex-direction: column;
-                height: auto;
-                max-height: none;
+        @media (max-width: 720px) {
+            .page {
+                padding: 18px;
             }
-            .left-panel {
-                display: none; /* 移动端隐藏左侧面板 */
+
+            .matrix-layer {
+                display: none;
             }
-            .right-panel {
-                padding: 32px 24px;
+
+            .energy-layer {
+                display: none;
             }
-            .brand-logo-top {
-                margin-bottom: 40px;
-                justify-content: center;
+
+            .login-shell {
+                width: min(310px, calc(100vw - 28px));
+                border-radius: 20px;
             }
-            .register-link {
-                margin-top: 40px;
+
+            .login-card {
+                min-height: auto;
+                padding: 20px 18px 18px;
+                border-radius: 18px;
+            }
+
+            .brand {
+                align-items: flex-start;
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+
+            .brand-mark {
+                width: 34px;
+                height: 34px;
+                border-radius: 11px;
+            }
+
+            .brand-mark::before {
+                top: 8px;
+                left: 8px;
+                width: 9px;
+                height: 9px;
+            }
+
+            .brand-title {
+                font-size: 21px;
+            }
+
+            .brand-subtitle {
+                margin-top: 8px;
+                font-size: 11px;
+                white-space: nowrap;
+            }
+
+            .form {
+                gap: 12px;
+            }
+
+            .field {
+                min-height: 38px;
+                padding: 0 13px;
+                border-radius: 12px;
+            }
+
+            .field input {
+                font-size: 12px;
+            }
+
+            .login-button {
+                min-height: 38px;
+                margin-top: 8px;
+                border-radius: 12px;
+                font-size: 13px;
+                letter-spacing: 8px;
+                text-indent: 8px;
+            }
+
+            .links {
+                margin-top: 15px;
+            }
+
+            .links a {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-height: 700px) and (min-width: 721px) {
+            .login-card {
+                padding: 20px 25px 19px;
+            }
+
+            .brand {
+                margin-bottom: 16px;
+            }
+
+            .form {
+                gap: 11px;
+            }
+
+            .field {
+                min-height: 38px;
+            }
+
+            .login-button {
+                min-height: 40px;
+                margin-top: 9px;
+            }
+
+            .links {
+                margin-top: 14px;
             }
         }
     </style>
 </head>
 <body>
-
-    <div class="main-container">
-        
-        <!-- 左侧视觉面板 (深色) -->
-        <div class="left-panel">
-            <!-- 闪烁的十字星 -->
-            <div class="star star-1"></div>
-            <div class="star star-2"></div>
-            <div class="star star-3"></div>
-
-            <!-- 浮动 3D 视觉展示 -->
-            <div class="visual-showcase">
-                <!-- 悬浮标签 -->
-                <div class="badge badge-1">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                    智能数据分析
+    <svg class="sr-only" aria-hidden="true" focusable="false">
+        <symbol id="icon-cognition" viewBox="0 0 24 24">
+            <path d="M5 15c1.8-4.2 4.2-6.3 7-6.3s5.2 2.1 7 6.3c-1.8 2.5-4.2 3.8-7 3.8S6.8 17.5 5 15z"/>
+            <path d="M12 11.5a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
+        </symbol>
+        <symbol id="icon-project" viewBox="0 0 24 24">
+            <path d="M7 4.5h8.5L19 8v11.5H7z"/>
+            <path d="M15.5 4.5V8H19M10 11h6M10 15h5"/>
+        </symbol>
+        <symbol id="icon-ai" viewBox="0 0 24 24">
+            <path d="M12 4.5 13.8 9l4.7 1.8-4.7 1.8L12 17l-1.8-4.4-4.7-1.8L10.2 9z"/>
+            <path d="M18 15.5 18.8 18l2.2.8-2.2.8L18 22l-.8-2.4-2.2-.8 2.2-.8z"/>
+        </symbol>
+        <symbol id="icon-operation" viewBox="0 0 24 24">
+            <path d="M5 13h3.5l7.5 4V7l-7.5 4H5z"/>
+            <path d="M8.5 13.2 10 19M18 10.5c1.1.8 1.6 2.2 1.2 3.5"/>
+        </symbol>
+        <symbol id="icon-delivery" viewBox="0 0 24 24">
+            <path d="M4.5 8.5 12 4l7.5 4.5v7L12 20l-7.5-4.5z"/>
+            <path d="M4.8 8.7 12 13l7.2-4.3M12 13v6.6"/>
+        </symbol>
+        <symbol id="icon-quality" viewBox="0 0 24 24">
+            <path d="M12 4.5 18.5 7v5.2c0 3.6-2.5 6.5-6.5 7.8-4-1.3-6.5-4.2-6.5-7.8V7z"/>
+            <path d="m9 12.5 2 2 4-4"/>
+        </symbol>
+        <symbol id="icon-user" viewBox="0 0 24 24">
+            <path d="M12 11.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+            <path d="M5.5 20c.8-3.7 3-5.5 6.5-5.5s5.7 1.8 6.5 5.5"/>
+        </symbol>
+        <symbol id="icon-support" viewBox="0 0 24 24">
+            <path d="M5 13v-1a7 7 0 0 1 14 0v1"/>
+            <path d="M5 13.5h3v4H6.5A1.5 1.5 0 0 1 5 16zM19 13.5h-3v4h1.5A1.5 1.5 0 0 0 19 16z"/>
+            <path d="M16 17.5c-.8 1.5-2 2.2-4 2.2"/>
+        </symbol>
+    </svg>
+    <main class="page">
+        <div class="matrix-layer" aria-hidden="true">
+            <div class="matrix-panel left">
+                <div class="matrix-column c1">
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile module">
+                        <svg class="module-icon"><use href="#icon-cognition"></use></svg>
+                        <span class="module-label">认知</span>
+                    </span>
+                    <span class="matrix-tile" style="--alpha:.34;--hi:.42;--mid:.30;--lo:.22"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile" style="--alpha:.26"></span>
+                    <span class="matrix-tile dim"></span>
                 </div>
-                <div class="badge badge-2">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
-                    自动化工作流
+                <div class="matrix-column c2">
+                    <span class="matrix-tile" style="--alpha:.20"></span>
+                    <span class="matrix-tile" style="--alpha:.38;--hi:.44;--mid:.32;--lo:.26"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile" style="--alpha:.30"></span>
                 </div>
-
-                <!-- 核心 3D 卡片 -->
-                <div class="floating-card">
-                    <div class="platform-slide">
-                        <div class="platform-content">
-                            <div class="card-logo">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px; height:24px; color:white;">
-                                    <path d="M2 12h4l3-9 5 18 3-9h5"/>
-                                </svg>
-                            </div>
-                            <div class="card-title">蓝鲸跨境ERP</div>
-                            <div class="card-subtitle">全域平台入口与业务中枢</div>
-                            <div class="mini-window mini-erp">
-                                <div class="mini-top"><span></span><span></span><span></span><i></i></div>
-                                <div class="mini-body">
-                                    <b class="mini-line"></b><b class="mini-line is-accent"></b><b class="mini-line"></b>
-                                    <b class="mini-line"></b><b class="mini-line"></b><b class="mini-line"></b>
-                                    <b class="mini-line"></b><b class="mini-line"></b><b class="mini-line"></b>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="platform-slide">
-                        <div class="platform-content">
-                            <div class="card-logo">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px; height:24px; color:white;"><path d="M12 5a7 7 0 0 0-7 7c0 2.5 1.4 4.7 3.5 5.9V20h7v-2.1A6.98 6.98 0 0 0 12 5z"/><path d="M9 20h6"/><path d="M10 12h4"/></svg>
-                            </div>
-                            <div class="card-title">认知平台</div>
-                            <div class="card-subtitle">沉淀企业知识与业务洞察</div>
-                            <div class="mini-window mini-cognition">
-                                <div class="mini-top"><span></span><span></span><span></span><i></i></div>
-                                <div class="mini-body">
-                                    <b class="mini-node is-accent"></b><b class="mini-node"></b><b class="mini-node"></b><b class="mini-node"></b>
-                                    <b class="mini-line"></b><b class="mini-line"></b><b class="mini-line"></b>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="platform-slide">
-                        <div class="platform-content">
-                            <div class="card-logo">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px; height:24px; color:white;"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4"/><path d="M16 2v4"/><path d="M3 10h18"/><path d="M8 15h4"/></svg>
-                            </div>
-                            <div class="card-title">项目平台</div>
-                            <div class="card-subtitle">统一项目节奏与跨团队协作</div>
-                            <div class="mini-window mini-project">
-                                <div class="mini-top"><span></span><span></span><span></span><i></i></div>
-                                <div class="mini-body">
-                                    <b class="mini-line"></b><b class="mini-bar is-accent"></b>
-                                    <b class="mini-line"></b><b class="mini-bar"></b>
-                                    <b class="mini-line"></b><b class="mini-bar"></b>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="platform-slide">
-                        <div class="platform-content">
-                            <div class="card-logo">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px; height:24px; color:white;"><path d="M12 2v4"/><path d="M12 18v4"/><path d="m4.93 4.93 2.83 2.83"/><path d="m16.24 16.24 2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><circle cx="12" cy="12" r="4"/></svg>
-                            </div>
-                            <div class="card-title">AI平台</div>
-                            <div class="card-subtitle">智能助手驱动业务自动化</div>
-                            <div class="mini-window mini-ai">
-                                <div class="mini-top"><span></span><span></span><span></span><i></i></div>
-                                <div class="mini-body">
-                                    <b class="mini-node is-accent"></b><b class="mini-pill"></b><b class="mini-pill is-accent"></b>
-                                    <b class="mini-pill"></b><b class="mini-pill"></b>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="platform-slide">
-                        <div class="platform-content">
-                            <div class="card-logo">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px; height:24px; color:white;"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/><path d="M14 9h5v5"/></svg>
-                            </div>
-                            <div class="card-title">运营平台</div>
-                            <div class="card-subtitle">监控经营指标与增长动作</div>
-                            <div class="mini-window mini-ops">
-                                <div class="mini-top"><span></span><span></span><span></span><i></i></div>
-                                <div class="mini-body">
-                                    <b class="mini-bar"></b><b class="mini-bar"></b><b class="mini-bar is-accent"></b>
-                                    <b class="mini-bar"></b><b class="mini-bar is-accent"></b><b class="mini-bar"></b>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="platform-slide">
-                        <div class="platform-content">
-                            <div class="card-logo">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px; height:24px; color:white;"><path d="M16 3h5v5"/><path d="M8 21H3v-5"/><path d="m21 3-7 7"/><path d="m3 21 7-7"/><path d="M12 7h1"/><path d="M11 17h1"/></svg>
-                            </div>
-                            <div class="card-title">交付平台</div>
-                            <div class="card-subtitle">串联履约链路与交付进度</div>
-                            <div class="mini-window mini-delivery">
-                                <div class="mini-top"><span></span><span></span><span></span><i></i></div>
-                                <div class="mini-body">
-                                    <b class="mini-line"></b><b class="mini-node is-accent"></b><b class="mini-node"></b><b class="mini-node"></b><b class="mini-node"></b>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="platform-slide">
-                        <div class="platform-content">
-                            <div class="card-logo">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px; height:24px; color:white;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-                            </div>
-                            <div class="card-title">质量平台</div>
-                            <div class="card-subtitle">保障流程规范与结果可靠</div>
-                            <div class="mini-window mini-quality">
-                                <div class="mini-top"><span></span><span></span><span></span><i></i></div>
-                                <div class="mini-body">
-                                    <b class="mini-node is-accent"></b><b class="mini-line"></b><b class="mini-pill is-accent"></b>
-                                    <b class="mini-node"></b><b class="mini-line"></b><b class="mini-pill"></b>
-                                    <b class="mini-node"></b><b class="mini-line"></b><b class="mini-pill"></b>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="platform-slide">
-                        <div class="platform-content">
-                            <div class="card-logo">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px; height:24px; color:white;"><path d="M16 21v-2a4 4 0 0 0-8 0v2"/><circle cx="12" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M2 21v-2a4 4 0 0 1 3-3.87"/></svg>
-                            </div>
-                            <div class="card-title">用户平台</div>
-                            <div class="card-subtitle">统一用户触点与服务画像</div>
-                            <div class="mini-window mini-user">
-                                <div class="mini-top"><span></span><span></span><span></span><i></i></div>
-                                <div class="mini-body">
-                                    <b class="person is-accent"></b><b class="person"></b><b class="person"></b>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="platform-slide">
-                        <div class="platform-content">
-                            <div class="card-logo">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px; height:24px; color:white;"><path d="M21 15a4 4 0 0 1-4 4H7l-4 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/><path d="M8 9h8"/><path d="M8 13h5"/></svg>
-                            </div>
-                            <div class="card-title">支持平台</div>
-                            <div class="card-subtitle">闭环问题响应与业务支撑</div>
-                            <div class="mini-window mini-support">
-                                <div class="mini-top"><span></span><span></span><span></span><i></i></div>
-                                <div class="mini-body">
-                                    <b class="ticket is-accent"></b><b class="mini-line"></b><b class="mini-pill is-accent"></b>
-                                    <b class="ticket"></b><b class="mini-line"></b><b class="mini-pill"></b>
-                                    <b class="ticket"></b><b class="mini-line"></b><b class="mini-pill"></b>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="matrix-column c3">
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile module">
+                        <svg class="module-icon"><use href="#icon-project"></use></svg>
+                        <span class="module-label">项目</span>
+                    </span>
+                    <span class="matrix-tile" style="--alpha:.18"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile dim"></span>
+                </div>
+                <div class="matrix-column c7">
+                    <span class="matrix-tile" style="--alpha:.16"></span>
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile" style="--alpha:.28;--hi:.38;--mid:.28;--lo:.22"></span>
+                    <span class="matrix-tile dim"></span>
+                </div>
+                <div class="matrix-column c4">
+                    <span class="matrix-tile module">
+                        <svg class="module-icon"><use href="#icon-ai"></use></svg>
+                        <span class="module-label">AI</span>
+                    </span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile" style="--alpha:.22"></span>
+                </div>
+                <div class="matrix-column c8">
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile" style="--alpha:.22"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile module">
+                        <svg class="module-icon"><use href="#icon-operation"></use></svg>
+                        <span class="module-label">运营</span>
+                    </span>
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile blank"></span>
+                </div>
+                <div class="matrix-column c9">
+                    <span class="matrix-tile" style="--alpha:.18"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile" style="--alpha:.23"></span>
+                </div>
+                <div class="matrix-column c10">
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile" style="--alpha:.20"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile" style="--alpha:.16"></span>
+                    <span class="matrix-tile dim"></span>
                 </div>
             </div>
 
-            <!-- 文本描述 -->
-            <div class="text-content">
-                <h2>驱动 Govee 全球业务增长</h2>
-                <p>蓝鲸跨境ERP由企业认知、项目、AI、运营、交付、质量、用户和支持八个平台组成，赋能内部高效协同，提升跨境业务运营效率。</p>
-            </div>
-
-            <!-- 轮播指示点 -->
-            <div class="carousel-dots">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-            </div>
-
-            <!-- 底部业务渠道 -->
-            <div class="trusted-brands">
-                <div class="trusted-title">赋能 Govee 全渠道业务生态</div>
-                <div class="brand-logos">
-                    <span>Govee</span>
-                    <span>Govee Life</span>
+            <div class="matrix-panel right">
+                <div class="matrix-column c3">
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile module">
+                        <svg class="module-icon"><use href="#icon-delivery"></use></svg>
+                        <span class="module-label">交付</span>
+                    </span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile" style="--alpha:.18"></span>
+                    <span class="matrix-tile dim"></span>
+                </div>
+                <div class="matrix-column c5">
+                    <span class="matrix-tile" style="--alpha:.20"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile module">
+                        <svg class="module-icon"><use href="#icon-quality"></use></svg>
+                        <span class="module-label">质量</span>
+                    </span>
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile" style="--alpha:.18"></span>
+                </div>
+                <div class="matrix-column c8">
+                    <span class="matrix-tile" style="--alpha:.18"></span>
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile" style="--alpha:.26;--hi:.38;--mid:.29;--lo:.22"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile dim"></span>
+                </div>
+                <div class="matrix-column c1">
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile module">
+                        <svg class="module-icon"><use href="#icon-user"></use></svg>
+                        <span class="module-label">用户</span>
+                    </span>
+                    <span class="matrix-tile" style="--alpha:.22"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile dim"></span>
+                </div>
+                <div class="matrix-column c7">
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile" style="--alpha:.24"></span>
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile" style="--alpha:.22"></span>
+                    <span class="matrix-tile dim"></span>
+                </div>
+                <div class="matrix-column c6">
+                    <span class="matrix-tile" style="--alpha:.26"></span>
+                    <span class="matrix-tile" style="--alpha:.20"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile" style="--alpha:.32"></span>
+                    <span class="matrix-tile dim"></span>
+                </div>
+                <div class="matrix-column c9">
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile" style="--alpha:.21"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile" style="--alpha:.17"></span>
+                </div>
+                <div class="matrix-column c10">
+                    <span class="matrix-tile" style="--alpha:.16"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile module">
+                        <svg class="module-icon"><use href="#icon-support"></use></svg>
+                        <span class="module-label">支持</span>
+                    </span>
+                    <span class="matrix-tile dim"></span>
                 </div>
             </div>
         </div>
 
-        <!-- 右侧表单面板 (浅色) -->
-        <div class="right-panel">
-            
-            <!-- 顶部 Logo -->
-            <div class="brand-logo-top">
-                <div class="icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;">
-                        <path d="M2 12h4l3-9 5 18 3-9h5"/>
-                    </svg>
-                </div>
-                <span class="text">蓝鲸跨境ERP</span>
-            </div>
+        <div class="energy-layer" aria-hidden="true">
+            <svg viewBox="0 0 1000 560" preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="energyStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#286fff" stop-opacity="0.18"/>
+                        <stop offset="46%" stop-color="#47d9ff" stop-opacity="0.72"/>
+                        <stop offset="100%" stop-color="#7b63ff" stop-opacity="0.46"/>
+                    </linearGradient>
+                    <linearGradient id="pulseStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#5ee7ff" stop-opacity="0"/>
+                        <stop offset="44%" stop-color="#5ee7ff" stop-opacity="1"/>
+                        <stop offset="100%" stop-color="#8d72ff" stop-opacity="0"/>
+                    </linearGradient>
+                    <filter id="softGlow" x="-40%" y="-80%" width="180%" height="260%">
+                        <feGaussianBlur stdDeviation="2.2" result="blur"/>
+                        <feMerge>
+                            <feMergeNode in="blur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                    <filter id="pulseGlow" x="-60%" y="-120%" width="220%" height="340%">
+                        <feGaussianBlur stdDeviation="3.2" result="blur"/>
+                        <feMerge>
+                            <feMergeNode in="blur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
 
-            <!-- 居中表单 -->
-            <div class="form-wrapper">
-                <div class="form-header">
-                    <h2>欢迎登录</h2>
-                    <p>登录您的账号以继续使用系统</p>
-                </div>
+                <path class="energy-line" d="M 112 82 L 112 128 L 162 128 L 162 176 L 228 176 L 228 214 L 304 214 L 304 238 L 366 238"/>
+                <path class="energy-line" d="M 194 150 L 194 190 L 246 190 L 246 224 L 366 224"/>
+                <path class="energy-line secondary" d="M 74 238 L 138 238 L 138 286 L 220 286 L 220 310 L 366 310"/>
+                <path class="energy-line secondary" d="M 292 118 L 340 118 L 340 174 L 366 174"/>
 
-                <form>
-                    <!-- 用户名/手机号 -->
-                    <div class="form-group">
-                        <label class="form-label">用户名 / 手机号码</label>
-                        <div class="input-wrapper">
-                            <input type="text" class="input-field" placeholder="请输入用户名或手机号" required>
-                        </div>
+                <path class="energy-pulse" d="M 112 82 L 112 128 L 162 128 L 162 176 L 228 176 L 228 214 L 304 214 L 304 238 L 366 238"/>
+                <path class="energy-pulse delay-1" d="M 194 150 L 194 190 L 246 190 L 246 224 L 366 224"/>
+                <path class="energy-pulse delay-2" d="M 74 238 L 138 238 L 138 286 L 220 286 L 220 310 L 366 310"/>
+                <path class="energy-pulse delay-3" d="M 292 118 L 340 118 L 340 174 L 366 174"/>
+
+                <path class="energy-line" d="M 888 82 L 888 128 L 838 128 L 838 176 L 772 176 L 772 214 L 696 214 L 696 238 L 634 238"/>
+                <path class="energy-line" d="M 806 150 L 806 190 L 754 190 L 754 224 L 634 224"/>
+                <path class="energy-line secondary" d="M 926 238 L 862 238 L 862 286 L 780 286 L 780 310 L 634 310"/>
+                <path class="energy-line secondary" d="M 708 118 L 660 118 L 660 174 L 634 174"/>
+
+                <path class="energy-pulse" d="M 888 82 L 888 128 L 838 128 L 838 176 L 772 176 L 772 214 L 696 214 L 696 238 L 634 238"/>
+                <path class="energy-pulse delay-1" d="M 806 150 L 806 190 L 754 190 L 754 224 L 634 224"/>
+                <path class="energy-pulse delay-2" d="M 926 238 L 862 238 L 862 286 L 780 286 L 780 310 L 634 310"/>
+                <path class="energy-pulse delay-3" d="M 708 118 L 660 118 L 660 174 L 634 174"/>
+
+                <circle class="energy-node" cx="366" cy="238" r="2.1"/>
+                <circle class="energy-node" cx="366" cy="224" r="1.7"/>
+                <circle class="energy-node" cx="366" cy="310" r="1.7"/>
+                <circle class="energy-node" cx="366" cy="174" r="1.7"/>
+                <circle class="energy-node" cx="634" cy="238" r="2.1"/>
+                <circle class="energy-node" cx="634" cy="224" r="1.7"/>
+                <circle class="energy-node" cx="634" cy="310" r="1.7"/>
+                <circle class="energy-node" cx="634" cy="174" r="1.7"/>
+            </svg>
+        </div>
+
+        <section class="login-shell" aria-label="蓝鲸ERP平台登录">
+            <div class="login-card">
+                <header class="brand">
+                    <div class="brand-mark" aria-hidden="true"></div>
+                    <div>
+                        <h1 class="brand-title">蓝鲸ERP平台</h1>
+                        <p class="brand-subtitle">亚马逊卖家必备的专精智的系统</p>
                     </div>
+                </header>
 
-                    <!-- 密码 -->
-                    <div class="form-group">
-                        <label class="form-label">密码</label>
-                        <div class="input-wrapper">
-                            <input type="password" class="input-field" placeholder="请输入密码" required>
-                            <button type="button" class="action-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;">
-                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                                    <line x1="1" y1="1" x2="23" y2="23"></line>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
+                <form class="form">
+                    <label class="field">
+                        <span class="sr-only">邮箱</span>
+                        <input type="email" value="user@example.com" autocomplete="username">
+                    </label>
 
-                    <!-- 记住我 & 忘记密码 -->
-                    <div class="form-options">
-                        <label class="remember-me">
-                            <input type="checkbox" class="checkbox">
-                            记住我
-                        </label>
-                        <a href="#" class="forgot-link">忘记密码？</a>
-                    </div>
+                    <label class="field">
+                        <span class="sr-only">密码</span>
+                        <input class="password" type="password" value="123456789" autocomplete="current-password">
+                    </label>
 
-                    <!-- 登录按钮 -->
-                    <button type="submit" class="btn-submit">
-                        登 录
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </button>
+                    <button class="login-button" type="button">登录</button>
                 </form>
+
+                <nav class="links" aria-label="账号操作">
+                    <a href="#">忘记密码?</a>
+                    <a href="#">注册</a>
+                </nav>
             </div>
-
-            <!-- 底部注册链接 -->
-            <div class="register-link">
-                还没有账号？ <a href="#">立即注册</a>
-            </div>
-
-        </div>
-    </div>
-
+        </section>
+    </main>
 </body>
 </html>
