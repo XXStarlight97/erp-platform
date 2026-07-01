@@ -308,44 +308,43 @@
 
         .brand {
             display: grid;
-            grid-template-columns: 54px 1fr;
+            grid-template-columns: 46px 1fr;
             align-items: center;
             column-gap: 14px;
-            row-gap: 8px;
+            row-gap: 10px;
             margin-bottom: 27px;
         }
 
         .brand > div:not(.brand-mark) {
-            display: contents;
+            min-width: 0;
         }
 
         .brand-mark {
             position: relative;
             flex: 0 0 auto;
-            width: 54px;
-            height: 54px;
-            border-radius: 16px;
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
             background: linear-gradient(135deg, #2378ff 4%, #35b7ff 58%, #6d43ff 100%);
             box-shadow:
                 0 16px 38px rgba(35, 142, 255, 0.30),
                 0 0 38px rgba(90, 82, 255, 0.18),
                 inset 0 1px 0 rgba(255, 255, 255, 0.34);
+            transform: translateY(3px);
         }
 
-        .brand-mark::before {
-            content: "";
+        .brand-mark svg {
             position: absolute;
-            top: 13px;
-            left: 13px;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.93);
-            box-shadow: 0 0 18px rgba(255, 255, 255, 0.34);
+            inset: 50% auto auto 50%;
+            width: 28px;
+            height: 28px;
+            color: rgba(255, 255, 255, 0.96);
+            filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.26));
+            transform: translate(-50%, -50%);
         }
 
         .brand-title {
-            font-size: clamp(22px, 2.2vw, 27px);
+            font-size: clamp(20px, 2vw, 24px);
             line-height: 1;
             font-weight: 900;
             letter-spacing: 0;
@@ -357,10 +356,9 @@
         }
 
         .brand-subtitle {
-            grid-column: 1 / -1;
-            margin-top: 1px;
+            margin-top: 8px;
             color: var(--muted);
-            font-size: clamp(13px, 1.12vw, 15px);
+            font-size: clamp(12px, 1.02vw, 13.5px);
             line-height: 1.35;
             font-weight: 500;
             letter-spacing: 0;
@@ -368,7 +366,7 @@
 
         .brand-note {
             grid-column: 1 / -1;
-            margin-top: 0;
+            margin-top: 2px;
             max-width: 286px;
             color: rgba(169, 197, 222, 0.78);
             font-size: clamp(10px, 0.85vw, 11.5px);
@@ -502,31 +500,29 @@
             }
 
             .brand {
-                grid-template-columns: 48px 1fr;
-                column-gap: 12px;
+                grid-template-columns: 42px 1fr;
+                column-gap: 13px;
                 row-gap: 8px;
                 margin-bottom: 24px;
             }
 
             .brand-mark {
-                width: 48px;
-                height: 48px;
-                border-radius: 15px;
+                width: 42px;
+                height: 42px;
+                border-radius: 13px;
             }
 
-            .brand-mark::before {
-                top: 12px;
-                left: 12px;
-                width: 11px;
-                height: 11px;
+            .brand-mark svg {
+                width: 25px;
+                height: 25px;
             }
 
             .brand-title {
-                font-size: 25px;
+                font-size: 23px;
             }
 
             .brand-subtitle {
-                font-size: 13px;
+                font-size: 12px;
                 white-space: nowrap;
             }
 
@@ -839,12 +835,16 @@
         <section class="login-shell" aria-label="蓝鲸ERP平台登录">
             <div class="login-card">
                 <header class="brand">
-                    <div class="brand-mark" aria-hidden="true"></div>
+                    <div class="brand-mark" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 12h4l3-8 5 16 3-8h3"/>
+                        </svg>
+                    </div>
                     <div>
                         <h1 class="brand-title">蓝鲸ERP平台</h1>
                         <p class="brand-subtitle">一站式品牌出海精细化协同</p>
-                        <p class="brand-note">由企业认知、项目、AI、运营、交付、质量、用户和支持八个平台，组成跨境业务的一站式协同入口。</p>
                     </div>
+                    <p class="brand-note">由企业认知、项目、AI、运营、交付、质量、用户和支持八个平台，组成跨境业务的一站式协同入口。</p>
                 </header>
 
                 <form class="form">
