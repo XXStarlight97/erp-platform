@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蓝鲸ERP平台 - 登录</title>
+    <style>
+        :root {
+            --cyan: #46dcff;
+            --blue: #2f7cff;
+            --violet: #a85cff;
+            --text: #f5fbff;
+            --muted: #a9c5de;
+            --panel: rgba(3, 12, 28, 0.78);
+            --panel-deep: rgba(1, 7, 18, 0.84);
+            --line: rgba(111, 205, 255, 0.28);
+            --font: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            color: var(--text);
+            font-family: var(--font);
+            background: #02040b;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .page {
+            position: relative;
+            width: 100vw;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            isolation: isolate;
+            padding: 32px;
+        }
+
+        .page::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: -4;
+            background: url("assets/login-cosmic-horizon-bg.png") center / cover no-repeat;
+        }
+
+        .page::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: -3;
+            background:
+                radial-gradient(circle at 50% 45%, rgba(48, 120, 255, 0.12), transparent 34%),
+                radial-gradient(circle at 54% 55%, rgba(168, 92, 255, 0.10), transparent 42%),
+                linear-gradient(180deg, rgba(0, 2, 10, 0.24), rgba(0, 2, 10, 0.18) 42%, rgba(0, 2, 10, 0.08));
+            pointer-events: none;
+        }
+
+        .matrix-layer {
+            position: absolute;
+            inset: 0;
+            z-index: -2;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .matrix-panel {
+            position: absolute;
+            top: 5vh;
+            bottom: 29vh;
+            display: flex;
+            align-items: flex-start;
+            gap: clamp(8px, 0.9vw, 14px);
+            opacity: 0.82;
+        }
+
+        .matrix-panel.left {
+            left: 4.5vw;
+            right: calc(50% + 250px);
+            justify-content: flex-end;
+        }
+
+        .matrix-panel.right {
+            left: calc(50% + 250px);
+            right: 4.5vw;
+            justify-content: flex-start;
+        }
+
+        .matrix-panel::before {
+            content: "";
+            position: absolute;
+            inset: -8vh -3vw -4vh;
+            background:
+                linear-gradient(90deg, transparent, rgba(38, 117, 255, 0.14), transparent),
+                radial-gradient(circle at 50% 32%, rgba(89, 91, 255, 0.18), transparent 54%);
+            filter: blur(18px);
+            opacity: 0.62;
+        }
+
+        .matrix-column {
+            position: relative;
+            width: clamp(34px, 3.2vw, 50px);
+            display: grid;
+            gap: clamp(12px, 1.45vw, 22px);
+        }
+
+        .matrix-column.c1 { margin-top: 1vh; }
+        .matrix-column.c2 { margin-top: 8vh; }
+        .matrix-column.c3 { margin-top: 3vh; }
+        .matrix-column.c4 { margin-top: 13vh; }
+        .matrix-column.c5 { margin-top: 6vh; }
+        .matrix-column.c6 { margin-top: 16vh; }
+        .matrix-column.c7 { margin-top: 10vh; }
+        .matrix-column.c8 { margin-top: 2vh; }
+        .matrix-column.c9 { margin-top: 12vh; }
+        .matrix-column.c10 { margin-top: 5vh; }
+
+        .matrix-tile {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 10px;
+            opacity: var(--alpha, 0.24);
+            background:
+                linear-gradient(145deg, rgba(82, 199, 255, var(--hi, 0.36)), rgba(43, 115, 255, var(--mid, 0.28)) 58%, rgba(112, 78, 255, var(--lo, 0.22)));
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.16),
+                0 0 20px rgba(48, 132, 255, 0.20);
+        }
+
+        .matrix-tile.hot {
+            opacity: 0.72;
+            background: linear-gradient(145deg, #65d7ff, #2f7cff 56%, #7561ff);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.30),
+                0 0 30px rgba(56, 139, 255, 0.50),
+                0 0 52px rgba(117, 97, 255, 0.22);
+        }
+
+        .matrix-tile.module {
+            position: relative;
+            display: grid;
+            place-items: center;
+            align-content: center;
+            gap: 3px;
+            opacity: 0.88;
+            color: rgba(204, 238, 255, 0.84);
+            background:
+                linear-gradient(145deg, rgba(28, 96, 214, 0.94), rgba(8, 38, 112, 0.92) 56%, rgba(42, 45, 144, 0.88));
+            box-shadow:
+                inset 0 1px 0 rgba(180, 225, 255, 0.22),
+                inset 0 -10px 18px rgba(2, 9, 38, 0.46),
+                0 0 26px rgba(35, 104, 235, 0.32);
+        }
+
+        .module-icon {
+            width: clamp(13px, 1.05vw, 16px);
+            height: clamp(13px, 1.05vw, 16px);
+            stroke: currentColor;
+            stroke-width: 1.8;
+            fill: none;
+            opacity: 0.92;
+            filter: drop-shadow(0 0 6px rgba(74, 204, 255, 0.32));
+        }
+
+        .module-label {
+            font-size: clamp(7px, 0.58vw, 9px);
+            line-height: 1;
+            font-weight: 700;
+            color: rgba(179, 229, 255, 0.78);
+            text-shadow: 0 0 8px rgba(47, 124, 255, 0.55);
+            letter-spacing: 0;
+            white-space: nowrap;
+        }
+
+        .matrix-tile.dim {
+            opacity: 0.14;
+            filter: saturate(0.85);
+        }
+
+        .matrix-tile.blank {
+            visibility: hidden;
+        }
+
+        .energy-layer {
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .energy-layer svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .energy-line {
+            fill: none;
+            stroke: url("#energyStroke");
+            stroke-width: 1.35;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 0.34;
+            filter: url("#softGlow");
+        }
+
+        .energy-line.secondary {
+            opacity: 0.20;
+            stroke-width: 1;
+        }
+
+        .energy-pulse {
+            fill: none;
+            stroke: url("#pulseStroke");
+            stroke-width: 2.15;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 22 220;
+            stroke-dashoffset: 240;
+            opacity: 0.78;
+            filter: url("#pulseGlow");
+            animation: energy-flow 4.8s linear infinite;
+        }
+
+        .energy-pulse.delay-1 { animation-delay: -1.2s; }
+        .energy-pulse.delay-2 { animation-delay: -2.4s; }
+        .energy-pulse.delay-3 { animation-delay: -3.6s; }
+
+        .energy-node {
+            fill: rgba(83, 193, 255, 0.82);
+            filter: url("#pulseGlow");
+            opacity: 0.56;
+        }
+
+        @keyframes energy-flow {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .login-shell {
+            position: relative;
+            width: min(340px, calc(100vw - 40px));
+            padding: 2px;
+            border-radius: 22px;
+            background:
+                linear-gradient(135deg, rgba(48, 139, 255, 0.72), rgba(41, 91, 214, 0.36) 42%, rgba(111, 67, 255, 0.62));
+            box-shadow:
+                0 28px 82px rgba(0, 0, 0, 0.54),
+                0 0 62px rgba(40, 116, 255, 0.22),
+                0 0 34px rgba(104, 79, 255, 0.14);
+            transform: translateY(-9vh);
+        }
+
+        .login-shell::before {
+            content: "";
+            position: absolute;
+            inset: -24px;
+            z-index: -1;
+            border-radius: 34px;
+            background:
+                radial-gradient(circle at 14% 17%, rgba(48, 139, 255, 0.30), transparent 36%),
+                radial-gradient(circle at 88% 76%, rgba(111, 67, 255, 0.28), transparent 34%);
+            filter: blur(24px);
+            opacity: 0.76;
+        }
+
+        .login-card {
+            padding: 27px 23px 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background:
+                linear-gradient(180deg, rgba(5, 17, 42, 0.82), rgba(1, 7, 20, 0.90)),
+                radial-gradient(circle at 54% 100%, rgba(47, 124, 255, 0.18), transparent 50%),
+                radial-gradient(circle at 90% 0%, rgba(111, 67, 255, 0.13), transparent 36%);
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.14),
+                inset 0 -46px 76px rgba(32, 106, 255, 0.11);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 23px;
+        }
+
+        .brand-mark {
+            position: relative;
+            flex: 0 0 auto;
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #2378ff 4%, #35b7ff 58%, #6d43ff 100%);
+            box-shadow:
+                0 16px 38px rgba(35, 142, 255, 0.30),
+                0 0 38px rgba(90, 82, 255, 0.18),
+                inset 0 1px 0 rgba(255, 255, 255, 0.34);
+        }
+
+        .brand-mark::before {
+            content: "";
+            position: absolute;
+            top: 9px;
+            left: 9px;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.93);
+            box-shadow: 0 0 18px rgba(255, 255, 255, 0.34);
+        }
+
+        .brand-title {
+            font-size: clamp(19px, 1.9vw, 23px);
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: 0;
+            color: transparent;
+            background: linear-gradient(100deg, #6fa4ff, #368aff 56%, #8b6dff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            text-shadow: 0 0 24px rgba(55, 128, 255, 0.18);
+        }
+
+        .brand-subtitle {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: clamp(10px, 0.95vw, 12px);
+            line-height: 1.25;
+            font-weight: 800;
+            letter-spacing: 0;
+        }
+
+        .form {
+            display: grid;
+            gap: 16px;
+        }
+
+        .field {
+            position: relative;
+            display: flex;
+            align-items: center;
+            min-height: 40px;
+            padding: 0 13px;
+            border: 2px solid rgba(67, 151, 255, 0.24);
+            border-radius: 12px;
+            background: rgba(0, 6, 18, 0.72);
+            box-shadow:
+                inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+                0 0 0 rgba(70, 220, 255, 0);
+            transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+        }
+
+        .field:focus-within {
+            border-color: rgba(73, 151, 255, 0.76);
+            background: rgba(0, 9, 24, 0.82);
+            box-shadow: 0 0 0 5px rgba(73, 151, 255, 0.08);
+        }
+
+        .field input {
+            width: 100%;
+            min-width: 0;
+            border: 0;
+            outline: 0;
+            color: #ffffff;
+            background: transparent;
+            font: inherit;
+            font-size: clamp(11px, 1.05vw, 13px);
+            font-weight: 800;
+            letter-spacing: 0;
+        }
+
+        .field input::placeholder {
+            color: rgba(202, 227, 248, 0.50);
+        }
+
+        .password {
+            letter-spacing: 4px;
+        }
+
+        .login-button {
+            width: 100%;
+            min-height: 42px;
+            margin-top: 12px;
+            border: 0;
+            border-radius: 13px;
+            color: rgba(1, 15, 33, 0.94);
+            cursor: pointer;
+            background: linear-gradient(100deg, #39b9ff, #2f7cff 58%, #8066ff);
+            box-shadow:
+                0 18px 46px rgba(50, 132, 255, 0.32),
+                inset 0 1px 0 rgba(255, 255, 255, 0.28);
+            font: inherit;
+            font-size: clamp(11px, 1.1vw, 13px);
+            font-weight: 900;
+            letter-spacing: 8px;
+            text-indent: 8px;
+            transition: transform .18s ease, filter .18s ease, box-shadow .18s ease;
+        }
+
+        .login-button:hover {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+            box-shadow:
+                0 22px 58px rgba(50, 132, 255, 0.40),
+                0 0 30px rgba(128, 102, 255, 0.22),
+                inset 0 1px 0 rgba(255, 255, 255, 0.32);
+        }
+
+        .links {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+            margin-top: 20px;
+        }
+
+        .links a {
+            color: #9df2ff;
+            text-decoration: none;
+            font-size: clamp(10px, 1vw, 12px);
+            line-height: 1;
+            font-weight: 900;
+            letter-spacing: 0;
+            text-shadow: 0 0 22px rgba(70, 220, 255, 0.22);
+            transition: color .2s ease, text-shadow .2s ease;
+        }
+
+        .links a:hover {
+            color: #d7fbff;
+            text-shadow: 0 0 26px rgba(70, 220, 255, 0.44);
+        }
+
+        @media (max-width: 720px) {
+            .page {
+                padding: 18px;
+            }
+
+            .matrix-layer {
+                display: none;
+            }
+
+            .energy-layer {
+                display: none;
+            }
+
+            .login-shell {
+                width: min(310px, calc(100vw - 28px));
+                border-radius: 20px;
+            }
+
+            .login-card {
+                min-height: auto;
+                padding: 20px 18px 18px;
+                border-radius: 18px;
+            }
+
+            .brand {
+                align-items: flex-start;
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+
+            .brand-mark {
+                width: 34px;
+                height: 34px;
+                border-radius: 11px;
+            }
+
+            .brand-mark::before {
+                top: 8px;
+                left: 8px;
+                width: 9px;
+                height: 9px;
+            }
+
+            .brand-title {
+                font-size: 21px;
+            }
+
+            .brand-subtitle {
+                margin-top: 8px;
+                font-size: 11px;
+                white-space: nowrap;
+            }
+
+            .form {
+                gap: 12px;
+            }
+
+            .field {
+                min-height: 38px;
+                padding: 0 13px;
+                border-radius: 12px;
+            }
+
+            .field input {
+                font-size: 12px;
+            }
+
+            .login-button {
+                min-height: 38px;
+                margin-top: 8px;
+                border-radius: 12px;
+                font-size: 13px;
+                letter-spacing: 8px;
+                text-indent: 8px;
+            }
+
+            .links {
+                margin-top: 15px;
+            }
+
+            .links a {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-height: 700px) and (min-width: 721px) {
+            .login-card {
+                padding: 20px 25px 19px;
+            }
+
+            .brand {
+                margin-bottom: 16px;
+            }
+
+            .form {
+                gap: 11px;
+            }
+
+            .field {
+                min-height: 38px;
+            }
+
+            .login-button {
+                min-height: 40px;
+                margin-top: 9px;
+            }
+
+            .links {
+                margin-top: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <svg class="sr-only" aria-hidden="true" focusable="false">
+        <symbol id="icon-cognition" viewBox="0 0 24 24">
+            <path d="M5 15c1.8-4.2 4.2-6.3 7-6.3s5.2 2.1 7 6.3c-1.8 2.5-4.2 3.8-7 3.8S6.8 17.5 5 15z"/>
+            <path d="M12 11.5a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/>
+        </symbol>
+        <symbol id="icon-project" viewBox="0 0 24 24">
+            <path d="M7 4.5h8.5L19 8v11.5H7z"/>
+            <path d="M15.5 4.5V8H19M10 11h6M10 15h5"/>
+        </symbol>
+        <symbol id="icon-ai" viewBox="0 0 24 24">
+            <path d="M12 4.5 13.8 9l4.7 1.8-4.7 1.8L12 17l-1.8-4.4-4.7-1.8L10.2 9z"/>
+            <path d="M18 15.5 18.8 18l2.2.8-2.2.8L18 22l-.8-2.4-2.2-.8 2.2-.8z"/>
+        </symbol>
+        <symbol id="icon-operation" viewBox="0 0 24 24">
+            <path d="M5 13h3.5l7.5 4V7l-7.5 4H5z"/>
+            <path d="M8.5 13.2 10 19M18 10.5c1.1.8 1.6 2.2 1.2 3.5"/>
+        </symbol>
+        <symbol id="icon-delivery" viewBox="0 0 24 24">
+            <path d="M4.5 8.5 12 4l7.5 4.5v7L12 20l-7.5-4.5z"/>
+            <path d="M4.8 8.7 12 13l7.2-4.3M12 13v6.6"/>
+        </symbol>
+        <symbol id="icon-quality" viewBox="0 0 24 24">
+            <path d="M12 4.5 18.5 7v5.2c0 3.6-2.5 6.5-6.5 7.8-4-1.3-6.5-4.2-6.5-7.8V7z"/>
+            <path d="m9 12.5 2 2 4-4"/>
+        </symbol>
+        <symbol id="icon-user" viewBox="0 0 24 24">
+            <path d="M12 11.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+            <path d="M5.5 20c.8-3.7 3-5.5 6.5-5.5s5.7 1.8 6.5 5.5"/>
+        </symbol>
+        <symbol id="icon-support" viewBox="0 0 24 24">
+            <path d="M5 13v-1a7 7 0 0 1 14 0v1"/>
+            <path d="M5 13.5h3v4H6.5A1.5 1.5 0 0 1 5 16zM19 13.5h-3v4h1.5A1.5 1.5 0 0 0 19 16z"/>
+            <path d="M16 17.5c-.8 1.5-2 2.2-4 2.2"/>
+        </symbol>
+    </svg>
+    <main class="page">
+        <div class="matrix-layer" aria-hidden="true">
+            <div class="matrix-panel left">
+                <div class="matrix-column c1">
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile module">
+                        <svg class="module-icon"><use href="#icon-cognition"></use></svg>
+                        <span class="module-label">认知</span>
+                    </span>
+                    <span class="matrix-tile" style="--alpha:.34;--hi:.42;--mid:.30;--lo:.22"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile" style="--alpha:.26"></span>
+                    <span class="matrix-tile dim"></span>
+                </div>
+                <div class="matrix-column c2">
+                    <span class="matrix-tile" style="--alpha:.20"></span>
+                    <span class="matrix-tile" style="--alpha:.38;--hi:.44;--mid:.32;--lo:.26"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile" style="--alpha:.30"></span>
+                </div>
+                <div class="matrix-column c3">
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile module">
+                        <svg class="module-icon"><use href="#icon-project"></use></svg>
+                        <span class="module-label">项目</span>
+                    </span>
+                    <span class="matrix-tile" style="--alpha:.18"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile dim"></span>
+                </div>
+                <div class="matrix-column c7">
+                    <span class="matrix-tile" style="--alpha:.16"></span>
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile" style="--alpha:.28;--hi:.38;--mid:.28;--lo:.22"></span>
+                    <span class="matrix-tile dim"></span>
+                </div>
+                <div class="matrix-column c4">
+                    <span class="matrix-tile module">
+                        <svg class="module-icon"><use href="#icon-ai"></use></svg>
+                        <span class="module-label">AI</span>
+                    </span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile" style="--alpha:.22"></span>
+                </div>
+                <div class="matrix-column c8">
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile" style="--alpha:.22"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile module">
+                        <svg class="module-icon"><use href="#icon-operation"></use></svg>
+                        <span class="module-label">运营</span>
+                    </span>
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile blank"></span>
+                </div>
+                <div class="matrix-column c9">
+                    <span class="matrix-tile" style="--alpha:.18"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile" style="--alpha:.23"></span>
+                </div>
+                <div class="matrix-column c10">
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile" style="--alpha:.20"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile" style="--alpha:.16"></span>
+                    <span class="matrix-tile dim"></span>
+                </div>
+            </div>
+
+            <div class="matrix-panel right">
+                <div class="matrix-column c3">
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile module">
+                        <svg class="module-icon"><use href="#icon-delivery"></use></svg>
+                        <span class="module-label">交付</span>
+                    </span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile" style="--alpha:.18"></span>
+                    <span class="matrix-tile dim"></span>
+                </div>
+                <div class="matrix-column c5">
+                    <span class="matrix-tile" style="--alpha:.20"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile module">
+                        <svg class="module-icon"><use href="#icon-quality"></use></svg>
+                        <span class="module-label">质量</span>
+                    </span>
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile" style="--alpha:.18"></span>
+                </div>
+                <div class="matrix-column c8">
+                    <span class="matrix-tile" style="--alpha:.18"></span>
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile" style="--alpha:.26;--hi:.38;--mid:.29;--lo:.22"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile dim"></span>
+                </div>
+                <div class="matrix-column c1">
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile module">
+                        <svg class="module-icon"><use href="#icon-user"></use></svg>
+                        <span class="module-label">用户</span>
+                    </span>
+                    <span class="matrix-tile" style="--alpha:.22"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile dim"></span>
+                </div>
+                <div class="matrix-column c7">
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile" style="--alpha:.24"></span>
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile" style="--alpha:.22"></span>
+                    <span class="matrix-tile dim"></span>
+                </div>
+                <div class="matrix-column c6">
+                    <span class="matrix-tile" style="--alpha:.26"></span>
+                    <span class="matrix-tile" style="--alpha:.20"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile" style="--alpha:.32"></span>
+                    <span class="matrix-tile dim"></span>
+                </div>
+                <div class="matrix-column c9">
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile" style="--alpha:.21"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile" style="--alpha:.17"></span>
+                </div>
+                <div class="matrix-column c10">
+                    <span class="matrix-tile" style="--alpha:.16"></span>
+                    <span class="matrix-tile blank"></span>
+                    <span class="matrix-tile dim"></span>
+                    <span class="matrix-tile module">
+                        <svg class="module-icon"><use href="#icon-support"></use></svg>
+                        <span class="module-label">支持</span>
+                    </span>
+                    <span class="matrix-tile dim"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="energy-layer" aria-hidden="true">
+            <svg viewBox="0 0 1000 560" preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="energyStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#286fff" stop-opacity="0.18"/>
+                        <stop offset="46%" stop-color="#47d9ff" stop-opacity="0.72"/>
+                        <stop offset="100%" stop-color="#7b63ff" stop-opacity="0.46"/>
+                    </linearGradient>
+                    <linearGradient id="pulseStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#5ee7ff" stop-opacity="0"/>
+                        <stop offset="44%" stop-color="#5ee7ff" stop-opacity="1"/>
+                        <stop offset="100%" stop-color="#8d72ff" stop-opacity="0"/>
+                    </linearGradient>
+                    <filter id="softGlow" x="-40%" y="-80%" width="180%" height="260%">
+                        <feGaussianBlur stdDeviation="2.2" result="blur"/>
+                        <feMerge>
+                            <feMergeNode in="blur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                    <filter id="pulseGlow" x="-60%" y="-120%" width="220%" height="340%">
+                        <feGaussianBlur stdDeviation="3.2" result="blur"/>
+                        <feMerge>
+                            <feMergeNode in="blur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+
+                <path class="energy-line" d="M 112 82 L 112 128 L 162 128 L 162 176 L 228 176 L 228 214 L 304 214 L 304 238 L 366 238"/>
+                <path class="energy-line" d="M 194 150 L 194 190 L 246 190 L 246 224 L 366 224"/>
+                <path class="energy-line secondary" d="M 74 238 L 138 238 L 138 286 L 220 286 L 220 310 L 366 310"/>
+                <path class="energy-line secondary" d="M 292 118 L 340 118 L 340 174 L 366 174"/>
+
+                <path class="energy-pulse" d="M 112 82 L 112 128 L 162 128 L 162 176 L 228 176 L 228 214 L 304 214 L 304 238 L 366 238"/>
+                <path class="energy-pulse delay-1" d="M 194 150 L 194 190 L 246 190 L 246 224 L 366 224"/>
+                <path class="energy-pulse delay-2" d="M 74 238 L 138 238 L 138 286 L 220 286 L 220 310 L 366 310"/>
+                <path class="energy-pulse delay-3" d="M 292 118 L 340 118 L 340 174 L 366 174"/>
+
+                <path class="energy-line" d="M 888 82 L 888 128 L 838 128 L 838 176 L 772 176 L 772 214 L 696 214 L 696 238 L 634 238"/>
+                <path class="energy-line" d="M 806 150 L 806 190 L 754 190 L 754 224 L 634 224"/>
+                <path class="energy-line secondary" d="M 926 238 L 862 238 L 862 286 L 780 286 L 780 310 L 634 310"/>
+                <path class="energy-line secondary" d="M 708 118 L 660 118 L 660 174 L 634 174"/>
+
+                <path class="energy-pulse" d="M 888 82 L 888 128 L 838 128 L 838 176 L 772 176 L 772 214 L 696 214 L 696 238 L 634 238"/>
+                <path class="energy-pulse delay-1" d="M 806 150 L 806 190 L 754 190 L 754 224 L 634 224"/>
+                <path class="energy-pulse delay-2" d="M 926 238 L 862 238 L 862 286 L 780 286 L 780 310 L 634 310"/>
+                <path class="energy-pulse delay-3" d="M 708 118 L 660 118 L 660 174 L 634 174"/>
+
+                <circle class="energy-node" cx="366" cy="238" r="2.1"/>
+                <circle class="energy-node" cx="366" cy="224" r="1.7"/>
+                <circle class="energy-node" cx="366" cy="310" r="1.7"/>
+                <circle class="energy-node" cx="366" cy="174" r="1.7"/>
+                <circle class="energy-node" cx="634" cy="238" r="2.1"/>
+                <circle class="energy-node" cx="634" cy="224" r="1.7"/>
+                <circle class="energy-node" cx="634" cy="310" r="1.7"/>
+                <circle class="energy-node" cx="634" cy="174" r="1.7"/>
+            </svg>
+        </div>
+
+        <section class="login-shell" aria-label="蓝鲸ERP平台登录">
+            <div class="login-card">
+                <header class="brand">
+                    <div class="brand-mark" aria-hidden="true"></div>
+                    <div>
+                        <h1 class="brand-title">蓝鲸ERP平台</h1>
+                        <p class="brand-subtitle">亚马逊卖家必备的专精智的系统</p>
+                    </div>
+                </header>
+
+                <form class="form">
+                    <label class="field">
+                        <span class="sr-only">邮箱</span>
+                        <input type="email" value="user@example.com" autocomplete="username">
+                    </label>
+
+                    <label class="field">
+                        <span class="sr-only">密码</span>
+                        <input class="password" type="password" value="123456789" autocomplete="current-password">
+                    </label>
+
+                    <button class="login-button" type="button">登录</button>
+                </form>
+
+                <nav class="links" aria-label="账号操作">
+                    <a href="#">忘记密码?</a>
+                    <a href="#">注册</a>
+                </nav>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
