@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蓝鲸跨境ERP - 字典管理</title>
+    <style>
+        :root {
+            --sidebar-bg: #1e222d;
+            --sidebar-hover: #2a2f3d;
+            --header-bg: #3b82f6;
+            --bg-color: #f3f4f6;
+            --text-main: #333333;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+            --primary: #3b82f6;
+            --switcher-width: 300px;
+            --platform-menu-width: 128px;
+            --submenu-width: 168px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            width: 64px;
+            background-color: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 16px;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            width: 40px;
+            height: 40px;
+            background-color: #4f46e5;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            color: white;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .sidebar-item {
+            width: 100%;
+            height: 64px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-item:hover, .sidebar-item.active {
+            background-color: var(--sidebar-hover);
+            color: white;
+        }
+
+        .sidebar-item svg {
+            width: 20px;
+            height: 20px;
+            margin-bottom: 4px;
+        }
+
+        /* 主内容区 */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* 顶部导航 */
+        .header {
+            height: 50px;
+            background-color: var(--header-bg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px 0 0;
+            color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: flex-end;
+            height: 100%;
+        }
+
+        .page-tab {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            height: 40px;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            border-radius: 8px 8px 0 0;
+            font-weight: 500;
+            font-size: 14px;
+            margin-left: 20px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        /* 平台与子系统切换器 */
+        .nav-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* 两端对齐，让箭头靠右 */
+            gap: 6px;
+            font-size: 14px;
+            transition: background 0.2s;
+            width: var(--switcher-width);
+            white-space: nowrap; /* 防止文字换行 */
+        }
+
+        .dropdown-btn span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dropdown-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .dropdown-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 4px;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            width: 100%; /* 下拉菜单宽度与按钮一致 */
+            min-width: 140px; /* 最小宽度与按钮一致 */
+            display: none;
+            flex-direction: column;
+            padding: 4px 0;
+            z-index: 100;
+            color: var(--text-main);
+        }
+
+        .switcher-menu {
+            left: 0;
+            right: auto;
+            width: var(--platform-menu-width);
+            min-width: var(--platform-menu-width);
+            display: none;
+            flex-direction: column;
+            padding: 8px 0;
+            overflow: visible;
+        }
+
+        .dropdown.active .switcher-menu {
+            display: flex;
+        }
+
+        .dropdown-item {
+            position: relative;
+            padding: 8px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* 两端对齐，让信息图标靠右 */
+            gap: 8px;
+        }
+
+        .dropdown-item-text {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .dropdown-item-text span:last-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f3f4f6;
+            color: var(--primary);
+        }
+
+        .dropdown-item.has-submenu:hover,
+        .dropdown-item.single-system:hover {
+            color: var(--primary);
+            background-color: #f3f4f6;
+        }
+
+        .submenu-indicator {
+            color: #9ca3af;
+            width: 12px;
+            height: 12px;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .submenu {
+            position: absolute;
+            top: -8px;
+            left: 100%;
+            width: var(--submenu-width);
+            display: none;
+            flex-direction: column;
+            padding: 8px 0;
+            margin-left: 4px;
+            background: #ffffff;
+            border-radius: 4px;
+            color: var(--text-main);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 120;
+        }
+
+        .dropdown-item.has-submenu:hover .submenu {
+            display: flex;
+        }
+
+        .submenu .dropdown-item {
+            color: var(--text-main);
+            font-weight: 400;
+            background: transparent;
+            min-height: 38px;
+        }
+
+        .submenu .dropdown-item:hover {
+            color: var(--primary);
+            background: #f3f4f6;
+        }
+
+        .platform-tag {
+            display: none; /* 隐藏字母标签 */
+        }
+
+        /* 反馈信息图标与Tooltip */
+        .feedback-info {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.05); /* 浅色背景适合下拉菜单 */
+            cursor: pointer;
+            color: #9ca3af; /* 默认灰色 */
+        }
+
+        .dropdown-item:hover .feedback-info {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+        }
+
+        .feedback-info:hover {
+            background: rgba(59, 130, 246, 0.2) !important;
+            color: var(--primary) !important;
+        }
+
+        .feedback-info svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .tooltip {
+            position: absolute;
+            top: 50%;
+            right: 100%; /* 显示在左侧 */
+            transform: translateY(-50%);
+            margin-right: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 100;
+            line-height: 1.6;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .tooltip strong {
+            display: inline-block;
+            min-width: 96px;
+            margin-right: 10px;
+            color: #c7d2fe;
+            font-weight: 500;
+        }
+
+        .tooltip::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 100%; /* 箭头在右侧 */
+            transform: translateY(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent transparent transparent rgba(0, 0, 0, 0.8);
+        }
+
+        .feedback-info:hover .tooltip {
+            opacity: 1;
+        }
+
+        /* 顶部右侧其他图标 */
+        .header-icon {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+        }
+        .header-icon:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #93c5fd;
+            color: #1e3a8a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* 页面内容区 */
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .search-panel {
+            background: white;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-group input, .input-group select {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+            min-width: 160px;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-search {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-search:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-add {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: auto;
+        }
+
+        /* 表格区 */
+        .table-panel {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f9fafb;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .status-normal {
+            color: #10b981;
+        }
+
+        .action-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-right: 8px;
+        }
+        .action-btn.delete {
+            background: #ef4444;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 16px;
+            gap: 16px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .page-numbers {
+            display: flex;
+            gap: 4px;
+        }
+
+        .page-num {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .page-num:hover {
+            background: #f3f4f6;
+        }
+        .page-num.active {
+            background: var(--primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px;">
+                <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7v1a1 1 0 0 1-1 1h-2v1a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3v-1H4a1 1 0 0 1-1-1v-1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"></path>
+                <path d="M9 14h.01"></path>
+                <path d="M15 14h.01"></path>
+            </svg>
+        </div>
+        <div class="sidebar-menu">
+            <div class="sidebar-item active">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                配置
+            </div>
+            <div class="sidebar-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                设置
+            </div>
+            <div class="sidebar-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                安全
+            </div>
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="main-wrapper">
+        <!-- 顶部导航 -->
+        <div class="header">
+            <div class="header-left">
+                <div class="page-tab">字典管理</div>
+            </div>
+            <div class="header-right">
+                
+                <!-- 平台与子系统切换器 -->
+                <div class="nav-selector">
+                    <div class="dropdown" id="system-switcher">
+                        <div class="dropdown-btn" onclick="toggleDropdown('system-switcher')">
+                            <span id="active-location">运营平台 / 全渠道系统</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </div>
+                        <div class="dropdown-menu switcher-menu" id="switcher-menu">
+                            <div id="platform-menu"></div>
+                        </div>
+                   </div>
+                    <div class="header-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    </div>
+                </div>
+
+                <!-- 消息与头像 -->
+                <div class="avatar">Xl</div>
+            </div>
+        </div>
+
+        <!-- 页面内容 -->
+        <div class="content">
+            <!-- 搜索区 -->
+            <div class="search-panel">
+                <div class="input-group">
+                    <input type="text" placeholder="字典名称">
+                </div>
+                <div class="input-group">
+                    <input type="text" placeholder="字典编码">
+                </div>
+                <div class="input-group">
+                    <select>
+                        <option value="">字典状态</option>
+                        <option value="1">正常</option>
+                        <option value="0">停用</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <select>
+                        <option value="">所属系统</option>
+                        <option value="ops">运营平台</option>
+                        <option value="ai">AI平台</option>
+                    </select>
+                </div>
+                <button class="btn-search">搜索</button>
+                <button class="btn-add">新增</button>
+            </div>
+
+            <!-- 表格区 -->
+            <div class="table-panel">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>所属系统</th>
+                            <th>字典名称</th>
+                            <th>字典编码</th>
+                            <th>字典类型</th>
+                            <th>状态</th>
+                            <th>备注</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>销售系统</td>
+                            <td>发运类型</td>
+                            <td>发运类型</td>
+                            <td>字符串</td>
+                            <td class="status-normal">正常</td>
+                            <td></td>
+                            <td>2026-06-18 09:51:59</td>
+                            <td>
+                                <button class="action-btn">编辑</button>
+                                <button class="action-btn delete">删除</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>智能广告</td>
+                            <td>大促预算分时日期配置</td>
+                            <td>ppc_budget_promotion_period</td>
+                            <td>字符串</td>
+                            <td class="status-normal">正常</td>
+                            <td>大促预算分时日期配置</td>
+                            <td>2026-06-18 17:46:19</td>
+                            <td>
+                                <button class="action-btn">编辑</button>
+                                <button class="action-btn delete">删除</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>物流系统</td>
+                            <td>批量发货-目的仓</td>
+                            <td>shipment_import_target_warehouse</td>
+                            <td>字符串</td>
+                            <td class="status-normal">正常</td>
+                            <td>批量发货-目的仓</td>
+                            <td>2026-06-05 17:14:21</td>
+                            <td>
+                                <button class="action-btn">编辑</button>
+                                <button class="action-btn delete">删除</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>物流系统</td>
+                            <td>销售链接替换原店铺</td>
+                            <td>sale_link_source_shop</td>
+                            <td>数字</td>
+                            <td class="status-normal">正常</td>
+                            <td>销售链接替换原店铺</td>
+                            <td>2026-06-05 16:18:08</td>
+                            <td>
+                                <button class="action-btn">编辑</button>
+                                <button class="action-btn delete">删除</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>物流系统</td>
+                            <td>销售链接替换目标店铺</td>
+                            <td>sale_link_target_shop</td>
+                            <td>数字</td>
+                            <td class="status-normal">正常</td>
+                            <td>销售链接替换目标店铺</td>
+                            <td>2026-06-05 16:15:23</td>
+                            <td>
+                                <button class="action-btn">编辑</button>
+                                <button class="action-btn delete">删除</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>销售系统</td>
+                            <td>企业预留毛利率页面提醒人ABU</td>
+                            <td>reservedMarginDisplayNameABU</td>
+                            <td>字符串</td>
+                            <td class="status-normal">正常</td>
+                            <td></td>
+                            <td>2026-06-05 14:39:08</td>
+                            <td>
+                                <button class="action-btn">编辑</button>
+                                <button class="action-btn delete">删除</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>项目系统</td>
+                            <td>项目审批-串行抄送BP</td>
+                            <td>project_serial_bp_cc</td>
+                            <td>字符串</td>
+                            <td class="status-normal">正常</td>
+                            <td>钉钉串行审批抄送BP</td>
+                            <td>2026-06-04 17:32:41</td>
+                            <td>
+                                <button class="action-btn">编辑</button>
+                                <button class="action-btn delete">删除</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <span>共 363 条</span>
+                    <span>15条/页</span>
+                    <div class="page-numbers">
+                        <div class="page-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><polyline points="15 18 9 12 15 6"></polyline></svg></div>
+                        <div class="page-num active">1</div>
+                        <div class="page-num">2</div>
+                        <div class="page-num">3</div>
+                        <div class="page-num">4</div>
+                        <div class="page-num">5</div>
+                        <div class="page-num">6</div>
+                        <div class="page-num">...</div>
+                        <div class="page-num">25</div>
+                        <div class="page-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><polyline points="9 18 15 12 9 6"></polyline></svg></div>
+                    </div>
+                    <span>前往 <input type="text" value="1" style="width:40px;text-align:center;border:1px solid #e5e7eb;border-radius:4px;padding:2px;"> 页</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 8大平台及子系统数据，顺序严格按梳理表执行。
+        const platformsData = [
+            {
+                id: 'cognition',
+                name: '认知平台',
+                systems: [
+                    { name: '认知平台APP', demand: '王兴卓', exception: '张晓纤', dev: '董帅虎' },
+                    { name: '认知后台管理系统', demand: '王兴卓', exception: '张晓纤', dev: '董帅虎' }
+                ]
+            },
+            {
+                id: 'project',
+                name: '项目平台',
+                systems: [
+                    { name: '项目平台', demand: '王兴卓', exception: '代孝辉', dev: '董帅虎' }
+                ]
+            },
+            {
+                id: 'ai',
+                name: 'AI平台',
+                systems: [
+                    { name: 'AI平台', demand: '魏新星', exception: '钟小清、魏敏', dev: '李宇宏' }
+                ]
+            },
+            {
+                id: 'operation',
+                name: '运营平台',
+                systems: [
+                    { name: '全渠道系统', demand: '程凯武', exception: '蒋涛、唐孟姣', dev: '邢振' },
+                    { name: '亚马逊销售系统', demand: '程凯武', exception: '唐孟姣、代孝辉', dev: '邢振' },
+                    { name: '自营系统', demand: '程凯武', exception: '唐孟姣、张晓纤', dev: '黄瑞昌' },
+                    { name: '商超系统', demand: '程凯武', exception: '唐孟姣、钟小清、蒋涛', dev: '黄瑞昌' },
+                    { name: '分销系统', demand: '程凯武', exception: '蒋涛', dev: '邢振' },
+                    { name: '智能广告', demand: '陈泽滨', exception: '钟小清', dev: '董帅虎' },
+                    { name: '站外广告', demand: '陈泽滨', exception: '钟小清', dev: '董帅虎' }
+                ]
+            },
+            {
+                id: 'supply',
+                name: '供应链平台',
+                systems: [
+                    { name: '交付系统', demand: '王兴卓', exception: '蒋涛', dev: '李宇宏' },
+                    { name: '物流系统', demand: '王菊', exception: '魏敏、蒋涛', dev: '钟昌义' }
+                ]
+            },
+            {
+                id: 'quality',
+                name: '质量平台',
+                systems: [
+                    { name: '质量系统', demand: '刘文寒', exception: '代孝辉', dev: '罗振琨' }
+                ]
+            },
+            {
+                id: 'user',
+                name: '用户平台',
+                systems: [
+                    { name: '智能客服', demand: '刘文寒', exception: '代孝辉', dev: '罗振琨' },
+                    { name: '用户系统', demand: '刘文寒', exception: '代孝辉', dev: '汤伟雄' }
+                ]
+            },
+            {
+                id: 'support',
+                name: '支持平台',
+                systems: [
+                    { name: '产品系统', demand: '程凯武', exception: '蒋涛', dev: '邢振' },
+                    { name: '认证系统', demand: '王菊', exception: '魏敏', dev: '李宇宏' },
+                    { name: '研发系统', demand: '王兴卓', exception: '蒋涛', dev: '董帅虎' },
+                    { name: '知产系统', demand: '王菊', exception: '蒋涛、魏敏', dev: '李宇宏' },
+                    { name: '合同系统', demand: '王菊', exception: '蒋涛、魏敏', dev: '李宇宏' },
+                    { name: '财务系统', demand: '王菊', exception: '钟小清、蒋涛、唐孟姣', dev: '邢振' },
+                    { name: '平台中心', demand: '魏新星', exception: '蒋涛', dev: '邢振' }
+                ]
+            }
+        ];
+
+        let activePlatformId = 'operation';
+        let activeSystemName = '全渠道系统';
+
+        // 初始化下拉菜单
+        function initDropdowns() {
+            renderPlatforms();
+            updateCurrentLocation();
+        }
+
+        function renderPlatforms() {
+            const platformMenu = document.getElementById('platform-menu');
+            platformMenu.innerHTML = '';
+
+            platformsData.forEach(p => {
+                const item = document.createElement('div');
+                const isSingleSystem = p.systems.length === 1;
+                item.className = `dropdown-item ${isSingleSystem ? 'single-system' : 'has-submenu'}`;
+
+                const textSpan = document.createElement('span');
+                textSpan.className = 'dropdown-item-text';
+                textSpan.innerHTML = `<span>${p.name}</span>`;
+                item.appendChild(textSpan);
+
+                if (isSingleSystem) {
+                    item.appendChild(createFeedbackInfo(p.systems[0]));
+                    item.onclick = () => selectSystem(p.id, p.systems[0].name);
+                } else {
+                    item.appendChild(createSubmenuIndicator());
+                    item.appendChild(createSystemSubmenu(p));
+                }
+
+                platformMenu.appendChild(item);
+            });
+        }
+
+        function createSystemSubmenu(platform) {
+            const submenu = document.createElement('div');
+            submenu.className = 'submenu';
+            platform.systems.forEach(sys => {
+                const item = document.createElement('div');
+                item.className = 'dropdown-item';
+
+                const textSpan = document.createElement('span');
+                textSpan.className = 'dropdown-item-text';
+                textSpan.innerText = sys.name;
+
+                item.appendChild(textSpan);
+                item.appendChild(createFeedbackInfo(sys));
+                item.onclick = (e) => {
+                    e.stopPropagation();
+                    selectSystem(platform.id, sys.name);
+                };
+                submenu.appendChild(item);
+            });
+            return submenu;
+        }
+
+        function createSubmenuIndicator() {
+            const icon = document.createElement('span');
+            icon.className = 'submenu-indicator';
+            icon.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            `;
+            return icon;
+        }
+
+        // 选择子系统
+        function selectSystem(platformId, systemName) {
+            activePlatformId = platformId;
+            activeSystemName = systemName;
+            renderPlatforms();
+            updateCurrentLocation();
+            closeAllDropdowns();
+            console.log(`新开窗口：${getCurrentPlatform().name} / ${systemName}`);
+        }
+
+        function getCurrentPlatform() {
+            return platformsData.find(p => p.id === activePlatformId);
+        }
+
+        function updateCurrentLocation() {
+            const platform = platformsData.find(p => p.id === activePlatformId);
+            const location = `${platform.name} / ${activeSystemName}`;
+            document.getElementById('active-location').innerText = location;
+        }
+
+        function createFeedbackInfo(system) {
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'feedback-info';
+            infoDiv.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <div class="tooltip">
+                    <strong>需求反馈人员</strong>${system.demand}<br>
+                    <strong>研发反馈人员</strong>${system.dev}<br>
+                    <strong>异常反馈人员</strong>${system.exception}
+                </div>
+            `;
+            infoDiv.onclick = (e) => e.stopPropagation();
+            return infoDiv;
+        }
+
+        // 切换下拉菜单显示
+        function toggleDropdown(id) {
+            const dropdown = document.getElementById(id);
+            const isActive = dropdown.classList.contains('active');
+            closeAllDropdowns();
+            if (!isActive) {
+                renderPlatforms();
+                dropdown.classList.add('active');
+            }
+        }
+
+        // 关闭所有下拉菜单
+        function closeAllDropdowns() {
+            document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active'));
+        }
+
+        // 点击外部关闭下拉菜单
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown')) {
+                closeAllDropdowns();
+            }
+        });
+
+        // 初始化
+        initDropdowns();
+    </script>
+</body>
+</html>
