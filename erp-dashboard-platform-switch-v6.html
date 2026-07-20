@@ -238,6 +238,7 @@
         }
 
         .dropdown-item.has-submenu:hover,
+        .dropdown-item.has-submenu.submenu-open,
         .dropdown-item.single-system:hover {
             color: var(--primary);
             background-color: #f3f4f6;
@@ -267,7 +268,7 @@
             z-index: 120;
         }
 
-        .dropdown-item.has-submenu:hover .submenu {
+        .dropdown-item.has-submenu.submenu-open .submenu {
             display: flex;
         }
 
@@ -823,6 +824,7 @@
 
         let activePlatformId = 'operation';
         let activeSystemName = '全渠道系统';
+        let submenuCloseTimer = null;
 
         // 初始化下拉菜单
         function initDropdowns() {
@@ -850,6 +852,8 @@
                 } else {
                     item.appendChild(createSubmenuIndicator());
                     item.appendChild(createSystemSubmenu(p));
+                    item.onmouseenter = () => openSubmenu(item);
+                    item.onmouseleave = () => scheduleCloseSubmenu(item);
                 }
 
                 platformMenu.appendChild(item);
@@ -859,6 +863,14 @@
         function createSystemSubmenu(platform) {
             const submenu = document.createElement('div');
             submenu.className = 'submenu';
+            submenu.onmouseenter = (e) => {
+                e.stopPropagation();
+                cancelSubmenuClose();
+            };
+            submenu.onmouseleave = (e) => {
+                e.stopPropagation();
+                scheduleCloseSubmenu(submenu.closest('.has-submenu'));
+            };
             platform.systems.forEach(sys => {
                 const item = document.createElement('div');
                 item.className = 'dropdown-item';
@@ -876,6 +888,32 @@
                 submenu.appendChild(item);
             });
             return submenu;
+        }
+
+        function openSubmenu(item) {
+            cancelSubmenuClose();
+            document.querySelectorAll('.has-submenu.submenu-open').forEach(openItem => {
+                if (openItem !== item) {
+                    openItem.classList.remove('submenu-open');
+                }
+            });
+            item.classList.add('submenu-open');
+        }
+
+        function scheduleCloseSubmenu(item) {
+            cancelSubmenuClose();
+            submenuCloseTimer = setTimeout(() => {
+                if (item) {
+                    item.classList.remove('submenu-open');
+                }
+            }, 180);
+        }
+
+        function cancelSubmenuClose() {
+            if (submenuCloseTimer) {
+                clearTimeout(submenuCloseTimer);
+                submenuCloseTimer = null;
+            }
         }
 
         function createSubmenuIndicator() {
@@ -935,6 +973,8 @@
 
         // 关闭所有下拉菜单
         function closeAllDropdowns() {
+            cancelSubmenuClose();
+            document.querySelectorAll('.has-submenu.submenu-open').forEach(item => item.classList.remove('submenu-open'));
             document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active'));
         }
 
