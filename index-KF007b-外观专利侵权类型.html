@@ -1,0 +1,2158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知识产权 · KF-007b 外观专利 + AI命中明细</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body,#app{height:100%}
+body{font-family:Helvetica Neue,Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;font-size:14px;color:#303133;background:#fff;-webkit-font-smoothing:antialiased}
+a{color:#72a0fd;text-decoration:none;cursor:pointer}
+button{font:inherit}
+
+.layout-container{display:flex;height:100%;overflow:hidden}
+.layout-menu{width:80px;height:100%;display:flex;flex-direction:column;background:#333738;flex-shrink:0}
+.layout-logo{height:50px;display:flex;align-items:center;justify-content:center;background:#202122;color:#7e7e81;font-weight:600;font-size:14px}
+.menu-vertical{flex:1;overflow:hidden;padding-top:8px}
+.menu-item{height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#7e7e81;font-size:12px;cursor:pointer;position:relative}
+.menu-item .ico{width:20px;height:20px;margin-bottom:4px;opacity:.75}
+.menu-item.active,.menu-item:hover{color:#fff}
+.menu-item.active::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:#3375f5}
+.layout-right{flex:1;min-width:0;display:flex;flex-direction:column}
+.layout-header{height:40px;background:#0d69ff;color:#eef3fa;display:flex;align-items:center;justify-content:space-between;padding:0 16px 0 12px;flex-shrink:0}
+.layout-header .page-title{font-size:14px;font-weight:500}
+.layout-header-right{display:flex;align-items:center;gap:20px;font-size:14px}
+.layout-header-right span{cursor:pointer;white-space:nowrap}
+.layout-main{flex:1;min-height:0;margin:0;padding:8px;background:#eef3fa;overflow:auto}
+
+.page-flex-colunm{height:100%;display:flex;flex-direction:column;justify-content:space-between;min-height:0}
+.search-box{position:sticky;top:-10px;width:100%;padding:8px 5px;background:#EEF3FA;z-index:100}
+.search-space{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.el-input,.el-select{
+  height:32px;border:1px solid #dcdfe6;border-radius:4px;padding:0 11px;background:#fff;color:#606266;outline:none;font-size:14px
+}
+.el-input::placeholder{color:#a8abb2}
+.el-input:hover,.el-select:hover{border-color:#c0c4cc}
+.el-input:focus,.el-select:focus{border-color:#409eff}
+.el-select{appearance:none;padding-right:28px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 1024 1024'%3E%3Cpath fill='%23a8abb2' d='M831.872 340.864L512 652.672 192.128 340.864a30.592 30.592 0 0 0-42.752 0 29.12 29.12 0 0 0 0 41.6L489.664 714.24a32 32 0 0 0 44.672 0l340.288-331.712a29.12 29.12 0 0 0 0-41.728 30.592 30.592 0 0 0-42.752 0z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;color:#a8abb2}
+.el-select.has-val{color:#606266}
+.date-box{width:360px;display:flex;align-items:center;height:32px;border:1px solid #dcdfe6;border-radius:4px;background:#fff;padding:0 10px;color:#a8abb2;font-size:13px;gap:8px}
+.date-box .sep{color:#dcdfe6}
+.el-button{display:inline-flex;align-items:center;justify-content:center;height:32px;padding:0 15px;border-radius:4px;border:1px solid #dcdfe6;background:#fff;color:#606266;cursor:pointer;font-size:14px;line-height:1;gap:4px}
+.el-button:hover{color:#409eff;border-color:#c6e2ff;background:#ecf5ff}
+.el-button--primary{background:#409eff;border-color:#409eff;color:#fff}
+.el-button--primary:hover{background:#66b1ff;border-color:#66b1ff;color:#fff}
+.el-button--small{height:24px;padding:5px 11px;font-size:12px}
+.el-button.is-text,.el-button--text{border:0;background:transparent;color:#409eff;padding:4px;height:20px}
+.el-button.is-text:hover{background:transparent;color:#79bbff}
+.search-ico{width:14px;height:14px;fill:currentColor}
+
+.card{height:100%;display:flex;flex-direction:column;flex:1;min-height:0;background:#fff;border-radius:4px;border:1px solid #e4e7ed;overflow:hidden}
+.card .header{padding:12px 16px 0}
+.flex-layout{display:flex;justify-content:space-between;align-items:center;width:100%}
+.flex-end{display:flex;justify-content:flex-end}
+.flex-center-box{display:flex;align-items:center}
+.card .table{flex:1;height:0;margin-top:8px;overflow:auto;padding:0 8px}
+.table-pagination-bar{display:flex;padding:8px;justify-content:flex-end;align-items:center;gap:8px;border-top:1px solid #ebeef5}
+.table-pagination-bar .info{color:#606266;font-size:13px}
+.pager{display:inline-flex;align-items:center;gap:4px}
+.pager .num{min-width:24px;height:24px;padding:0 4px;border-radius:2px;border:1px solid transparent;background:#fff;color:#606266;font-size:13px;cursor:pointer;text-align:center;line-height:22px}
+.pager .num.active{background:#409eff;color:#fff}
+.pager .num:hover:not(.active){color:#409eff}
+.pager select{height:24px;border:1px solid #dcdfe6;border-radius:3px;padding:0 4px;font-size:12px;color:#606266;background:#fff}
+
+table.lanjing-table{width:100%;min-width:1760px;border-collapse:separate;border-spacing:0}
+table.lanjing-table th{
+  background:#EEF3FA!important;height:40px;color:#A5AEBA!important;font-size:12px!important;font-weight:600!important;
+  text-align:left;padding:4px 6px;border-bottom:1px solid #ebeef5;position:sticky;top:0;z-index:2
+}
+table.lanjing-table td{font-size:13px;padding:8px 4px;border-bottom:1px solid #ebeef5;vertical-align:top;color:#303133;line-height:1.4}
+table.lanjing-table tr:hover td{background:#f5f7fa}
+.col-check{width:40px;text-align:center}
+.col-plat{width:150px}
+.col-sku{width:280px}
+.col-price{width:90px}
+.col-seller{width:130px}
+.col-scale{width:72px}
+.col-inf{width:160px}
+.ban-quan-dp{color:#b867eb;border:1px solid #b867eb;width:100%;text-align:center;padding:0 6px;font-size:12px;display:inline-block;box-sizing:border-box}
+.col-simn{width:80px;text-align:center}
+.col-sim{width:200px}
+.col-prio{width:100px}
+.col-status{width:100px}
+.col-user{width:120px}
+.col-date{width:190px}
+.col-opuser{width:120px}
+.col-ops{width:90px}
+
+.bgc-box{padding:0 7px;display:inline-block;color:#fff;line-height:20px;font-size:12px}
+.border-box{padding:0 7px;border:1px solid #dcdfe6;display:inline-block;line-height:20px;font-size:12px;color:#333}
+.blue{background-color:#409eff}
+.orange{background-color:#ff9900}
+.red{background-color:#ff0000}
+.green{background-color:#12bf12}
+.word-blue{color:#5ea5ec}
+.word-ellipsis{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:inline-block;width:218px;color:#72a0fd;vertical-align:bottom}
+.prod-info{display:flex;align-items:center}
+.left-img-area{display:flex;flex-direction:column;align-items:center;margin-right:6px}
+.list-img{width:40px;height:40px;background:#f5f7fa;border:1px solid #ebeef5;object-fit:cover;display:flex;align-items:center;justify-content:center;color:#c0c4cc;font-size:10px}
+.right-text-area{text-align:left;font-size:13px;line-height:1.5}
+.right-text-area p{margin:0}
+.ban-quan{color:#409eff;border:1px solid #409eff;width:100%;text-align:center;padding:0 6px;font-size:12px;display:inline-block;box-sizing:border-box}
+.similar-box{width:100%;display:flex}
+.similar-box div{border:1px solid #b867eb;color:#b867eb;flex:1;text-align:center;font-size:11px;padding:0 2px;line-height:18px}
+.status-item{display:inline-block;padding:0 6px;line-height:20px;font-size:12px}
+.light-white{background-color:#d9dee6da}
+.light-blue{background-color:#abd4fd}
+.light-orange{background-color:#f99}
+.light-purple{background-color:#daa2fd}
+.light-yellow{background-color:#cfe672}
+.light-grey{background-color:#7e7e7e;color:#fff}
+.fixed-row-bg{background-color:#ecffec}
+.sku-list{justify-content:space-between;gap:6px;margin-bottom:2px}
+.operate-btn{margin:0!important;padding:4px!important;display:flex!important;height:20px!important;font-size:12px!important}
+.ops-col{display:flex;flex-direction:column;align-items:flex-start}
+.date-cell,.op-cell{font-size:12px;line-height:18px;color:#303133}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:4000;padding:10px 16px;border-radius:4px;background:#f0f9eb;border:1px solid #e1f3d8;color:#67c23a;font-size:14px;opacity:0;pointer-events:none;transition:.2s}
+.toast.show{opacity:1}
+.toast.warn{background:#fdf6ec;border-color:#faecd8;color:#e6a23c}
+.mask{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:3000;display:none;align-items:center;justify-content:center}
+.mask.show{display:flex}
+.msgbox{width:420px;background:#fff;border-radius:4px;box-shadow:0 2px 12px rgba(0,0,0,.1);overflow:hidden}
+.msgbox-hd{padding:15px 15px 10px;font-size:18px;color:#303133;position:relative}
+.msgbox-hd .x{position:absolute;right:15px;top:15px;border:0;background:0;font-size:16px;color:#909399;cursor:pointer}
+.msgbox-bd{padding:10px 15px;display:flex;gap:12px;align-items:flex-start;color:#606266;font-size:14px;line-height:24px}
+.msgbox-ico{width:24px;height:24px;border-radius:50%;background:#e6a23c;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0}
+.msgbox-ft{padding:5px 15px 15px;text-align:right}
+.msgbox-ft .el-button{margin-left:10px}
+.msgbox.form{width:480px}
+.msgbox-form{padding:10px 15px 0;display:flex;flex-direction:column;gap:14px}
+.msgbox-form .row label{display:block;margin-bottom:6px;color:#606266;font-size:14px}
+.msgbox-form .row label.req::before{content:"*";color:#f56c6c;margin-right:4px}
+.msgbox-form .row .el-select,.msgbox-form .row textarea{width:100%}
+.msgbox-form .row textarea{min-height:80px;padding:8px 11px;border:1px solid #dcdfe6;border-radius:4px;resize:vertical;font:inherit;color:#606266;outline:none}
+.close-reason-chip{display:inline-block;margin-top:4px;padding:0 6px;line-height:18px;font-size:11px;color:#606266;background:#f4f4f5;border-radius:2px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:top}
+.scale-tag{display:inline-block;padding:0 6px;line-height:20px;font-size:12px;border-radius:2px;border:1px solid #dcdfe6;color:#606266;background:#fff}
+.scale-tag.s-xl{color:#fff;background:#f56c6c;border-color:#f56c6c}
+.scale-tag.s-l{color:#fff;background:#e6a23c;border-color:#e6a23c}
+.scale-tag.s-m{color:#fff;background:#409eff;border-color:#409eff}
+.scale-tag.s-s{color:#606266;background:#f4f4f5;border-color:#e4e7ed}
+.scale-tag.s-na{color:#c0c4cc}
+.batch-note{margin:0 0 12px;padding:8px 10px;background:#fdf6ec;border:1px solid #faecd8;color:#e6a23c;font-size:12px;line-height:1.5;border-radius:4px}
+.batch-urls{margin:0 0 14px;padding:10px 12px;background:#fafafa;border:1px solid #ebeef5;border-radius:4px;font-size:13px;line-height:1.7;color:#606266}
+.batch-urls .code{color:#409eff;margin-right:8px}
+.hit{background:#ffe58f;padding:0 1px;border-radius:1px}
+.close-info{margin:10px 0;padding:10px 12px;background:#fafafa;border:1px solid #ebeef5;border-radius:4px;color:#606266;font-size:13px;line-height:1.7}
+.ver-tag{position:fixed;right:12px;bottom:12px;z-index:2000;background:rgba(13,105,255,.9);color:#fff;font-size:12px;padding:6px 10px;border-radius:4px;pointer-events:none}
+.ev-note{margin:0 0 10px;padding:8px 10px;background:#f4f4f5;border:1px solid #e4e7ed;color:#909399;font-size:12px;line-height:1.5;border-radius:4px}
+.ev-actions{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.ev-actions .el-button:disabled,.el-button.is-disabled{opacity:.5;cursor:not-allowed;color:#a8abb2;border-color:#e4e7ed;background:#fff}
+.ev-timeline{list-style:none;margin:0;padding:0}
+.ev-timeline li{position:relative;padding:0 0 14px 14px;border-left:2px solid #e4e7ed;margin-left:6px}
+.ev-timeline li:last-child{padding-bottom:0}
+.ev-timeline li::before{content:"";position:absolute;left:-5px;top:4px;width:8px;height:8px;border-radius:50%;background:#c0c4cc}
+.ev-timeline li.done::before{background:#67c23a}
+.ev-timeline li.pending::before{background:#e6a23c}
+.ev-timeline li.fail::before{background:#f56c6c}
+.ev-timeline .ev-hd{font-size:13px;color:#303133;margin-bottom:4px}
+.ev-timeline .ev-bd{font-size:12px;color:#909399;line-height:1.6}
+.ev-tag{display:inline-block;padding:0 6px;line-height:18px;font-size:12px;border-radius:2px;margin-right:6px}
+.ev-tag.pending{background:#fdf6ec;color:#e6a23c}
+.ev-tag.done{background:#f0f9eb;color:#67c23a}
+.ev-tag.fail{background:#fef0f0;color:#f56c6c}
+.ev-sub{font-size:13px;font-weight:600;color:#606266;margin:4px 0 8px}
+.inf-callout{
+  border:1px solid #f56c6c;color:#f56c6c;padding:8px 12px;min-width:120px;
+  font-size:13px;line-height:1.7;background:#fff;flex-shrink:0
+}
+/* 分类型对比卡（对齐参考稿：风险命中 → 左右对比 → 相似度研判） */
+.compare-stack{margin:12px 0;display:flex;flex-direction:column;gap:12px}
+.cmp-card{border:1px solid #e4e7ed;border-radius:4px;background:#fff;overflow:hidden}
+.cmp-card.tm{border-left:3px solid #f56c6c}
+.cmp-card.cp{border-left:3px solid #409eff}
+.cmp-card.dp{border-left:3px solid #e6a23c}
+.cmp-hd{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;background:#fafafa;border-bottom:1px solid #ebeef5}
+.cmp-hd .title{font-size:14px;font-weight:600;color:#303133}
+.cmp-level{display:inline-block;padding:0 8px;line-height:20px;font-size:12px;border-radius:2px;font-weight:500}
+.cmp-level.high{background:#fef0f0;color:#f56c6c}
+.cmp-level.none{background:#f4f4f5;color:#909399}
+.cmp-body{padding:12px}
+.cmp-hits{margin:0 0 12px;font-size:13px;color:#606266;line-height:1.7}
+.cmp-hits .k{color:#909399;margin-right:4px}
+.cmp-hits .tag{display:inline-block;margin:2px 6px 2px 0;padding:0 8px;line-height:22px;font-size:12px;border-radius:2px;background:#f4f4f5;color:#606266}
+.cmp-hits .tag.on{background:#fef0f0;color:#f56c6c}
+.cmp-hits .tag.on.cp{background:#ecf5ff;color:#409eff}
+.cmp-hits .tag.on.dp{background:#fdf6ec;color:#e6a23c}
+.cmp-hits .empty{color:#c0c4cc}
+.hit-points{display:flex;flex-direction:column;gap:0;margin-top:0}
+.hit-point{
+  display:flex;align-items:flex-start;gap:16px;
+  padding:12px 0;border-bottom:1px solid #ebeef5;background:transparent;border-radius:0;border-left:0;border-right:0;border-top:0
+}
+.hit-point:last-child{border-bottom:0;padding-bottom:0}
+.hit-point .hp-left{width:140px;flex-shrink:0;padding-top:2px}
+.hit-point .hp-name{display:block;font-size:13px;font-weight:600;color:#303133;line-height:1.4}
+.hit-point .hp-score{display:block;margin-top:4px;font-size:13px;color:#f56c6c;font-variant-numeric:tabular-nums}
+.hit-point .hp-right{flex:1;min-width:0}
+.hit-point .hp-text{padding:8px 10px;background:#fff;border:1px solid #ebeef5;border-radius:2px;font-size:13px;line-height:1.6;color:#303133;word-break:break-word}
+.hit-point .hp-text .hit{background:#ffe58f;padding:0 2px;border-radius:1px;color:#303133}
+.hit-point .hp-text-cmp{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+.hit-point .hp-text-cmp .side{flex:1 1 200px;min-width:0;display:flex;flex-direction:column;gap:4px}
+.hit-point .hp-text-cmp .lab{font-size:12px;color:#909399;line-height:1.2}
+.hit-point .hp-text-cmp .mid{align-self:center;color:#c0c4cc;font-weight:700;padding:0 2px;font-size:14px}
+.hit-point .hp-imgs{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}
+.hit-point .hp-imgs.solo .side{max-width:220px}
+.hit-point .hp-imgs .side{display:flex;flex-direction:column;align-items:center;gap:4px}
+.hit-point .hp-imgs .frame{position:relative;width:160px;height:160px;background:#f5f7fa;border:1px solid #e4e7ed;border-radius:2px;overflow:hidden;display:flex;align-items:center;justify-content:center;cursor:zoom-in}
+.hit-point .hp-imgs .frame img{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.hit-point .hp-imgs .frame .box{position:absolute;border:2px solid #f56c6c;pointer-events:none}
+.hit-point .hp-imgs .mid{align-self:center;color:#c0c4cc;font-weight:700;padding:0 4px;font-size:14px}
+.hit-point .hp-img-stack{display:flex;flex-direction:column;gap:12px;width:100%}
+.hit-point .hp-img-pair{
+  display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;
+  padding:10px;border:1px solid #ebeef5;border-radius:4px;background:#fafafa
+}
+.hit-point .hp-img-pair .pair-score{width:100%;font-size:12px;color:#909399;margin:0 0 2px}
+.hit-point .hp-img-pair .pair-tip{width:100%;margin-top:8px;padding:8px 10px;background:#fff;border:1px solid #ebeef5;border-radius:2px;font-size:13px;line-height:1.6;color:#303133}
+.seller-meta{margin:8px 0;font-size:13px;line-height:1.8;color:#303133}
+.seller-meta .meta-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin:4px 0}
+.seller-meta .k{color:#606266}
+.seller-meta a.listing-link{color:#409eff;text-decoration:none;word-break:break-all}
+.seller-meta a.listing-link:hover{text-decoration:underline}
+.seller-meta .price{color:#f56c6c}
+.cmp-empty-body{padding:8px 0;color:#c0c4cc;font-size:13px}
+.cmp-body{padding:4px 12px 12px}
+
+.cmp-vs{display:flex;align-items:flex-start;justify-content:center;gap:16px;flex-wrap:wrap;padding:8px 0 12px;border-top:1px dashed #ebeef5;border-bottom:1px dashed #ebeef5}
+.cmp-vs .side{flex:1;min-width:160px;max-width:280px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.cmp-vs .frame{position:relative;width:100%;max-width:240px;aspect-ratio:1;background:#f5f7fa;border:1px solid #e4e7ed;border-radius:2px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.cmp-vs .frame img{width:100%;height:100%;object-fit:cover}
+.cmp-vs .frame .ph{color:#c0c4cc;font-size:13px;text-align:center;padding:12px;line-height:1.5}
+.cmp-vs .frame .box{position:absolute;border:2px solid #f56c6c;box-shadow:0 0 0 1px rgba(245,108,108,.25);pointer-events:none}
+.cmp-vs .lbl{font-size:12px;color:#909399}
+.cmp-vs .mid{align-self:center;font-size:18px;font-weight:700;color:#c0c4cc;letter-spacing:1px;padding:40px 4px 0}
+.cmp-judge{margin-top:12px;font-size:13px;color:#606266;line-height:1.7}
+.cmp-judge .score-line{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.cmp-judge .score-line .k{color:#909399}
+.cmp-judge .score{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.cmp-judge .score.high{color:#f56c6c}
+.cmp-judge .score.mid{color:#e6a23c}
+.cmp-judge .score.low{color:#409eff}
+.cmp-judge .score.none{color:#c0c4cc;font-size:16px}
+.cmp-judge ul{margin:0;padding-left:18px}
+.cmp-judge li{margin:2px 0}
+.cmp-note{margin-top:8px;font-size:12px;color:#909399;line-height:1.5}
+.desc-plain{margin-top:8px;padding:10px;max-height:120px;overflow:auto;color:#606266;border:1px solid #ebeef5;background:#fff;font-size:13px;line-height:1.6}
+.infringement-inline{
+  display:inline-block;padding:0 6px;line-height:18px;font-size:12px;
+  border:1px solid #f56c6c;color:#f56c6c;border-radius:2px
+}
+.detail-media{display:flex;gap:12px;align-items:flex-start;margin:12px 0;flex-wrap:wrap}
+.detail-media .img-thumbs{display:flex;flex-direction:column;gap:6px}
+.detail-media .img-thumbs .thumb{
+  width:48px;height:48px;border:2px solid #e4e7ed;border-radius:2px;object-fit:cover;cursor:pointer;background:#f5f7fa
+}
+.detail-media .img-thumbs .thumb.active{border-color:#409eff}
+.detail-media .media-callouts{display:flex;flex-direction:column;gap:8px;padding-top:8px}
+.desc-row{display:flex;gap:12px;align-items:flex-start;margin-top:8px}
+.desc-row .desc-body{flex:1;min-width:0;padding:10px;max-height:180px;overflow:auto;color:#606266;border:1px solid #ebeef5;background:#fff}
+.patent-block{margin:16px 0 8px;padding:12px 14px;border:1px solid #e4e7ed;border-radius:4px;background:#fafafa}
+.patent-block h4{margin:0 0 10px;font-size:14px;font-weight:600;color:#303133}
+.patent-meta-bar{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:13px;color:#303133;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #ebeef5;line-height:1.5}
+.patent-meta-bar .k{color:#909399;margin-right:4px}
+.patent-vs{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.patent-vs .side{display:flex;flex-direction:column;align-items:center;gap:6px}
+.patent-vs .side .img-big{width:160px;height:160px}
+.patent-vs .p-thumbs{display:flex;gap:6px;margin-bottom:2px}
+.patent-vs .p-thumbs .thumb{
+  width:40px;height:40px;border:2px solid #e4e7ed;border-radius:2px;object-fit:cover;cursor:pointer;background:#f5f7fa
+}
+.patent-vs .p-thumbs .thumb.active{border-color:#409eff}
+.patent-vs .vs{align-self:center;color:#c0c4cc;font-size:12px;padding:0 4px}
+.patent-vs .img-label{font-size:12px;color:#909399}
+.detail-media .img-label{font-size:12px;color:#909399;text-align:center;margin-top:4px}
+.detail-media .img-big.main{width:220px;height:220px}
+
+.detail-page,.form-page{background:#fff;min-height:100%;display:flex;flex-direction:column}
+.detail-body{display:flex;flex:1;min-height:0}
+.detail-left{flex:14;padding:10px 16px;overflow:auto;border-right:1px solid #ebeef5}
+.detail-right{flex:10;padding:10px;overflow:auto;background:#fafafa}
+.item-box{margin:10px}
+.item-box h3{font-size:16px;margin-bottom:10px}
+.box-text{display:inline-block;padding:0 7px;line-height:20px}
+.bgc-text{color:#fff;background:#3dc0eb}
+.platform-text{color:#010101;border:1px solid #3deb91}
+.status-grid{display:flex;flex-wrap:nowrap;justify-content:stretch;align-items:stretch;margin:10px 0}
+.status-grid>div{flex:1 1 0;min-width:0;border:1px solid #32beec;margin:0 3px;text-align:center;padding:4px 2px;font-size:11px}
+.status-grid>div:first-child{margin-left:0}
+.status-grid>div:last-child{margin-right:0}
+.status-grid>div p{line-height:18px;color:#32beec;word-break:break-all}
+.status-grid-slim>div p:last-child{color:#303133;font-size:13px;font-weight:500}
+.cmp-card.is-empty{opacity:.92;background:#fcfcfc}
+.cmp-card.is-empty .cmp-vs{opacity:.85}
+.cmp-level.none{background:#f4f4f5;color:#909399}
+
+.risk-box{padding:10px;margin:5px;border:1px solid #32beec;color:#32beec;text-align:center}
+.bottom-button{margin:20px;display:flex;justify-content:flex-end;gap:8px}
+.block{background:#fff;padding:14px;margin-bottom:12px;border-radius:4px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.block h3{font-size:15px;font-weight:600;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #ebeef5}
+.form-wrap{max-width:900px;padding:20px;flex:1}
+.form-item{margin-bottom:18px}
+.form-item label{display:block;margin-bottom:8px;color:#606266;font-size:14px}
+.form-item label.req::before{content:"*";color:#f56c6c;margin-right:4px}
+.form-item .el-input,.form-item .el-select,textarea.el-textarea{width:100%}
+textarea.el-textarea{min-height:120px;padding:8px 11px;border:1px solid #dcdfe6;border-radius:4px;resize:vertical;font:inherit;color:#606266;outline:none}
+.warn-red{color:#f56c6c;margin:12px 0;line-height:1.5}
+.img-pair{display:flex;align-items:center;gap:10px;margin:12px 0}
+.img-big{width:160px;height:160px;background:#f5f7fa;border:1px solid #e4e7ed;display:flex;align-items:center;justify-content:center;color:#909399;font-size:12px;overflow:hidden}
+.img-big img{width:100%;height:100%;object-fit:cover}
+.img-compare{display:flex;gap:16px;margin:12px 0;flex-wrap:wrap;align-items:flex-start}
+.img-compare .img-col{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:140px}
+.img-compare .img-thumbs{display:flex;flex-direction:column;gap:6px}
+.img-compare .img-thumbs.row{flex-direction:row}
+.img-compare .thumb{
+  width:48px;height:48px;border:2px solid #e4e7ed;border-radius:2px;object-fit:cover;cursor:pointer;background:#f5f7fa
+}
+.img-compare .thumb.active{border-color:#409eff}
+.img-compare .img-label{font-size:12px;color:#909399}
+.img-compare .img-meta{font-size:12px;color:#606266;text-align:center;line-height:1.4;max-width:180px}
+.img-compare .img-big{width:180px;height:180px}
+.mini-table{width:100%;border-collapse:collapse;font-size:12px}
+.mini-table th{background:#EEF3FA;color:#A5AEBA;padding:6px;text-align:left;font-weight:600}
+.mini-table td{padding:6px;border-top:1px solid #ebeef5}
+.tag-sale{display:inline-block;width:43px;font-size:10px;line-height:16px;height:16px;text-align:center;background:#81d3f866;color:#027db4;border:1px solid #02a7f0}
+.sim-scroll{max-height:400px;overflow:auto;border:1px solid #ebeef5}
+.sim-prod{display:flex;gap:8px;align-items:flex-start}
+.sim-prod .sim-thumb{width:43px;height:43px;background:#f5f7fa;border:1px solid #ebeef5;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#c0c4cc;font-size:10px}
+.sim-prod .sim-meta{font-size:12px;line-height:1.5;min-width:0}
+.sim-prod .sim-meta .line{display:block;color:#303133}
+.hist-name{font-size:13px;color:#606266;margin:0 0 8px}
+.hist-total{border:1px solid #32beec;color:#32beec;text-align:center;padding:10px;margin-bottom:6px;font-size:14px}
+.hist-total .n{font-size:18px;font-weight:600}
+.hist-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+@media (max-width:1100px){.hist-grid{grid-template-columns:repeat(3,1fr)}}
+.hist-cell{border:1px solid #32beec;color:#32beec;text-align:center;padding:6px 4px;font-size:12px;line-height:1.4}
+.hist-cell .lab{display:block;margin-bottom:2px}
+.hist-cell .n{display:block;color:#f56c6c;font-size:14px;font-weight:600}
+.hist-cell .n.na{color:#32beec;font-weight:400}
+.hist-cell .n.muted{color:#909399;font-weight:400}
+.hist-cell.clickable{cursor:pointer}
+.hist-cell.clickable:hover{background:#ecf5ff}
+.mini-table .low-risk{color:#f56c6c}
+.patent-imgs{display:flex;gap:6px;align-items:center}
+.patent-imgs .pt-img{
+  width:48px;height:48px;border:1px solid #ebeef5;border-radius:2px;background:#f5f7fa;
+  object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:10px;color:#909399;cursor:zoom-in
+}
+.patent-dlg .img-slot .slot-box[src]{width:100%;height:88px;display:block}
+.patent-imgs .pt-img.empty{background:#fafafa;color:#c0c4cc;cursor:default}
+.pt-status{display:inline-block;padding:0 6px;line-height:18px;font-size:12px;border-radius:2px}
+.pt-status.ready{background:#f0f9eb;color:#67c23a}
+.pt-status.filled{background:#ecf5ff;color:#409eff}
+.pt-status.pending{background:#fdf6ec;color:#e6a23c}
+.pt-status.paused{background:#f4f4f5;color:#909399}
+.pt-official{margin-top:3px;font-size:12px;line-height:1.45;word-break:break-all}
+.pt-official a{color:#409eff}
+.pt-miss{display:block;margin-top:2px;font-size:12px;color:#e6a23c;line-height:1.4}
+.pt-miss.ok{color:#409eff}
+.pt-sync{font-size:12px;color:#909399;line-height:1.4}
+.patent-dlg{width:560px;background:#fff;border-radius:4px;padding:20px 24px;max-height:80vh;overflow:auto}
+.patent-dlg h3{margin:0 0 16px;font-size:16px}
+.patent-dlg .form-row{margin-bottom:12px}
+.patent-dlg label{display:block;font-size:13px;color:#606266;margin-bottom:4px}
+.patent-dlg .form-row .el-input,.patent-dlg .form-row .el-select{width:100%}
+.patent-dlg .img-slots{display:flex;gap:12px}
+.patent-dlg .img-slot{flex:1;text-align:center}
+.patent-dlg .img-slot .slot-box{
+  height:88px;border:1px dashed #dcdfe6;border-radius:4px;background:#fafafa;
+  display:flex;align-items:center;justify-content:center;font-size:12px;color:#909399;margin-bottom:6px
+}
+.patent-dlg .dlg-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
+.preview-mask{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:3500;display:none;align-items:center;justify-content:center}
+.preview-mask.show{display:flex}
+.preview-mask img{max-width:80vw;max-height:80vh;border-radius:4px;background:#fff}
+.layout-main.is-board{overflow:hidden;display:flex;flex-direction:column;position:relative}
+.sr-wrap{flex:1;min-height:0;display:flex;flex-direction:column;background:#fff;border:1px solid #e4e7ed;border-radius:4px;overflow:hidden}
+.sr-search{padding:10px 12px;border-bottom:1px solid #ebeef5;background:#fafafa;flex-shrink:0}
+.sr-kpi{display:flex;gap:10px;padding:12px;border-bottom:1px solid #ebeef5;flex-shrink:0}
+.sr-card{flex:1;min-width:0;padding:12px 14px;border:1px solid #ebeef5;border-radius:6px;background:#fafcff}
+.sr-card .t{font-size:12px;color:#909399;margin-bottom:4px}
+.sr-card .v{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+.sr-card .s{font-size:12px;color:#909399;margin-top:4px}
+.sr-table-wrap{flex:1;min-height:0;overflow:auto;padding:0 8px}
+table.sr-table{width:100%;min-width:1100px;border-collapse:separate;border-spacing:0}
+table.sr-table th{background:#EEF3FA!important;height:40px;color:#A5AEBA!important;font-size:12px!important;font-weight:600!important;text-align:left;padding:4px 8px;border-bottom:1px solid #ebeef5;position:sticky;top:0;z-index:2;white-space:nowrap}
+table.sr-table td{font-size:13px;padding:10px 8px;border-bottom:1px solid #ebeef5;vertical-align:middle}
+table.sr-table tr:hover td{background:#f5f7fa}
+table.sr-table tr.active td{background:#ecf5ff}
+th.sr-sort{cursor:pointer;user-select:none}
+th.sr-sort .arr{margin-left:4px;font-size:10px;color:#c0c4cc}
+th.sr-sort.is-on .arr{color:#409eff}
+.sr-pager{display:flex;padding:8px 12px;justify-content:flex-end;align-items:center;gap:8px;border-top:1px solid #ebeef5;flex-shrink:0;font-size:13px;color:#606266}
+.sr-mask{position:absolute;inset:0;background:rgba(0,0,0,.35);z-index:20}
+.sr-drawer{position:absolute;top:0;right:0;bottom:0;width:400px;max-width:92%;display:flex;flex-direction:column;background:#fff;z-index:21;box-shadow:-8px 0 24px rgba(0,0,0,.18);animation:srIn .2s ease}
+@keyframes srIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.sr-hd{padding:12px 14px;border-bottom:1px solid #ebeef5;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-shrink:0}
+.sr-hd .name{font-size:16px;font-weight:600;margin-bottom:6px;word-break:break-all}
+.sr-hd .meta{font-size:12px;color:#606266}
+.sr-x{border:0;background:transparent;font-size:18px;color:#909399;cursor:pointer;line-height:1}
+.sr-bd{flex:1;min-height:0;overflow:auto;padding:12px 14px}
+.sr-ft{padding:10px 14px;border-top:1px solid #ebeef5;display:flex;gap:8px;flex-wrap:wrap;background:#fafafa;flex-shrink:0}
+.sr-metrics{display:flex;gap:8px;margin-bottom:14px}
+.sr-m{flex:1;min-width:0;padding:10px 8px;background:#f5f7fa;border-radius:4px;text-align:center}
+.sr-m .k{font-size:12px;color:#909399;margin-bottom:4px}
+.sr-m .n{font-size:20px;font-weight:700}
+.sr-m .n.em{color:#f56c6c}
+.sr-strip{display:flex;gap:4px}
+.sr-strip .c{flex:1;text-align:center;padding:6px 2px;border:1px solid #e4e7ed;border-radius:2px}
+.sr-strip .c .l{font-size:11px;color:#909399;margin-bottom:2px}
+.sr-strip .c .n{font-size:16px;font-weight:600}
+.sr-mini{width:100%;border-collapse:collapse;font-size:12px}
+.sr-mini th{text-align:left;color:#909399;font-weight:500;padding:4px 0;border-bottom:1px solid #ebeef5}
+.sr-mini td{padding:6px 0;border-bottom:1px solid #f2f3f5;vertical-align:top}
+.sr-sec{margin-bottom:16px}
+.sr-sec h4{font-size:13px;font-weight:600;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div id="app" class="layout-container">
+  <aside class="layout-menu">
+    <div class="layout-logo">ERP</div>
+    <div class="menu-vertical">
+      <div class="menu-item active" data-nav="listing" title="Listing侵权风控">
+        <svg class="ico" viewBox="0 0 24 24"><path fill="currentColor" d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+        <span>管理</span>
+      </div>
+      <div class="menu-item" data-nav="sellerRisk" title="卖家风险看板">
+        <svg class="ico" viewBox="0 0 24 24"><path fill="currentColor" d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+        <span>看板</span>
+      </div>
+      <div class="menu-item" data-nav="patent" title="外观专利管理">
+        <svg class="ico" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2L2 7l10 5 10-5-10-5zm0 9L2 7v10l10 5 10-5V7l-10 4z"/></svg>
+        <span>专利</span>
+      </div>
+    </div>
+  </aside>
+  <div class="layout-right">
+    <header class="layout-header">
+      <div class="page-title" id="headerTitle">Listing侵权风控</div>
+      <div class="layout-header-right">
+        <span>AI平台</span>
+        <span>项目平台</span>
+        <span>🔔</span>
+        <span>知识产权 ▾</span>
+        <span>用户 ▾</span>
+      </div>
+    </header>
+    <main class="layout-main" id="main"></main>
+  </div>
+</div>
+<div class="ver-tag">KF-007b 分类型对比 · 卖家风险看板</div>
+<div class="toast" id="toast"></div>
+<div class="mask" id="mask"></div>
+<div class="preview-mask" id="previewMask"></div>
+<script>
+(function () {
+  var STATUS = {0:'待确认',1:'待投诉',2:'投诉中',3:'投诉成功',4:'投诉驳回',5:'已关闭'};
+  var STATUS_CLS = {0:'s0 light-white',1:'s1 light-blue',2:'s2 light-orange',3:'s3 light-purple',4:'s4 light-yellow',5:'s5 light-grey'};
+  var PRIO_CLS = {1:'red',2:'orange',3:'blue'};
+  var CLOSE_REASONS = ['授权卖家','链接失效','不构成侵权','重复记录','其他'];
+  var SITES = ['US', 'CA', 'DE', 'GB', 'FR', 'IT', 'ES', 'UK', 'MX', 'CN'];
+  var PLATFORMS = ['Walmart', 'Best Buy', 'Target', "Lowe's", 'The Home Depot', "Sam's Club", 'Costco', 'Kohls', 'Micro Center', 'Staples', 'Rona', 'Tiktok', 'Ebay', 'Amazon', '京东', '淘宝', '天猫', '拼多多', '小红书', '闲鱼', '阿里巴巴国际站', '速卖通'];
+  var BRANDS = ['Govee','GoveeLife','RGBIC','LuminBlend','Dreamview','Govee Home'];
+  var PORTAL_PLATFORMS = ['Walmart','Tiktok','京东','淘宝','天猫','拼多多','小红书','闲鱼','阿里巴巴国际站','速卖通'];
+  // 卖家规模本期不做（2026-08-31），列表/详情不再展示规模
+
+  function isEmailComplaint(p) { return p === 'Ebay'; }
+  function isPortalComplaint(p) { return PORTAL_PLATFORMS.indexOf(p) >= 0; }
+  function canSystemComplaint(p) { return isEmailComplaint(p) || isPortalComplaint(p); }
+
+  function siteOptionsHtml(selected) {
+    return SITES.map(function (s) {
+      return '<option' + (selected === s ? ' selected' : '') + '>' + s + '</option>';
+    }).join('');
+  }
+  function platformOptionsHtml(selected) {
+    return PLATFORMS.map(function (p) {
+      return '<option' + (selected === p ? ' selected' : '') + '>' + p + '</option>';
+    }).join('');
+  }
+
+  var listings = [
+    {id:1,site:'DE',platform:'Ebay',code:'FK202607230002',itemId:'177759167585',title:'Govee Outdoor Wall Light 2 Pack, RGBICWW Permanent Outdoor Lights for House...',sku:'H705A-2-1',asin:'B0DXQ1R7C2',brand:'Govee',price:'64.55',currency:'$',seller:'andystore2010',auth:0,tm:2,cp:0,tmCount:2,cpCount:0,tmSim:100,cpSim:0,tmDetail:'2',cpDetail:'',imgSim:100,descSim:0,simCnt:1,simList:[{sku:'H705A',low:0}],priority:3,status:0,fixed:0,handler:'fengchao_liang',cTime:'2026-07-23 00:01:13',uTime:'2026-07-23 00:01:13',cfTime:'-',sTime:'-',cUser:'系统',uUser:'系统',cfUser:'-',sUser:'-',desc:'Outdoor wall light RGBICWW permanent outdoor lights.',hits:['Govee','RGBICWW'],closeReason:'',closeRemark:'',sales:25000,sellerScale:'大',hitDetail:{tm:[{name:'标题商标命中',score:96},{name:'品牌字段命中',score:100}],cp:[]}},
+    {id:2,site:'US',platform:'Ebay',code:'FK202607230001',itemId:'406507011321',title:'Govee Outdoor Motion Sensor Lights, Wireless Battery Powered Outdoor Lights...',sku:'H617A',asin:'B0F4YCKSXS',brand:'Govee',price:'19.54',currency:'$',seller:'andystore2010',auth:0,tm:1,cp:0,tmCount:1,cpCount:0,tmSim:100,cpSim:0,tmDetail:'1',cpDetail:'',imgSim:100,descSim:0,simCnt:1,simList:[{sku:'H617A',low:0}],priority:3,status:1,fixed:0,handler:'fengchao_liang',cTime:'2026-07-23 00:01:13',uTime:'2026-07-23 00:30:00',cfTime:'2026-07-23 00:30:00',sTime:'-',cUser:'系统',uUser:'fengchao_liang',cfUser:'fengchao_liang',sUser:'-',desc:'Outdoor motion sensor lights wireless battery powered.',hits:['Govee'],closeReason:'',closeRemark:'',sales:25000,sellerScale:'大',hitDetail:{tm:[{name:'标题商标命中',score:100}],cp:[]}},
+    {id:3,site:'US',platform:'Ebay',code:'FK202607220026',itemId:'205667022832',title:'Govee Outdoor String Lights 2, 100ft RGBIC Outdoor Lights Warm White...',sku:'H705B',asin:'B0D3J6K8N1',brand:'Govee',price:'89.99',currency:'$',seller:'lightworld_us',auth:0,tm:3,cp:3,tmCount:3,cpCount:3,tmSim:100,cpSim:92,tmDetail:'3',cpDetail:'3',dp:1,dpDetail:'1',dpSim:88.4,patentId:1,imgSim:100,descSim:92,simCnt:2,simList:[{sku:'H705B',low:1},{sku:'H705A',low:0}],priority:2,status:0,fixed:0,handler:'fengchao_liang',cTime:'2026-07-22 18:20:01',uTime:'2026-07-22 18:20:01',cfTime:'-',sTime:'-',cUser:'系统',uUser:'系统',cfUser:'-',sUser:'-',desc:'RGBIC outdoor string lights with warm white modes. Experience vibrant lighting with RGBIC technology compatible with Govee Home App.',hits:['Govee','RGBIC'],closeReason:'',closeRemark:'',sales:120000,sellerScale:'超大',oppImgs:['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop','https://images.unsplash.com/photo-1565814636199-ae8133055c1c?w=400&h=400&fit=crop','https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=400&h=400&fit=crop'],    hitDetail:{tm:[
+      {name:'品牌字段命中',score:100,kind:'brand',text:'Govee'},
+      {name:'标题商标命中',score:96,kind:'title',highlight:['Govee','RGBIC']},
+      {name:'图片商标命中',score:100,kind:'img_mark',pairs:[
+        {score:100,oppImg:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop',boxes:[{l:10,t:16,w:32,h:12}]},
+        {score:94,oppImg:'https://images.unsplash.com/photo-1565814636199-ae8133055c1c?w=400&h=400&fit=crop',boxes:[{l:8,t:10,w:30,h:14}]}
+      ]}
+    ],cp:[
+      {name:'标题版权命中',score:88,kind:'title',highlight:['RGBIC','Outdoor Lights'],refText:'Govee Outdoor String Lights 2, 100ft RGBIC Outdoor Lights Warm White Modes App Control'},
+      {name:'描述版权命中',score:92,kind:'desc',highlight:['RGBIC','Govee Home App'],refText:'RGBIC outdoor string lights with warm white modes. Compatible with Govee Home App for vibrant lighting scenes.'},
+      {name:'图片版权命中',score:91,kind:'img_product',pairs:[
+        {score:91,oppImg:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop',refImg:'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=400&h=400&fit=crop',boxes:[{l:12,t:18,w:55,h:50}]},
+        {score:87,oppImg:'https://images.unsplash.com/photo-1565814636199-ae8133055c1c?w=400&h=400&fit=crop',refImg:'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=400&h=400&fit=crop',boxes:[{l:20,t:22,w:48,h:40}]}
+      ]}
+    ]},dpPairs:[
+      {score:88.4,oppImg:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop',refImg:'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=400&h=400&fit=crop',boxes:[{l:18,t:12,w:64,h:72}],tip:'整体轮廓相似；按键/开孔布局相似'},
+      {score:82.1,oppImg:'https://images.unsplash.com/photo-1565814636199-ae8133055c1c?w=400&h=400&fit=crop',refImg:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop',boxes:[{l:15,t:20,w:50,h:45}],tip:'正面结构相似'}
+    ]},
+    {id:4,site:'US',platform:'Amazon',code:'FK202607210015',itemId:'B09XYZ1234',title:'Smart Corner Floor Lamp RGBICW WiFi Control Compatible',sku:'H6076',asin:'B0DZ123456',brand:'某某光电',price:'89.99',currency:'$',seller:'EfrontAuctions',auth:0,tm:0,cp:2,tmCount:0,cpCount:2,tmSim:0,cpSim:91.05,tmDetail:'',cpDetail:'2',imgSim:91.05,descSim:45.2,simCnt:2,simList:[{sku:'H6076',low:0},{sku:'H1234',low:1}],priority:2,status:1,fixed:0,handler:'lisi',cTime:'2026-07-21 09:00:00',uTime:'2026-07-21 10:00:00',cfTime:'2026-07-21 10:00:00',sTime:'-',cUser:'系统',uUser:'lisi',cfUser:'lisi',sUser:'-',desc:'Corner floor lamp with smart lighting effects. Official product photography reused without authorization sample.',hits:['RGBICW'],closeReason:'',closeRemark:'',sales:null,sellerScale:'',oppImgs:['https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop','https://images.unsplash.com/photo-1543198126-a8ad8e47fb22?w=400&h=400&fit=crop'],hitDetail:{tm:[],cp:[
+      {name:'描述版权命中',score:45.2,kind:'desc',highlight:['smart lighting','product photography'],refText:'Corner floor lamp with smart lighting effects. Official product photography for authorized retail channels.'},
+      {name:'图片版权命中',score:91.05,kind:'img_product',pairs:[
+        {score:91.05,oppImg:'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop',refImg:'https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=400&h=400&fit=crop',boxes:[{l:10,t:15,w:60,h:55}]}
+      ]}
+    ]}},
+    {id:5,site:'US',platform:'Walmart',code:'FK202607180008',itemId:'WM778899',title:'GoveeLife Smart LED Desk Lamp for Home Office',sku:'H1234',asin:'-',brand:'GoveeLife',price:'29.99',currency:'$',seller:'HomeGlow Inc',auth:0,tm:2,cp:0,tmCount:2,cpCount:0,tmSim:85,cpSim:0,tmDetail:'2',cpDetail:'',imgSim:85,descSim:0,simCnt:1,simList:[{sku:'H1234',low:0}],priority:2,status:2,fixed:1,handler:'wangwu',cTime:'2026-07-10 11:00:00',uTime:'2026-07-18 10:00:00',cfTime:'2026-07-10 15:00:00',sTime:'2026-07-11 09:30:00',cUser:'系统',uUser:'wangwu',cfUser:'wangwu',sUser:'wangwu',desc:'Smart LED desk lamp branded as GoveeLife.',hits:['GoveeLife'],closeReason:'',closeRemark:'',sales:null,sellerScale:'',hitDetail:{tm:[{name:'标题商标命中',score:85},{name:'品牌字段命中',score:80}],cp:[]}},
+    {id:6,site:'US',platform:'Ebay',code:'FK202606280042',itemId:'EB998877',title:'LED Light Bar RGB Smart Home Lighting Kit',sku:'H1234',asin:'B0XX123',brand:'-',price:'12.99',currency:'$',seller:'Authorized Partner A',auth:1,tm:1,cp:0,tmCount:1,cpCount:0,tmSim:62.15,cpSim:0,tmDetail:'1',cpDetail:'',imgSim:62.15,descSim:0,simCnt:1,simList:[{sku:'H1234',low:0}],priority:3,status:5,fixed:0,handler:'zhaoliu',cTime:'2026-06-28 08:00:00',uTime:'2026-06-28 10:00:00',cfTime:'2026-06-28 09:00:00',sTime:'-',cUser:'系统',uUser:'zhaoliu',cfUser:'zhaoliu',sUser:'-',desc:'Closed sample record for authorized seller.',hits:[],closeReason:'授权卖家',closeRemark:'',sales:400,sellerScale:'小',hitDetail:{tm:[{name:'标题商标命中',score:62.15}],cp:[]}},
+    {id:7,site:'UK',platform:'Amazon',code:'FK202607150003',itemId:'B0DEADLINK1',title:'Govee Smart Bulb RGBIC Alexa Compatible (Link Dead)',sku:'H6008',asin:'B0DEADLINK1',brand:'Govee',price:'15.99',currency:'£',seller:'ghost_seller_uk',auth:0,tm:1,cp:0,tmDetail:'1',cpDetail:'',imgSim:88,descSim:0,simCnt:1,simList:[{sku:'H6008',low:0}],priority:3,status:5,fixed:0,handler:'系统',cTime:'2026-07-15 08:00:00',uTime:'2026-07-16 03:00:00',cfTime:'-',sTime:'-',cUser:'系统',uUser:'系统',cfUser:'-',sUser:'-',desc:'Listing page no longer available. Govee RGBIC sample for auto-close.',hits:['Govee','RGBIC'],closeReason:'链接失效',closeRemark:'系统巡检自动关闭',sales:null,sellerScale:''},
+    {id:8,site:'CN',platform:'京东',code:'FK202607220101',itemId:'JD10086001',title:'Dreamview 智能氛围灯带 RGB 客厅卧室',sku:'H61A0',asin:'-',brand:'Dreamview',price:'129.00',currency:'¥',seller:'灯饰优选旗舰店',auth:0,tm:1,cp:0,tmCount:1,cpCount:0,tmSim:90,cpSim:0,tmDetail:'1',cpDetail:'',imgSim:90,descSim:0,simCnt:1,simList:[{sku:'H61A0',low:0}],priority:2,status:1,fixed:0,handler:'lisi',cTime:'2026-07-22 10:00:00',uTime:'2026-07-22 11:00:00',cfTime:'2026-07-22 11:00:00',sTime:'-',cUser:'系统',uUser:'lisi',cfUser:'lisi',sUser:'-',desc:'客厅卧室 Dreamview 智能灯带，支持 APP 控制。',hits:['Dreamview'],closeReason:'',closeRemark:'',sales:null,sellerScale:''},
+    {id:9,site:'CN',platform:'小红书',code:'FK202607220102',itemId:'XHS8899001',title:'RGBIC 幻彩灯带氛围感拉满｜同款好物',sku:'H61B1',asin:'-',brand:'RGBIC',price:'89.00',currency:'¥',seller:'家居种草菌',auth:0,tm:1,cp:0,tmCount:1,cpCount:0,tmSim:86,cpSim:0,tmDetail:'1',cpDetail:'',imgSim:86,descSim:0,simCnt:1,simList:[{sku:'H61B1',low:0}],priority:2,status:1,fixed:0,handler:'wangwu',cTime:'2026-07-22 12:00:00',uTime:'2026-07-22 13:00:00',cfTime:'2026-07-22 13:00:00',sTime:'-',cUser:'系统',uUser:'wangwu',cfUser:'wangwu',sUser:'-',desc:'笔记种草 RGBIC 幻彩灯带，点击链接购买。',hits:['RGBIC'],closeReason:'',closeRemark:'',sales:null,sellerScale:''},
+    {id:10,site:'CN',platform:'天猫',code:'FK202607220103',itemId:'TM6677001',title:'LuminBlend 护眼台灯 学生宿舍学习灯',sku:'H1234',asin:'-',brand:'LuminBlend',price:'199.00',currency:'¥',seller:'智能照明专卖',auth:0,tm:1,cp:0,tmCount:1,cpCount:0,tmSim:80,cpSim:0,tmDetail:'1',cpDetail:'',imgSim:80,descSim:0,simCnt:1,simList:[{sku:'H1234',low:0}],priority:3,status:0,fixed:0,handler:'fengchao_liang',cTime:'2026-07-22 14:00:00',uTime:'2026-07-22 14:00:00',cfTime:'-',sTime:'-',cUser:'系统',uUser:'系统',cfUser:'-',sUser:'-',desc:'LuminBlend 护眼台灯，多档色温调节。',hits:['LuminBlend'],closeReason:'',closeRemark:'',sales:null,sellerScale:''},
+    {id:11,site:'CN',platform:'闲鱼',code:'FK202607220104',itemId:'XY5566001',title:'出闲置 Govee Home 网关 几乎全新',sku:'H7050',asin:'-',brand:'Govee Home',price:'45.00',currency:'¥',seller:'数码转转',auth:0,tm:1,cp:0,tmCount:1,cpCount:0,tmSim:70,cpSim:0,tmDetail:'1',cpDetail:'',imgSim:70,descSim:0,simCnt:1,simList:[{sku:'H7050',low:0}],priority:3,status:1,fixed:0,handler:'zhaoliu',cTime:'2026-07-22 15:00:00',uTime:'2026-07-22 16:00:00',cfTime:'2026-07-22 16:00:00',sTime:'-',cUser:'系统',uUser:'zhaoliu',cfUser:'zhaoliu',sUser:'-',desc:'闲置 Govee Home 网关转卖。',hits:['Govee Home'],closeReason:'',closeRemark:'',sales:null,sellerScale:''},
+    {id:12,site:'US',platform:'Ebay',code:'FK202607230010',itemId:'406507099988',title:'Govee LED Strip Lights for Bedroom RGBIC Music Sync',sku:'H61C1',asin:'B0BATCH0001',brand:'Govee',price:'22.99',currency:'$',seller:'andystore2010',auth:0,tm:1,cp:0,tmDetail:'1',cpDetail:'',imgSim:95,descSim:0,simCnt:1,simList:[{sku:'H61C1',low:0}],priority:3,status:1,fixed:0,handler:'fengchao_liang',cTime:'2026-07-23 01:00:00',uTime:'2026-07-23 01:10:00',cfTime:'2026-07-23 01:10:00',sTime:'-',cUser:'系统',uUser:'fengchao_liang',cfUser:'fengchao_liang',sUser:'-',desc:'Govee RGBIC strip lights music sync sample for batch complaint.',hits:['Govee','RGBIC'],closeReason:'',closeRemark:'',sales:25000,sellerScale:'大'},
+    {id:13,site:'CN',platform:'京东',code:'FK202607220105',itemId:'JD10086002',title:'Dreamview 氛围灯 卧室床头灯',sku:'H61A1',asin:'-',brand:'Dreamview',price:'99.00',currency:'¥',seller:'灯饰优选旗舰店',auth:0,tm:1,cp:0,tmCount:1,cpCount:0,tmSim:90,cpSim:0,tmDetail:'1',cpDetail:'',imgSim:88,descSim:0,simCnt:1,simList:[{sku:'H61A1',low:0}],priority:2,status:1,fixed:0,handler:'lisi',cTime:'2026-07-22 10:30:00',uTime:'2026-07-22 11:30:00',cfTime:'2026-07-22 11:30:00',sTime:'-',cUser:'系统',uUser:'lisi',cfUser:'lisi',sUser:'-',desc:'Dreamview 卧室床头氛围灯。',hits:['Dreamview'],closeReason:'',closeRemark:'',sales:null,sellerScale:''}
+,
+    {id:14,site:'US',platform:'Amazon',code:'FK202607230200',itemId:'B0CVLOOK01',title:'Modern Corner Floor Lamp LED Ambient Light No Brand Text',sku:'H6076',asin:'B0CVLOOK01',brand:'-',price:'79.99',currency:'$',seller:'BrightCornerStore',auth:0,tm:0,cp:0,tmDetail:'',cpDetail:'',dp:1,dpDetail:'1',dpSim:93.2,patentId:2,imgSim:93.2,descSim:12,simCnt:1,simList:[{sku:'H6076',low:0}],priority:2,status:0,fixed:0,handler:'lisi',cTime:'2026-07-23 02:00:00',uTime:'2026-07-23 02:00:00',cfTime:'-',sTime:'-',cUser:'系统',uUser:'系统',cfUser:'-',sUser:'-',desc:'外观相似角灯，标题无品牌词，由 CV 以图搜图写入列表。',hits:[],closeReason:'',closeRemark:'',sales:null,sellerScale:'',discoverSource:'CV以图搜图',oppImgs:['https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop','https://images.unsplash.com/photo-1543198126-a8ad8e47fb22?w=400&h=400&fit=crop','https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=400&h=400&fit=crop'],oppMainImg:'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop'}
+  ];
+
+
+  // 列表/顶栏口径：次数 + 综合相似度；无 hitDetail 时按商标标题命中兜底（演示用）
+  listings.forEach(function (d) {
+    if (d.tmCount == null && d.tm) d.tmCount = Number(d.tm) || 1;
+    if (d.cpCount == null && d.cp) d.cpCount = Number(d.cp) || 1;
+    if (d.tmCount == null) d.tmCount = 0;
+    if (d.cpCount == null) d.cpCount = 0;
+    if (d.tmSim == null) d.tmSim = d.tm ? (d.imgSim || 0) : 0;
+    if (d.cpSim == null) d.cpSim = d.cp ? (d.descSim || d.imgSim || 0) : 0;
+    if (d.tmDetail === undefined || d.tmDetail === null || /含|盗用/.test(String(d.tmDetail))) d.tmDetail = d.tmCount ? String(d.tmCount) : '';
+    if (d.cpDetail === undefined || d.cpDetail === null || /含|盗用/.test(String(d.cpDetail))) d.cpDetail = d.cpCount ? String(d.cpCount) : '';
+    if (!d.hitDetail) {
+      d.hitDetail = { tm: [], cp: [] };
+      if (d.tm) d.hitDetail.tm.push({ name: '标题商标命中', score: d.tmSim || d.imgSim || 0 });
+      if (d.cp) d.hitDetail.cp.push({ name: '描述版权命中', score: d.cpSim || d.descSim || 0 });
+    }
+    // 关联相似产品样例字段补齐（对齐现网列：产品信息/产品线定位/价格/风险/更新时间）
+    if (d.simList && d.simList.length) {
+      d.simList = d.simList.map(function (s, i) {
+        return {
+          sku: s.sku,
+          msku: s.msku || (s.sku + (d.site === 'US' ? '-US' : '')),
+          asin: s.asin || d.asin || ('B0DEMO' + d.id + i),
+          shop: s.shop || (d.site === 'US' ? 'Govee_US' : (d.site === 'CN' ? '独立站-CN' : 'Govee_' + d.site)),
+          site: s.site || d.site,
+          status: s.status == null ? 1 : s.status,
+          line: s.line || (i === 0 ? '6016' : '6020'),
+          pos: s.pos || (i === 0 ? 'P1新品' : '退件品'),
+          price: s.price != null ? s.price : (d.price || '19.99'),
+          currency: s.currency || d.currency || '$',
+          low: !!s.low,
+          updateTime: s.updateTime || d.uTime || '2026-08-26 09:51:04'
+        };
+      });
+    }
+    if (!d.sellerHist) {
+      d.sellerHist = { riskNum: 8, waitConfirmed: 8, waitComplained: 0, complaining: 0, success: 0, rejected: 0, closed: 0 };
+    }
+    if (!d.productHist) {
+      d.productHist = { riskNum: Math.max(1, d.simCnt || 1), waitConfirmed: 1, waitComplained: 0, complaining: 0, success: 0, rejected: 0, closed: 0 };
+    }
+  });
+
+  var sellers = [
+    {id:1,site:'US',platform:'Amazon',name:'Authorized Partner A',status:1,cTime:'2025-12-01 10:00:00',oTime:'2025-12-02 11:00:00',clTime:'-',cUser:'管理员',oUser:'管理员',clUser:'-'},
+    {id:2,site:'US',platform:'Ebay',name:'andystore2010',status:0,cTime:'2026-01-15 09:00:00',oTime:'-',clTime:'-',cUser:'张三',oUser:'-',clUser:'-'},
+    {id:3,site:'DE',platform:'Amazon',name:'EU Official Shop',status:1,cTime:'2026-02-20 14:00:00',oTime:'2026-02-21 10:00:00',clTime:'-',cUser:'管理员',oUser:'管理员',clUser:'-'},
+    {id:4,site:'CN',platform:'京东',name:'灯饰优选旗舰店',status:0,cTime:'2026-07-20 09:00:00',oTime:'-',clTime:'-',cUser:'lisi',oUser:'-',clUser:'-'}
+  ];
+
+  // 外观专利台账：销量同步出重点型号 + 知产补全；须点「启用检索」才纳入检索
+  // status: pending待完善 / filled未启用 / ready检索中 / paused已暂停（不做异常、不做恢复检索）
+  var patents = [
+    {
+      id: 1,
+      skus: 'H706A, H706B, H706C',
+      appNo: 'US29/123,456',
+      patentNo: 'US D1,012,345',
+      applyDate: '2023-09-13',
+      priorityDate: '2023-09-13',
+      regions: 'US / DE / UK',
+      name: 'Permanent Outdoor Lights',
+      officialUrl: 'https://www.govee.com/s/govee-permanent-outdoor-light',
+      amazonUrl: '',
+      siteUrl: 'https://www.govee.com/s/govee-permanent-outdoor-light',
+      source: 'amazon_sales',
+      salesMonth: '2026-08',
+      syncTime: '2026-09-03 09:00:00',
+      amzSalesNote: 'Amazon 销量同步（口径待确认）',
+      status: 'ready',
+      imgs: [
+        { type: '包装图', url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop', label: '包装' },
+        { type: '产品宣传图', url: 'https://images.unsplash.com/photo-1565814636199-ae8133055c1c?w=400&h=400&fit=crop', label: '宣传' },
+        { type: '产品阴影图', url: 'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=400&h=400&fit=crop', label: '阴影' }
+      ]
+    },
+    {
+      id: 2,
+      skus: 'H6076',
+      appNo: 'US29/987,001',
+      patentNo: 'US D987,654',
+      applyDate: '2021-07-21',
+      priorityDate: '2021-07-21',
+      regions: 'US / JP',
+      name: 'Floor Lamp',
+      officialUrl: 'https://www.govee.com/s/govee-rgbicw-smart-corner-floor-lamp',
+      amazonUrl: '',
+      siteUrl: 'https://www.govee.com/s/govee-rgbicw-smart-corner-floor-lamp',
+      source: 'amazon_sales',
+      salesMonth: '2026-08',
+      syncTime: '2026-09-03 09:00:00',
+      amzSalesNote: 'Amazon 销量同步（口径待确认）',
+      status: 'ready',
+      imgs: [
+        { type: '包装图', url: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop', label: '包装' },
+        { type: '产品宣传图', url: 'https://images.unsplash.com/photo-1543198126-a8ad8e47fb22?w=400&h=400&fit=crop', label: '宣传' },
+        { type: '产品阴影图', url: 'https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=400&h=400&fit=crop', label: '阴影' }
+      ]
+    },
+    {
+      id: 3,
+      skus: 'H705B',
+      appNo: '',
+      patentNo: '',
+      applyDate: '',
+      priorityDate: '',
+      regions: '',
+      name: 'Outdoor String Lights 2',
+      officialUrl: '',
+      amazonUrl: '',
+      siteUrl: '',
+      source: 'amazon_sales',
+      salesMonth: '2026-08',
+      syncTime: '2026-09-03 09:00:00',
+      amzSalesNote: 'Amazon 销量同步（口径待确认）',
+      status: 'pending',
+      imgs: [
+        { type: '包装图', url: '', label: '包装' },
+        { type: '产品宣传图', url: '', label: '宣传' },
+        { type: '产品阴影图', url: '', label: '阴影' }
+      ]
+    },
+    {
+      id: 4,
+      skus: 'H61C1',
+      appNo: 'US29/555,010',
+      patentNo: '',
+      applyDate: '2024-01-08',
+      priorityDate: '2024-01-08',
+      regions: 'US',
+      name: 'LED Strip Lights',
+      officialUrl: 'https://www.govee.com/s/govee-led-strip-lights',
+      amazonUrl: '',
+      siteUrl: 'https://www.govee.com/s/govee-led-strip-lights',
+      source: 'manual',
+      salesMonth: '2026-08',
+      syncTime: '',
+      amzSalesNote: '',
+      status: 'filled',
+      imgs: [
+        { type: '包装图', url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop', label: '包装' },
+        { type: '产品宣传图', url: '', label: '宣传' },
+        { type: '产品阴影图', url: '', label: '阴影' }
+      ]
+    },
+    {
+      id: 5,
+      skus: 'H6008',
+      appNo: 'US29/600,800',
+      patentNo: 'US D600,800',
+      applyDate: '2022-03-01',
+      priorityDate: '2022-03-01',
+      regions: 'US',
+      name: 'Smart Bulb',
+      officialUrl: 'https://www.govee.com/s/govee-smart-bulb',
+      amazonUrl: '',
+      siteUrl: 'https://www.govee.com/s/govee-smart-bulb',
+      source: 'amazon_sales',
+      salesMonth: '2026-08',
+      syncTime: '2026-09-03 09:00:00',
+      amzSalesNote: 'Amazon 销量同步（口径待确认）',
+      status: 'paused',
+      imgs: [
+        { type: '包装图', url: 'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=400&h=400&fit=crop', label: '包装' },
+        { type: '产品宣传图', url: '', label: '宣传' },
+        { type: '产品阴影图', url: '', label: '阴影' }
+      ]
+    }
+  ];
+
+  var bootQ = (function () {
+    try { return new URLSearchParams(location.search); } catch (e) { return { get: function () { return ''; } }; }
+  })();
+  var state = {page:'listing', detailId:14, detailType:0, complaintId:1, complaintMode:'email', batchIds:[], patentEditId: null, patentStatusFilter: '', oppImgIdx:0, patentImgIdx:0, srSite:'', srPlatform:'', srSeller:'', srLow:'', srFrom:'', srTo:'', srSortKey:'active', srSortDir:'desc', srPage:1, srPageSize:10, srKey:'', srDrawer:false, listSite: bootQ.get('site') || '', listPlatform: bootQ.get('platform') || '', listSeller: bootQ.get('seller') || ''};
+  var TOTAL = 11078;
+  var EVIDENCE_LABEL = {pending:'存证中', done:'已存证', fail:'存证失败'};
+
+  listings.forEach(function (d) {
+    if (!d.evidences) d.evidences = [];
+    if (d.discoverSource === undefined) d.discoverSource = '关键词爬虫';
+    if (d.dp === undefined) d.dp = 0;
+    if (d.dpSim === undefined) d.dpSim = 0;
+    if (!d.oppImgs) d.oppImgs = [];
+  });
+  // KF-007 演示：部分为 CV 以图搜图；历史无来源展示 —
+  var _srcOverride = {4:'CV以图搜图', 6:'', 14:'CV以图搜图'};
+  listings.forEach(function (d) {
+    if (Object.prototype.hasOwnProperty.call(_srcOverride, d.id)) d.discoverSource = _srcOverride[d.id];
+  });
+
+  function listingUrl(d) {
+    if (d.platform === 'Ebay') return 'https://www.ebay.com/itm/' + d.itemId;
+    if (d.platform === '京东') return 'https://item.jd.com/' + d.itemId + '.html';
+    if (d.platform === '小红书') return 'https://www.xiaohongshu.com/goods/' + d.itemId;
+    return d.platform + ' / ' + d.itemId;
+  }
+
+  function selectedListings(ids) {
+    return ids.map(findListing).filter(Boolean);
+  }
+
+  function validateBatchResult(ids) {
+    if (!ids.length) return '请选择对应行';
+    var rows = selectedListings(ids);
+    if (rows.length !== ids.length) return '存在无效勾选';
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].status !== 1 && rows[i].status !== 2) {
+        return '请选择待投诉或投诉中状态的数据';
+      }
+    }
+    return '';
+  }
+
+  function toast(msg, warn) {
+    var el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast show' + (warn ? ' warn' : '');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { el.className = 'toast'; }, 1600);
+  }
+
+  function confirmBox(msg, ok) {
+    var mask = document.getElementById('mask');
+    mask.className = 'mask show';
+    mask.innerHTML = '<div class="msgbox"><div class="msgbox-hd">提示<button class="x" data-a="c">×</button></div><div class="msgbox-bd"><div class="msgbox-ico">!</div><div>' + msg + '</div></div><div class="msgbox-ft"><button class="el-button" data-a="c">取消</button><button class="el-button el-button--primary" data-a="o">确定</button></div></div>';
+    mask.onclick = function (e) {
+      var a = e.target.getAttribute('data-a');
+      if (!a && e.target !== mask) return;
+      if (a === 'o') ok && ok();
+      mask.className = 'mask'; mask.innerHTML = ''; mask.onclick = null;
+    };
+  }
+
+  function closeReasonBox(title, ok) {
+    var mask = document.getElementById('mask');
+    var opts = '<option value="">请选择关闭原因</option>' + CLOSE_REASONS.map(function (r) {
+      return '<option value="' + r + '">' + r + '</option>';
+    }).join('');
+    mask.className = 'mask show';
+    mask.innerHTML = '<div class="msgbox form"><div class="msgbox-hd">' + title + '<button class="x" data-a="c">×</button></div>' +
+      '<div class="msgbox-form"><div class="row"><label class="req">关闭原因</label><select class="el-select has-val" id="closeReasonSel">' + opts + '</select></div>' +
+      '<div class="row"><label id="closeRemarkLabel">备注</label><textarea id="closeRemarkInput" placeholder="原因为「其他」时必填，其余可选"></textarea></div></div>' +
+      '<div class="msgbox-ft"><button class="el-button" data-a="c">取消</button><button class="el-button el-button--primary" data-a="o">确定</button></div></div>';
+    var sel = document.getElementById('closeReasonSel');
+    var remarkLabel = document.getElementById('closeRemarkLabel');
+    sel.addEventListener('change', function () {
+      sel.classList.toggle('has-val', !!sel.value);
+      if (sel.value === '其他') remarkLabel.className = 'req';
+      else remarkLabel.className = '';
+    });
+    mask.onclick = function (e) {
+      var a = e.target.getAttribute('data-a');
+      if (!a && e.target !== mask) return;
+      if (a === 'o') {
+        var reason = sel.value;
+        var remark = (document.getElementById('closeRemarkInput').value || '').trim();
+        if (!reason) { toast('请选择关闭原因', true); return; }
+        if (reason === '其他' && !remark) { toast('请填写备注', true); return; }
+        ok && ok(reason, remark);
+      }
+      mask.className = 'mask'; mask.innerHTML = ''; mask.onclick = null;
+    };
+  }
+
+  function applyClose(ids, reason, remark) {
+    ids.forEach(function (cid) {
+      var r = findListing(cid);
+      if (!r || (r.status !== 0 && r.status !== 1)) return;
+      r.status = 5;
+      r.closeReason = reason;
+      r.closeRemark = remark || '';
+      r.uTime = '2026-07-23 12:10:00';
+      r.uUser = '当前用户';
+    });
+  }
+
+  function highlightHtml(text, hits) {
+    var raw = text || '';
+    if (!hits || !hits.length) return raw;
+    var sorted = hits.slice().sort(function (a, b) { return b.length - a.length; });
+    var re = new RegExp('(' + sorted.map(function (h) {
+      return h.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }).join('|') + ')', 'gi');
+    return raw.replace(re, '<span class="hit">$1</span>');
+  }
+
+  function findListing(id) { return listings.find(function (d) { return d.id === id; }); }
+
+  // 样例：待投诉已存证 / 投诉中失败 / 另一条存证中；待确认默认不可点（待确认项）
+  findListing(2).evidences = [
+    {id:101, status:'done', start:'2026-07-23 00:35:00', end:'2026-07-23 00:36:12', snap:'https://web.archive.org/web/20260723003612/https://www.ebay.com/itm/406507011321', hash:'a1b2…demo', reason:''}
+  ];
+  findListing(5).evidences = [
+    {id:102, status:'fail', start:'2026-07-18 10:05:00', end:'2026-07-18 10:06:30', snap:'', hash:'', reason:'Wayback 暂无法抓取'}
+  ];
+  findListing(12).evidences = [
+    {id:103, status:'pending', start:'2026-07-23 01:15:00', end:'', snap:'', hash:'', reason:''}
+  ];
+  findListing(14).evidences = [
+    {id:104, status:'done', start:'2026-07-23 02:05:00', end:'2026-07-23 02:06:10', snap:'https://web.archive.org/web/20260723020610/https://www.amazon.com/dp/B0CVLOOK01', hash:'c4d5…demo', reason:''}
+  ];
+  if (findListing(1) && !findListing(1).oppImgs.length) {
+    findListing(1).oppImgs = [
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1565814636199-ae8133055c1c?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=400&fit=crop'
+    ];
+    findListing(1).oppMainImg = findListing(1).oppImgs[0];
+  }
+
+  function hasPendingEvidence(d) {
+    return (d.evidences || []).some(function (e) { return e.status === 'pending'; });
+  }
+
+  // 产品确认 A：待确认及之后均可一键存证（含待确认 status=0）
+  function canClickEvidence(d) {
+    return d.status >= 0 && d.status <= 5;
+  }
+
+  function startEvidence(d) {
+    if (!d.evidences) d.evidences = [];
+    d.evidences.unshift({
+      id: Date.now(),
+      status: 'pending',
+      start: '2026-07-23 12:20:00',
+      end: '',
+      snap: '',
+      hash: '',
+      reason: ''
+    });
+    // 原型：约 1.2s 后变为已存证，便于演示状态流转
+    var evId = d.evidences[0].id;
+    setTimeout(function () {
+      var cur = findListing(d.id);
+      if (!cur) return;
+      var ev = (cur.evidences || []).find(function (x) { return x.id === evId; });
+      if (!ev || ev.status !== 'pending') return;
+      ev.status = 'done';
+      ev.end = '2026-07-23 12:20:08';
+      ev.snap = 'https://web.archive.org/web/20260723122008/' + listingUrl(cur);
+      ev.hash = 'demo-hash-' + String(evId).slice(-4);
+      if (state.page === 'detail' && state.detailId === cur.id) render();
+    }, 1200);
+  }
+
+  function evidenceBlock(d) {
+    var can = canClickEvidence(d);
+    var pending = hasPendingEvidence(d);
+    var btnDisabled = !can || pending;
+    var btn = '<button class="el-button el-button--primary el-button--small' + (btnDisabled ? ' is-disabled' : '') + '"' +
+      (btnDisabled ? ' disabled' : '') + ' data-act="evidence" data-id="' + d.id + '">一键存证</button>';
+    if (pending) {
+      btn += '<button class="el-button el-button--small is-disabled" disabled>失败重试</button>';
+    } else if ((d.evidences || []).some(function (e) { return e.status === 'fail'; }) && can) {
+      btn += '<button class="el-button el-button--small" data-act="evidenceRetry" data-id="' + d.id + '">失败重试</button>';
+    }
+    var list = (d.evidences || []);
+    var timeline = !list.length
+      ? '<p style="color:#c0c4cc;font-size:13px">暂无历史记录</p>'
+      : '<ul class="ev-timeline">' + list.map(function (e) {
+          var link = e.status === 'done' && e.snap
+            ? '<div>快照：<a href="' + e.snap + '" target="_blank" rel="noopener">打开 Wayback</a></div>'
+            : '';
+          var hash = e.hash ? '<div>哈希摘要：' + e.hash + '</div>' : '<div>哈希/时间戳：—</div>';
+          var reason = e.status === 'fail' && e.reason ? '<div>失败原因：' + e.reason + '</div>' : '';
+          var dl = e.status === 'done'
+            ? '<div><button class="el-button is-text operate-btn" data-act="evidenceReport" data-id="' + d.id + '" data-evid="' + e.id + '">报告下载</button></div>'
+            : '';
+          var time = '发起：' + e.start + (e.end ? ' · 完成：' + e.end : '');
+          return '<li class="' + e.status + '"><div class="ev-hd"><span class="ev-tag ' + e.status + '">' + EVIDENCE_LABEL[e.status] + '</span>' + time + '</div><div class="ev-bd">' + link + hash + reason + dl + '</div></li>';
+        }).join('') + '</ul>';
+    return '<div class="block"><h3>存证记录</h3>' +
+      '<div class="ev-actions">' + btn + '</div>' +
+      '<div class="ev-sub">历史记录</div>' +
+      timeline + '</div>';
+  }
+
+  function opsHtml(d) {
+    var h = '<div class="ops-col">';
+    if (d.status === 0) h += '<button class="el-button is-text operate-btn" data-act="confirm" data-id="' + d.id + '">提交确认</button>';
+    if (canSystemComplaint(d.platform) && d.status === 1) h += '<button class="el-button is-text operate-btn" data-act="complaint" data-id="' + d.id + '">提交投诉</button>';
+    if (d.status === 1 || d.status === 2) {
+      h += '<button class="el-button is-text operate-btn" data-act="success" data-id="' + d.id + '">投诉成功</button>';
+      h += '<button class="el-button is-text operate-btn" data-act="reject" data-id="' + d.id + '">投诉驳回</button>';
+    }
+    if (d.status === 2) {
+      if (d.fixed === 0) h += '<button class="el-button is-text operate-btn" data-act="fixStart" data-id="' + d.id + '">启动订正</button>';
+      if (d.fixed === 1) h += '<button class="el-button is-text operate-btn" data-act="fixDone" data-id="' + d.id + '">完成订正</button>';
+    }
+    if (canSystemComplaint(d.platform) && [2,3,4].indexOf(d.status) >= 0) h += '<button class="el-button is-text operate-btn" data-act="check" data-id="' + d.id + '">查看投诉</button>';
+    h += '<button class="el-button is-text operate-btn" data-act="detail" data-id="' + d.id + '">查看详情</button>';
+    if (d.status === 0 || d.status === 1) h += '<button class="el-button is-text operate-btn" data-act="close" data-id="' + d.id + '">关闭此单</button>';
+    return h + '</div>';
+  }
+
+  function infringementHtml(d) {
+    var parts = [];
+    if (d.dp) {
+      parts.push('<div class="ban-quan-dp">外观专利侵权</div><div class="flex-center-box similar-box"><div>' + (d.dpDetail || d.dp) + '</div><div>' + d.dpSim + '%</div></div>');
+    }
+    if (d.cp) {
+      var cpCnt = d.cpCount != null ? d.cpCount : d.cp;
+      var cpSim = d.cpSim != null ? d.cpSim : (d.descSim || 0);
+      parts.push('<div class="ban-quan">版权侵权</div><div class="flex-center-box similar-box"><div>' + cpCnt + '</div><div>' + cpSim + '%</div></div>');
+    }
+    if (d.tm) {
+      var tmCnt = d.tmCount != null ? d.tmCount : d.tm;
+      var tmSim = d.tmSim != null ? d.tmSim : (d.imgSim || 0);
+      parts.push('<div class="ban-quan">商标侵权</div><div class="flex-center-box similar-box"><div>' + tmCnt + '</div><div>' + tmSim + '%</div></div>');
+    }
+    if (!parts.length) return '-';
+    return parts.map(function (p, i) {
+      return '<div' + (i ? ' style="margin-top:4px"' : '') + '>' + p + '</div>';
+    }).join('');
+  }
+
+  function similarHtml(d) {
+    if (!d.simList || !d.simList.length) return '-';
+    return d.simList.map(function (s) {
+      return '<div class="flex-center-box sku-list"><div>' + s.sku + '</div>' + (s.low ? '<div class="bgc-box red">低价风险</div>' : '<div></div>') + '</div>';
+    }).join('');
+  }
+
+  function statusHtml(d) {
+    var h = '<div class="status-item ' + STATUS_CLS[d.status] + '">' + STATUS[d.status] + '</div>';
+    if (d.status === 2 && d.fixed === 1) h += '<div class="status-item fixed-row-bg">订正中</div>';
+    if (d.status === 5) {
+      var reason = d.closeReason || '—';
+      var tip = d.closeRemark ? (' title="' + String(d.closeRemark).replace(/"/g, '&quot;') + '"') : '';
+      h += '<div class="close-reason-chip"' + tip + '>' + reason + '</div>';
+    }
+    return h;
+  }
+
+  function priorityHtml(d) {
+    return '<div class="bgc-box ' + PRIO_CLS[d.priority] + '">优先级' + d.priority + '</div>';
+  }
+
+  function sortedListings() {
+    return listings.filter(function (d) {
+      if (state.listSite && d.site !== state.listSite) return false;
+      if (state.listPlatform && d.platform !== state.listPlatform) return false;
+      if (state.listSeller && d.seller.toLowerCase().indexOf(state.listSeller.toLowerCase()) < 0) return false;
+      return true;
+    }).sort(function (a, b) {
+      return a.id - b.id;
+    });
+  }
+
+  function rowHtml(d) {
+    return '<tr>' +
+      '<td class="col-check"><input type="checkbox" data-check="' + d.id + '"></td>' +
+      '<td class="col-plat"><div class="flex-center-box"><div class="blue bgc-box">' + d.site + '</div><div class="border-box">' + d.platform + '</div></div><div class="word-blue">' + d.code + '</div><div>ItemId:' + d.itemId + '</div></td>' +
+      '<td class="col-sku"><div class="prod-info"><div class="left-img-area"><div class="list-img">IMG</div></div><div class="right-text-area"><a class="word-ellipsis" href="#" title="' + d.title.replace(/"/g,'&quot;') + '">' + d.title + '</a><p class="word-blue">sku:' + (d.sku||'-') + '&nbsp;asin:' + (d.asin||'-') + '</p><p>' + (d.brand||'-') + '</p></div></div></td>' +
+      '<td class="col-price">' + (d.price ? (d.currency + d.price) : '-') + '</td>' +
+      '<td class="col-seller"><div>' + d.seller + '</div><div class="bgc-box ' + (d.auth ? 'green' : 'orange') + '">' + (d.auth ? '已授权' : '未授权') + '</div></td>' +
+      '<td class="col-inf">' + infringementHtml(d) + '</td>' +
+      '<td class="col-simn">' + d.simCnt + '</td>' +
+      '<td class="col-sim">' + similarHtml(d) + '</td>' +
+      '<td class="col-prio">' + priorityHtml(d) + '</td>' +
+      '<td class="col-status">' + statusHtml(d) + '</td>' +
+      '<td class="col-user"><p>' + d.handler + '</p></td>' +
+      '<td class="col-date date-cell"><div>生成时间：' + d.cTime + '</div><div>更新时间：' + d.uTime + '</div><div>确认时间：' + d.cfTime + '</div><div>提交投诉：' + d.sTime + '</div></td>' +
+      '<td class="col-opuser op-cell"><div>创建：' + d.cUser + '</div><div>更新：' + d.uUser + '</div><div>确认：' + d.cfUser + '</div><div>提交：' + d.sUser + '</div></td>' +
+      '<td class="col-ops">' + opsHtml(d) + '</td></tr>';
+  }
+
+  function searchHtml() {
+    var fields = [
+      {ph:'站点',w:200,type:'select',opts:SITES, id:'listSite', val: state.listSite},
+      {ph:'平台类型',w:200,type:'select',opts:PLATFORMS, id:'listPlatform', val: state.listPlatform},
+      {ph:'卖家授权状态',w:140,type:'select',opts:['未授权','已授权']},
+      {ph:'侵权分类',w:200,type:'select',opts:['商标侵权','版权侵权','外观专利侵权']},
+      {ph:'优先级',w:200,type:'select',opts:['优先级1','优先级2','优先级3']},
+      {ph:'处理状态',w:200,type:'select',opts:['待确认','待投诉','投诉中','投诉成功','投诉驳回','已关闭']},
+      {ph:'订正状态',w:200,type:'select',opts:['未启动订正','启动订正','完成订正']},
+      {ph:'当前处理人',w:200,type:'select',opts:['fengchao_liang','lisi','wangwu','zhaoliu']},
+      {ph:'风控编号',w:160,type:'input'},
+      {ph:'卖家名称',w:180,type:'input', id:'listSeller', val: state.listSeller},
+      {ph:'相似MSKU',w:160,type:'input'},
+      {ph:'品牌',w:160,type:'select',opts:BRANDS},
+      {ph:'平台ItemId',w:160,type:'input'},
+      {ph:'相似msku负责人',w:200,type:'select',opts:[]},
+      {ph:'操作人',w:200,type:'select',opts:[]},
+      {ph:'MODEL',w:200,type:'select',opts:[]}
+    ];
+    var html = fields.map(function (f) {
+      var idAttr = f.id ? ' id="' + f.id + '"' : '';
+      if (f.type === 'input') {
+        return '<input class="el-input"' + idAttr + ' style="width:' + f.w + 'px" placeholder="' + f.ph + '" value="' + srEsc(f.val || '') + '">';
+      }
+      var opts = '<option value="">' + f.ph + '</option>' + (f.opts||[]).map(function (o) {
+        return '<option' + (f.val === o ? ' selected' : '') + '>' + o + '</option>';
+      }).join('');
+      return '<select class="el-select"' + idAttr + ' style="width:' + f.w + 'px">' + opts + '</select>';
+    }).join('');
+    html += '<div class="flex-center-box"><select class="el-select" style="width:110px"><option>生成时间</option><option>更新时间</option><option>确认时间</option><option>提交投诉</option></select><div class="date-box"><span>开始时间</span><span class="sep">-</span><span>结束时间</span></div></div>';
+    html += '<select class="el-select" style="width:240px"><option value="">场景品类</option></select>';
+    html += '<button class="el-button el-button--primary" type="button" data-act="search"><svg class="search-ico" viewBox="0 0 1024 1024"><path d="M192 448c0-141.152 114.848-256 256-256s256 114.848 256 256-114.848 256-256 256-256-114.848-256-256z m710.624 409.376l-206.88-206.88C750.72 597.44 780.8 526.4 780.8 448c0-194.08-157.92-352-352-352S76.8 253.92 76.8 448s157.92 352 352 352c78.4 0 149.44-30.08 202.496-78.944l206.88 206.88a32 32 0 0 0 45.248-45.248z"/></svg></button>';
+    return html;
+  }
+
+  function pageListing() {
+    var rows = sortedListings();
+    return '<div class="page-flex-colunm">' +
+      '<div class="search-box"><div class="search-space">' + searchHtml() + '</div></div>' +
+      '<div class="card"><div class="header"><div class="flex-end"><div class="flex-layout"><div></div><div style="display:flex;gap:8px">' +
+        '<button class="el-button el-button--small" data-batch="fixStart">启动订正</button>' +
+        '<button class="el-button el-button--small" data-batch="fixDone">完成订正</button>' +
+        '<button class="el-button el-button--small" data-batch="success">投诉成功</button>' +
+        '<button class="el-button el-button--small" data-batch="reject">投诉驳回</button>' +
+        '<button class="el-button el-button--small" data-batch="close">批量关闭</button>' +
+      '</div></div></div></div>' +
+      '<div class="table"><table class="lanjing-table"><thead><tr>' +
+        '<th class="col-check"><input type="checkbox" id="checkAll"></th>' +
+        '<th class="col-plat"><div>站点/平台</div><div>风控编号</div></th>' +
+        '<th class="col-sku">图片/标题/产品/品牌</th>' +
+        '<th class="col-price">价格</th>' +
+        '<th class="col-seller"><div>卖家名称</div><div>授权状态</div></th>' +
+        '<th class="col-inf"><div>侵权类型</div><div>位置/相似度</div></th>' +
+        '<th class="col-simn">相似产品数</th>' +
+        '<th class="col-sim">相似MSKU</th>' +
+        '<th class="col-prio">优先级</th>' +
+        '<th class="col-status">处理状态</th>' +
+        '<th class="col-user">当前处理人</th>' +
+        '<th class="col-date">日期</th>' +
+        '<th class="col-opuser">操作人</th>' +
+        '<th class="col-ops">操作</th>' +
+      '</tr></thead><tbody>' + (rows.length ? rows.map(rowHtml).join('') : '<tr><td colspan="14" style="text-align:center;padding:32px;color:#909399">无匹配记录</td></tr>') + '</tbody></table></div>' +
+      '<div class="table-pagination-bar"><span class="info">共 ' + (state.listSeller || state.listSite || state.listPlatform ? rows.length : TOTAL) + ' 条</span>' +
+        '<select><option>20条/页</option><option>30条/页</option><option>50条/页</option><option>100条/页</option><option>200条/页</option></select>' +
+        '<div class="pager"><span class="num">&lt;</span><span class="num active">1</span><span class="num">2</span><span class="num">3</span><span class="num">4</span><span class="num">5</span><span class="num">6</span><span class="num">...</span><span class="num">554</span><span class="num">&gt;</span></div>' +
+        '<span class="info">前往</span><input class="el-input" style="width:48px;height:24px;padding:0 4px;text-align:center" value="1"><span class="info">页</span>' +
+      '</div></div></div>';
+  }
+
+  function riskLevel(score, hit) {
+    if (!hit) return { key: 'none', label: '暂无风险' };
+    return { key: 'high', label: '存在风险' };
+  }
+
+  function cmpFrame(url, boxes, emptyText) {
+    if (!url) {
+      return '<div class="frame"><div class="ph" style="color:#c0c4cc;font-size:12px;padding:8px;text-align:center">' + (emptyText || '—') + '</div></div>';
+    }
+    var boxHtml = (boxes || []).map(function (b) {
+      return '<div class="box" style="left:' + b.l + '%;top:' + b.t + '%;width:' + b.w + '%;height:' + b.h + '%"></div>';
+    }).join('');
+    return '<div class="frame" data-act="previewPatentImg" data-src="' + url + '" title="点击放大">' +
+      '<img src="' + url + '" alt="">' + boxHtml + '</div>';
+  }
+
+  /** 由现网小类名推断证据形态 */
+  function inferHitKind(name) {
+    var n = name || '';
+    if (n.indexOf('品牌字段') >= 0) return 'brand';
+    if (n.indexOf('图片商标') >= 0) return 'img_mark';
+    if (n.indexOf('图片版权') >= 0 || n.indexOf('图片产品') >= 0) return 'img_product';
+    if (n.indexOf('外观') >= 0) return 'dp';
+    if (n.indexOf('标题') >= 0) return 'title';
+    if (n.indexOf('描述') >= 0) return 'desc';
+    return 'text';
+  }
+
+  function normalizeHitRows(rows, d, type) {
+    var opp = (d.oppImgs && d.oppImgs[0]) || d.oppMainImg || '';
+    return (rows || []).map(function (r) {
+      var name = r.name || '';
+      var kind = r.kind || inferHitKind(name);
+      var row = {
+        name: name,
+        score: r.score,
+        kind: kind,
+        highlight: r.highlight || d.hits || [],
+        text: r.text || '',
+        refText: r.refText || '',
+        oppImg: r.oppImg || '',
+        refImg: r.refImg || '',
+        boxes: r.boxes || [],
+        pairs: r.pairs || []
+      };
+      if (kind === 'brand' && !row.text) row.text = d.brand || '—';
+      if (kind === 'title' && !row.text) row.text = d.title || '—';
+      if (kind === 'desc' && !row.text) row.text = d.desc || '—';
+      if (type === 'cp' && kind === 'title' && !row.refText) row.refText = d.ourTitle || '';
+      if (type === 'cp' && kind === 'desc' && !row.refText) row.refText = d.ourDesc || '';
+      if (kind === 'img_mark') {
+        if (!row.pairs.length) {
+          row.pairs = [{
+            score: row.score,
+            oppImg: row.oppImg || opp,
+            boxes: row.boxes.length ? row.boxes : [{ l: 8, t: 12, w: 28, h: 14 }]
+          }];
+        }
+      }
+      if (kind === 'img_product') {
+        if (!row.pairs.length) {
+          row.pairs = [{
+            score: row.score,
+            oppImg: row.oppImg || opp,
+            refImg: row.refImg || d.cpRefImg || '',
+            boxes: row.boxes.length ? row.boxes : [{ l: 15, t: 18, w: 50, h: 45 }]
+          }];
+        }
+      }
+      return row;
+    });
+  }
+
+  /** 三块常驻；每个命中点单独证据：文案高亮 / 仅卖家图 / 卖家vs我方 */
+  function buildCompareBlocks(d) {
+    var hd = d.hitDetail || { tm: [], cp: [] };
+    var patent = d.patentId ? findPatent(d.patentId) : null;
+    var pImg = patent && patent.imgs && patent.imgs[0] ? patent.imgs[0].url : '';
+    var opp = (d.oppImgs && d.oppImgs[0]) || d.oppMainImg || '';
+    var tmRows = normalizeHitRows(hd.tm, d, 'tm');
+    var cpRows = normalizeHitRows(hd.cp, d, 'cp');
+    var tmHit = !!(d.tm || tmRows.length);
+    var cpHit = !!(d.cp || cpRows.length);
+    var dpHit = !!d.dp;
+    var tmScore = d.tmSim != null ? d.tmSim : d.imgSim;
+    var cpScore = d.cpSim != null ? d.cpSim : d.descSim;
+
+    if (tmHit && !tmRows.length) {
+      tmRows = normalizeHitRows([{ name: '标题商标命中', score: tmScore }], d, 'tm');
+    }
+    if (cpHit && !cpRows.length) {
+      cpRows = normalizeHitRows([{ name: '描述版权命中', score: cpScore }], d, 'cp');
+    }
+
+    var dpRows = [];
+    if (dpHit) {
+      var pairs = d.dpPairs || [];
+      if (!pairs.length) {
+        pairs = [{
+          score: d.dpSim,
+          oppImg: d.oppMainImg || opp,
+          refImg: pImg,
+          boxes: [{ l: 18, t: 12, w: 64, h: 72 }],
+          tip: ''
+        }];
+      } else {
+        pairs = pairs.map(function (pair) {
+          return {
+            score: pair.score != null ? pair.score : d.dpSim,
+            oppImg: pair.oppImg || d.oppMainImg || opp,
+            refImg: pair.refImg || pImg,
+            boxes: pair.boxes || [{ l: 18, t: 12, w: 64, h: 72 }],
+            tip: pair.tip || ''
+          };
+        });
+      }
+      dpRows = [{
+        name: '外观专利命中',
+        score: d.dpSim,
+        kind: 'dp',
+        pairs: pairs
+      }];
+    }
+
+    return [
+      { type: 'tm', title: '商标侵权风险', score: tmHit ? tmScore : null, hit: tmHit, points: tmRows },
+      { type: 'cp', title: '版权侵权风险', score: cpHit ? cpScore : null, hit: cpHit, points: cpRows },
+      { type: 'dp', title: '外观专利侵权风险', score: dpHit ? d.dpSim : null, hit: dpHit, points: dpRows }
+    ];
+  }
+
+  function textCompareHtml(oppText, refText, highlight) {
+    return (
+      '<div class="hp-text-cmp">' +
+        '<div class="side"><div class="lab">卖家</div><div class="hp-text">' + highlightHtml(oppText || '—', highlight) + '</div></div>' +
+        '<div class="mid">VS</div>' +
+        '<div class="side"><div class="lab">我方</div><div class="hp-text">' + (refText ? highlightHtml(refText, highlight) : '—') + '</div></div>' +
+      '</div>'
+    );
+  }
+
+  function imgPairHtml(pair, mode) {
+    var scoreLine = (pair.score != null && pair.score !== '')
+      ? '<div class="pair-score">本组相似度: ' + pair.score + '%</div>'
+      : '';
+    var tipLine = pair.tip
+      ? '<div class="pair-tip">' + pair.tip + '</div>'
+      : '';
+    if (mode === 'solo') {
+      return (
+        '<div class="hp-img-pair">' + scoreLine +
+          '<div class="hp-imgs solo"><div class="side"><div class="lab" style="font-size:12px;color:#909399;margin-bottom:4px">卖家</div>' +
+            cmpFrame(pair.oppImg, pair.boxes, '暂无图片') +
+          '</div></div>' + tipLine +
+        '</div>'
+      );
+    }
+    return (
+      '<div class="hp-img-pair">' + scoreLine +
+        '<div class="hp-imgs">' +
+          '<div class="side"><div class="lab" style="font-size:12px;color:#909399;margin-bottom:4px">卖家</div>' + cmpFrame(pair.oppImg, pair.boxes, '暂无图片') + '</div>' +
+          '<div class="mid">VS</div>' +
+          '<div class="side"><div class="lab" style="font-size:12px;color:#909399;margin-bottom:4px">我方</div>' + cmpFrame(pair.refImg, [], '—') + '</div>' +
+        '</div>' + tipLine +
+      '</div>'
+    );
+  }
+
+  function imgStackHtml(pairs, mode) {
+    var list = pairs || [];
+    if (!list.length) return '<div class="cmp-empty-body">—</div>';
+    return '<div class="hp-img-stack">' + list.map(function (pair) {
+      return imgPairHtml(pair, mode);
+    }).join('') + '</div>';
+  }
+
+  function hitPointEvidenceHtml(p, type) {
+    var kind = p.kind;
+    var score = (p.score != null && p.score !== '') ? ('<span class="hp-score">' + p.score + '%</span>') : '';
+    var left = '<div class="hp-left"><span class="hp-name">' + p.name + '</span>' + score + '</div>';
+    var right = '';
+
+    if (type === 'cp' && (kind === 'title' || kind === 'desc')) {
+      right = textCompareHtml(p.text, p.refText, p.highlight);
+    } else if (kind === 'brand' || kind === 'title' || kind === 'desc' || kind === 'text') {
+      right = '<div class="hp-text">' + highlightHtml(p.text || '—', p.highlight) + '</div>';
+    } else if (kind === 'img_mark') {
+      right = imgStackHtml(p.pairs, 'solo');
+    } else if (kind === 'img_product' || kind === 'dp') {
+      right = imgStackHtml(p.pairs, 'vs');
+    }
+    return '<div class="hit-point">' + left + '<div class="hp-right">' + right + '</div></div>';
+  }
+
+  function compareCardHtml(block) {
+    var lv = riskLevel(block.score, block.hit);
+    var bodyInner;
+    if (!block.hit) {
+      bodyInner = '<div class="cmp-empty-body">暂无风险</div>';
+    } else {
+      var points = (block.points || []).map(function (p) {
+        return hitPointEvidenceHtml(p, block.type);
+      }).filter(Boolean).join('');
+      bodyInner =
+        '<div class="hit-points">' + (points || '<div class="cmp-empty-body">—</div>') + '</div>';
+    }
+    return (
+      '<div class="cmp-card ' + block.type + (block.hit ? '' : ' is-empty') + '">' +
+        '<div class="cmp-hd"><span class="title">' + block.title + '</span><span class="cmp-level ' + lv.key + '">' + lv.label + '</span></div>' +
+        '<div class="cmp-body">' + bodyInner + '</div>' +
+      '</div>'
+    );
+  }
+
+  function summaryGridHtml(d) {
+    var tmCnt = d.tmCount != null ? d.tmCount : (d.tm ? Number(d.tm) || 1 : 0);
+    var cpCnt = d.cpCount != null ? d.cpCount : (d.cp ? Number(d.cp) || 1 : 0);
+    var dpCnt = d.dp ? (Number(d.dpDetail || d.dp) || 1) : 0;
+    return (
+      '<div class="status-grid status-grid-slim">' +
+        '<div><p>商标侵权</p><p>' + (tmCnt ? tmCnt : '—') + '</p></div>' +
+        '<div><p>版权侵权</p><p>' + (cpCnt ? cpCnt : '—') + '</p></div>' +
+        '<div><p>外观专利侵权</p><p>' + (dpCnt ? dpCnt : '—') + '</p></div>' +
+      '</div>'
+    );
+  }
+
+  function detailMediaHtml(d) {
+    var blocks = buildCompareBlocks(d);
+    return '<div class="compare-stack">' + blocks.map(compareCardHtml).join('') + '</div>';
+  }
+
+  function saleTagHtml(status) {
+    // 0 不在售 / 1 在售 / 2 已删除
+    if (status === 0) return '<span class="tag-sale" style="background:#fef0f0;color:#f56c6c;border-color:#f56c6c;width:auto;padding:0 4px">不在售</span>';
+    if (status === 2) return '<span class="tag-sale" style="background:#fef0f0;color:#c45656;border-color:#c45656;width:auto;padding:0 4px">已删除</span>';
+    return '<span class="tag-sale">在售</span>';
+  }
+
+  function similarProductsBlock(d) {
+    var rows = d.simList || [];
+    var body;
+    if (!rows.length) {
+      body = '<tr><td colspan="5" style="color:#c0c4cc;text-align:center;padding:16px">暂无相似产品</td></tr>';
+    } else {
+      body = rows.map(function (s) {
+        var site = s.site || d.site || '—';
+        var shop = s.shop || (site === 'US' ? 'Govee_US' : site);
+        var asin = s.asin || d.asin || '—';
+        var msku = s.msku || s.sku || '—';
+        var line = s.line || s.productLine || '—';
+        var pos = s.pos || s.position || '—';
+        var price = s.price != null ? ((s.currency || d.currency || '$') + s.price) : '—';
+        var upd = s.updateTime || d.uTime || '—';
+        var risk = s.low ? '<span class="low-risk">低价风险</span>' : '—';
+        return '<tr><td><div class="sim-prod">' +
+          '<div class="sim-thumb">图</div>' +
+          '<div class="sim-meta">' + saleTagHtml(s.status == null ? 1 : s.status) +
+            '<span class="line">' + shop + '</span>' +
+            '<span class="line word-blue">' + asin + '</span>' +
+            '<span class="line word-blue">' + msku + '</span>' +
+          '</div></div></td>' +
+          '<td><div style="font-size:12px;line-height:1.5">' + line + '<br>' + pos + '</div></td>' +
+          '<td>' + price + '</td>' +
+          '<td>' + risk + '</td>' +
+          '<td style="font-size:12px;color:#606266">' + upd + '</td></tr>';
+      }).join('');
+    }
+    return '<div class="block"><h3>关联相似产品</h3><div class="sim-scroll"><table class="mini-table"><thead><tr>' +
+      '<th>产品信息</th><th>产品线，定位</th><th>价格</th><th>风险</th><th>更新时间</th>' +
+      '</tr></thead><tbody>' + body + '</tbody></table></div></div>';
+  }
+
+  function histNum(v, clickable) {
+    if (v == null || v === '' || v === 0) return '<span class="n na">—</span>';
+    return '<span class="n' + (clickable ? '' : '') + '">' + v + '</span>';
+  }
+
+  /** 卖家历史可点；产品历史只读（对齐现网） */
+  function historyCaseBlock(title, name, stats, clickable) {
+    stats = stats || {};
+    var total = stats.riskNum != null ? stats.riskNum : 0;
+    var cells = [
+      { lab: '待确定', key: 'waitConfirmed', v: stats.waitConfirmed },
+      { lab: '待投诉', key: 'waitComplained', v: stats.waitComplained },
+      { lab: '投诉中', key: 'complaining', v: stats.complaining },
+      { lab: '投诉成功', key: 'success', v: stats.success },
+      { lab: '投诉驳回', key: 'rejected', v: stats.rejected },
+      { lab: '已关闭', key: 'closed', v: stats.closed, mute: true }
+    ];
+    var grid = cells.map(function (c) {
+      var n = (c.v == null || c.v === 0) ? '<span class="n na">—</span>' : ('<span class="n' + (c.mute ? ' muted' : '') + '">' + c.v + '</span>');
+      var cls = 'hist-cell' + (clickable && c.v ? ' clickable' : '');
+      return '<div class="' + cls + '"><span class="lab">' + c.lab + '</span>' + n + '</div>';
+    }).join('');
+    return '<div class="block"><h3>' + title + '</h3>' +
+      '<div class="hist-name">' + (name || '—') + '</div>' +
+      '<div class="hist-total">风控数: <span class="n">' + total + '</span></div>' +
+      '<div class="hist-grid">' + grid + '</div></div>';
+  }
+
+  function defaultSellerHist(d) {
+    return d.sellerHist || { riskNum: 8, waitConfirmed: 8, waitComplained: 0, complaining: 0, success: 0, rejected: 0, closed: 0 };
+  }
+
+  function defaultProductHist(d) {
+    return d.productHist || { riskNum: 1, waitConfirmed: 1, waitComplained: 0, complaining: 0, success: 0, rejected: 0, closed: 0 };
+  }
+
+  function pageDetail() {
+    var d = findListing(state.detailId) || listings[0];
+    var confirmMode = state.detailType === 1;
+    var closeBlock = '';
+    if (d.status === 5) {
+      closeBlock = '<div class="close-info"><div>关闭原因：' + (d.closeReason || '—') + '</div><div>备注：' + (d.closeRemark || '—') + '</div></div>';
+    }
+    // 汇总卡：商标/版权/外观命中次数（不展示授权状态、最高相似度）
+    var grid = summaryGridHtml(d);
+    var link = listingUrl(d);
+    var sellerBlock =
+      '<div class="seller-meta">' +
+        '<div class="meta-row"><span><span class="k">卖家名称:</span> ' + (d.seller || '—') + '</span></div>' +
+        '<div class="meta-row"><span class="k">Listing链接:</span> <a class="listing-link" href="' + link + '" target="_blank" rel="noopener">' + (d.title || link) + '</a></div>' +
+        '<div class="meta-row"><span class="price"><span class="k" style="color:#606266">价格:</span> ' + d.site + ': ' + d.currency + d.price + '</span></div>' +
+      '</div>';
+    return '<div class="detail-page page-flex-colunm"><div class="detail-body">' +
+      '<div class="detail-left"><div class="item-box"><h3>侵权详情</h3>' +
+      '<div class="flex-layout"><div><span class="box-text bgc-text">' + d.site + '</span> <span class="box-text platform-text">' + d.platform + '</span> <span class="word-blue">' + d.code + '</span></div>' +
+      '<div>' + priorityHtml(d) + ' ' + statusHtml(d) + ' <span style="margin-left:24px">当前处理人: <span class="word-blue">' + d.handler + '</span></span></div></div>' +
+      '<p style="margin:10px 0;color:#606266">生成时间：' + d.cTime + '</p>' + closeBlock +
+      grid +
+      '<h4 style="margin:8px 0 0">卖家信息</h4>' +
+      sellerBlock +
+      detailMediaHtml(d) +
+      '</div></div>' +
+      '<div class="detail-right">' +
+        evidenceBlock(d) +
+        similarProductsBlock(d) +
+        historyCaseBlock('卖家历史案例', d.seller, defaultSellerHist(d), true) +
+        historyCaseBlock('产品历史案例', (d.sku || d.asin || '—'), defaultProductHist(d), false) +
+      '</div></div>' +
+      '<div class="bottom-button"><button class="el-button" data-act="back">取消</button>' +
+      (confirmMode ? '<button class="el-button" data-act="close" data-id="' + d.id + '">关闭此单</button><button class="el-button el-button--primary" data-act="doConfirm" data-id="' + d.id + '">提交确认</button>' : '') +
+      '</div></div>';
+  }
+
+  function pageComplaint() {
+    var d = findListing(state.complaintId) || listings[0];
+    var name = d.platform;
+    var mode = state.complaintMode;
+    var form;
+    if (mode === 'email') {
+      form = '<div class="form-item"><label class="req">发件人</label><input class="el-input" value="govee-ip@govee.com"></div><div class="form-item"><label class="req">收件人</label><input class="el-input" value="vero@ebay.com"></div><div class="form-item"><label class="req">抄送</label><input class="el-input" value="vero@ebay.com"></div><div class="form-item"><label class="req">主题</label><input class="el-input" value="Notice of Claimed Infringement - ' + d.code + '"></div><div class="form-item"><label class="req">邮件正文</label><textarea class="el-textarea">NOCI Template&#10;&#10;IP Owner: Shenzhen Intellirocks Tech. Co., Ltd.&#10;Reporter: govee-ip@govee.com&#10;URL: https://www.ebay.com/itm/' + d.itemId + '</textarea></div>';
+    } else {
+      var tip = name === '小红书'
+        ? '小红书本期按门户渠道处理（邮件模板后置）。请前往小红书知识产权后台完成投诉，本页仅记录信息并推进状态。'
+        : name + ' 投诉需前往平台后台手动操作，本页仅记录投诉信息并推进状态。';
+      form = '<div class="warn-red">' + tip + '</div>' +
+        '<div class="form-item"><label class="req">侵权链接</label><input class="el-input" value="" placeholder="粘贴平台商品链接"></div>' +
+        '<div class="form-item"><label class="req">卖家名称</label><input class="el-input" value="' + d.seller + '"></div>' +
+        '<div class="form-item"><label class="req">品牌/商标</label><input class="el-input" value="' + (d.brand || '') + '"></div>' +
+        '<div class="form-item"><label class="req">投诉说明</label><textarea class="el-textarea" placeholder="简要说明侵权事实"></textarea></div>';
+    }
+    return '<div class="form-page page-flex-colunm"><div class="form-wrap"><div class="flex-layout" style="margin-bottom:16px"><h3 style="margin:0">' + name + ' 投诉内容' + (mode === 'portal' ? '（门户）' : '（邮件）') + '</h3><button class="el-button el-button--small" data-act="detail" data-id="' + d.id + '">查看侵权详情</button></div>' + form + '</div>' +
+      '<div class="bottom-button"><button class="el-button" data-act="back">取消</button><button class="el-button" data-act="close" data-id="' + d.id + '">关闭此单</button><button class="el-button el-button--primary" data-act="submitComplaint" data-id="' + d.id + '">提交投诉</button></div></div>';
+  }
+
+  function pageCheck() {
+    var d = findListing(state.complaintId) || listings[0];
+    return '<div class="form-page page-flex-colunm"><div class="form-wrap"><h3>查看投诉 · ' + d.platform + ' · ' + d.code + '</h3>' +
+      '<div class="form-item"><label>提交时间</label><div>' + d.sTime + '</div></div>' +
+      '<div class="form-item"><label>提交人</label><div>' + d.sUser + '</div></div>' +
+      '<div class="form-item"><label>投诉内容</label><div style="padding:12px;background:#fafafa;color:#606266">只读展示已提交投诉表单。</div></div></div>' +
+      '<div class="bottom-button"><button class="el-button" data-act="back">取消</button></div></div>';
+  }
+
+  function pageSeller() {
+    var body = sellers.map(function (s) {
+      return '<tr><td><input type="checkbox"></td><td>' + s.site + '</td><td>' + s.platform + '</td><td>' + s.name + '</td>' +
+        '<td><span class="bgc-box ' + (s.status?'green':'orange') + '">' + (s.status?'已授权':'未授权') + '</span></td>' +
+        '<td class="date-cell">新增时间：' + s.cTime + '<br>启动授权：' + s.oTime + '<br>关闭授权：' + s.clTime + '</td>' +
+        '<td class="op-cell">新增人：' + s.cUser + '<br>启动授权人：' + s.oUser + '<br>关闭授权人：' + s.clUser + '</td>' +
+        '<td>' + (s.status ? '<button class="el-button is-text operate-btn" data-seller="off" data-id="' + s.id + '">取消授权</button>' : '<button class="el-button is-text operate-btn" data-seller="on" data-id="' + s.id + '">启动授权</button>') + '</td></tr>';
+    }).join('');
+    return '<div class="page-flex-colunm"><div class="search-box"><div class="search-space">' +
+      '<select class="el-select" style="width:200px"><option value="">站点</option>' + siteOptionsHtml() + '</select>' +
+      '<select class="el-select" style="width:200px"><option value="">平台类型</option>' + platformOptionsHtml() + '</select>' +
+      '<select class="el-select" style="width:140px"><option value="">卖家授权状态</option><option>未授权</option><option>已授权</option></select>' +
+      '<input class="el-input" style="width:160px" placeholder="卖家名称">' +
+      '<button class="el-button el-button--primary" data-act="search"><svg class="search-ico" viewBox="0 0 1024 1024"><path d="M192 448c0-141.152 114.848-256 256-256s256 114.848 256 256-114.848 256-256 256-256-114.848-256-256z m710.624 409.376l-206.88-206.88C750.72 597.44 780.8 526.4 780.8 448c0-194.08-157.92-352-352-352S76.8 253.92 76.8 448s157.92 352 352 352c78.4 0 149.44-30.08 202.496-78.944l206.88 206.88a32 32 0 0 0 45.248-45.248z"/></svg></button>' +
+      '</div></div><div class="card"><div class="header"><div class="flex-end"><div style="display:flex;gap:8px">' +
+      '<button class="el-button el-button--small el-button--primary">添加卖家</button><button class="el-button el-button--small">批量导入</button><button class="el-button el-button--small">启动授权</button><button class="el-button el-button--small">取消授权</button>' +
+      '</div></div></div><div class="table"><table class="lanjing-table" style="min-width:1000px"><thead><tr><th style="width:40px"></th><th>站点</th><th>平台</th><th>卖家名称</th><th>状态</th><th>时间</th><th>操作人</th><th>操作</th></tr></thead><tbody>' + body + '</tbody></table></div>' +
+      '<div class="table-pagination-bar"><span class="info">共 ' + sellers.length + ' 条</span><select><option>20条/页</option></select></div></div></div>';
+  }
+
+  function findPatent(id) {
+    for (var i = 0; i < patents.length; i++) if (patents[i].id === id) return patents[i];
+    return null;
+  }
+
+  function openPatentPreview(src) {
+    if (!src) return;
+    var pm = document.getElementById('previewMask');
+    pm.innerHTML = '<img src="' + src + '" alt="preview">';
+    pm.classList.add('show');
+    pm.onclick = function () { pm.classList.remove('show'); pm.innerHTML = ''; };
+  }
+
+  function patentHasSeedImg(p) {
+    return (p.imgs || []).some(function (img) { return !!img.url; });
+  }
+
+  function patentCanEnable(p) {
+    return !!(p.appNo || p.patentNo) && patentHasSeedImg(p);
+  }
+
+  /** 保存后重算：不自动进检索中；资料齐→未启用，缺项→待完善；已暂停保持；检索中若资料被拆掉则退回待完善 */
+  function patentRecalcAfterSave(p) {
+    if (p.status === 'paused') return;
+    if (p.status === 'ready') {
+      if (!patentCanEnable(p)) p.status = 'pending';
+      return;
+    }
+    p.status = patentCanEnable(p) ? 'filled' : 'pending';
+  }
+
+  function patentStatusMeta(status) {
+    if (status === 'ready') return { key: 'ready', label: '检索中' };
+    if (status === 'filled') return { key: 'filled', label: '未启用' };
+    if (status === 'paused') return { key: 'paused', label: '已暂停' };
+    return { key: 'pending', label: '待完善' };
+  }
+
+  function filteredPatents() {
+    var f = state.patentStatusFilter || '';
+    if (!f) return patents.slice();
+    return patents.filter(function (p) { return (p.status || 'pending') === f; });
+  }
+
+  function patentImgsHtml(p) {
+    var slots = p.imgs || [];
+    while (slots.length < 3) slots.push({ type: '', url: '', label: '空' });
+    return '<div class="patent-imgs">' + slots.slice(0, 3).map(function (img, idx) {
+      var tip = img.type || ('图' + (idx + 1));
+      if (img.url) {
+        return '<img class="pt-img" src="' + img.url + '" alt="' + tip + '" title="' + tip + '（点击放大）" data-act="previewPatentImg" data-src="' + img.url + '">';
+      }
+      return '<div class="pt-img empty" title="' + tip + '">' + (img.label || tip) + '</div>';
+    }).join('') + '</div>';
+  }
+
+  function patentOpsHtml(p) {
+    var ops = '';
+    if (p.status === 'pending') {
+      ops += '<button class="el-button is-text operate-btn" data-act="patentEdit" data-id="' + p.id + '">完善资料</button>';
+    } else {
+      ops += '<button class="el-button is-text operate-btn" data-act="patentEdit" data-id="' + p.id + '">编辑</button>';
+    }
+    if (p.status === 'ready') {
+      ops += '<button class="el-button is-text operate-btn" data-act="patentPause" data-id="' + p.id + '">暂停检索</button>';
+    } else if (p.status === 'filled' || (p.status === 'paused' && patentCanEnable(p))) {
+      ops += '<button class="el-button is-text operate-btn" data-act="patentEnable" data-id="' + p.id + '">启用检索</button>';
+    } else if (p.status === 'paused') {
+      ops += '<button class="el-button is-text operate-btn" disabled title="请先补全专利号/申请号与检索参考图" style="color:#c0c4cc;cursor:not-allowed">启用检索</button>';
+    }
+    if (p.source !== 'amazon_sales') {
+      ops += '<button class="el-button is-text operate-btn" data-act="patentDelete" data-id="' + p.id + '">删除</button>';
+    }
+    return ops;
+  }
+
+  function patentSalesMonthText(p) {
+    return p.salesMonth || '';
+  }
+
+  function patentSyncTimeText(p) {
+    return (p.source === 'amazon_sales' && p.syncTime) ? p.syncTime : (p.syncTime || '');
+  }
+
+  function patentLinkLine(label, url) {
+    if (url) {
+      return '<div class="pt-official">' + label + ': <a href="' + url + '" target="_blank" rel="noopener">' + url + '</a></div>';
+    }
+    return '<div class="pt-official muted">' + label + ': 无</div>';
+  }
+
+  function patentLinksHtml(p) {
+    var amazon = p.amazonUrl || '';
+    var site = p.siteUrl || p.officialUrl || '';
+    return patentLinkLine('亚马逊商品链接', amazon) + patentLinkLine('独立站商品链接', site);
+  }
+
+  function pagePatent() {
+    var rows = filteredPatents();
+    var body = rows.map(function (p) {
+      var app = (p.appNo || p.patentNo || '—');
+      if (p.appNo && p.patentNo && p.appNo !== p.patentNo) app = p.appNo + '<br><span style="color:#909399;font-size:12px">' + p.patentNo + '</span>';
+      var st = patentStatusMeta(p.status);
+      return '<tr>' +
+        '<td><div>' + (p.skus || '—') + '</div>' + patentLinksHtml(p) + '</td>' +
+        '<td>' + (p.name || '—') + '</td>' +
+        '<td>' + patentSalesMonthText(p) + '</td>' +
+        '<td><span class="pt-status ' + st.key + '">' + st.label + '</span></td>' +
+        '<td>' + app + '</td>' +
+        '<td>' + (p.applyDate || '—') + '</td>' +
+        '<td>' + (p.priorityDate || '—') + '</td>' +
+        '<td>' + (p.regions || '—') + '</td>' +
+        '<td>' + patentImgsHtml(p) + '</td>' +
+        '<td>' + (patentSyncTimeText(p) || '—') + '</td>' +
+        '<td><div class="ops-col">' + patentOpsHtml(p) + '</div></td></tr>';
+    }).join('');
+    if (!rows.length) {
+      body = '<tr><td colspan="11" style="text-align:center;color:#c0c4cc;padding:24px">暂无数据</td></tr>';
+    }
+    var f = state.patentStatusFilter || '';
+    return '<div class="page-flex-colunm"><div class="search-box"><div class="search-space">' +
+      '<input class="el-input" style="width:180px" placeholder="SKU">' +
+      '<input class="el-input" style="width:180px" placeholder="产品名称">' +
+      '<input class="el-input" style="width:120px" placeholder="销量月份">' +
+      '<select class="el-select has-val" id="patentStatusSel" style="width:140px">' +
+        '<option value=""' + (!f ? ' selected' : '') + '>检索状态</option>' +
+        '<option value="pending"' + (f === 'pending' ? ' selected' : '') + '>待完善</option>' +
+        '<option value="filled"' + (f === 'filled' ? ' selected' : '') + '>未启用</option>' +
+        '<option value="ready"' + (f === 'ready' ? ' selected' : '') + '>检索中</option>' +
+        '<option value="paused"' + (f === 'paused' ? ' selected' : '') + '>已暂停</option>' +
+      '</select>' +
+      '<input class="el-input" style="width:200px" placeholder="专利号/申请号">' +
+      '<input class="el-input" style="width:180px" placeholder="申请国家/地区">' +
+      '<button class="el-button el-button--primary" data-act="search"><svg class="search-ico" viewBox="0 0 1024 1024"><path d="M192 448c0-141.152 114.848-256 256-256s256 114.848 256 256-114.848 256-256 256-256-114.848-256-256z m710.624 409.376l-206.88-206.88C750.72 597.44 780.8 526.4 780.8 448c0-194.08-157.92-352-352-352S76.8 253.92 76.8 448s157.92 352 352 352c78.4 0 149.44-30.08 202.496-78.944l206.88 206.88a32 32 0 0 0 45.248-45.248z"/></svg></button>' +
+      '</div></div><div class="card"><div class="header"><div class="flex-end"><div style="display:flex;gap:8px">' +
+      '<button class="el-button el-button--small el-button--primary" data-act="patentAdd">新增</button>' +
+      '<button class="el-button el-button--small" data-act="patentImport">批量导入补全</button>' +
+      '</div></div></div><div class="table"><table class="lanjing-table" style="min-width:1680px"><thead><tr>' +
+      '<th style="min-width:220px">SKU</th><th>产品名称</th><th style="min-width:100px">销量月份</th><th style="min-width:90px">检索状态</th><th>专利号/申请号</th><th>申请日</th><th>优先权日</th><th>申请国家/地区</th><th style="min-width:180px">检索参考图</th><th style="min-width:150px">专利信息同步时间</th><th style="width:180px">操作</th>' +
+      '</tr></thead><tbody>' + body + '</tbody></table></div>' +
+      '<div class="table-pagination-bar"><span class="info">共 ' + rows.length + ' 条' + (f ? '（已筛选）' : '') + '</span><select><option>20条/页</option></select></div></div></div>';
+  }
+
+  function openPatentDialog(mode, patent) {
+    var isEdit = mode === 'edit' && patent;
+    var p = patent || { skus: '', officialUrl: '', amazonUrl: '', siteUrl: '', appNo: '', patentNo: '', applyDate: '', priorityDate: '', regions: '', name: '', source: 'manual', status: 'pending', salesMonth: '', syncTime: '' };
+    var title = isEdit ? (p.status === 'pending' ? '完善资料' : '编辑外观专利') : '新增外观专利';
+    var syncBlock = '';
+    if (isEdit && p.source === 'amazon_sales') {
+      syncBlock =
+        '<div class="form-row" style="padding:10px 12px;background:#f5f7fa;border-radius:4px;margin-bottom:14px">' +
+          '<div style="font-size:13px;color:#606266;margin-bottom:4px">销量月份（只读）　' + patentSalesMonthText(p) + '</div>' +
+          '<div style="font-size:12px;color:#909399">专利信息同步时间　' + (patentSyncTimeText(p) || '—') + '</div>' +
+        '</div>';
+    }
+    var monthRow = (isEdit && p.source === 'amazon_sales')
+      ? ''
+      : '<div class="form-row"><label>销量月份</label><input class="el-input" id="ptSalesMonth" value="' + (p.salesMonth || '') + '" placeholder="YYYY-MM"></div>';
+    var amazon = p.amazonUrl || '';
+    var site = p.siteUrl || p.officialUrl || '';
+    var mask = document.getElementById('mask');
+    mask.innerHTML =
+      '<div class="patent-dlg">' +
+        '<h3>' + title + '</h3>' +
+        syncBlock +
+        '<div class="form-row"><label>SKU</label><input class="el-input" id="ptSkus" value="' + (p.skus || '') + '" placeholder="多个用逗号分隔"' + (isEdit && p.source === 'amazon_sales' ? ' readonly style="background:#f5f7fa"' : '') + '></div>' +
+        monthRow +
+        '<div class="form-row"><label>亚马逊商品链接</label>' +
+          (amazon
+            ? '<a href="' + amazon + '" target="_blank" rel="noopener" style="font-size:13px;word-break:break-all">' + amazon + '</a>'
+            : '<div style="font-size:13px;color:#909399">无</div>') +
+        '</div>' +
+        '<div class="form-row"><label>独立站商品链接</label>' +
+          (site
+            ? '<a href="' + site + '" target="_blank" rel="noopener" style="font-size:13px;word-break:break-all">' + site + '</a>'
+            : '<div style="font-size:13px;color:#909399">无</div>') +
+        '</div>' +
+        '<div class="form-row"><label>产品名称</label><input class="el-input" id="ptName" value="' + (p.name || '') + '"' + (isEdit && p.source === 'amazon_sales' ? ' readonly style="background:#f5f7fa"' : '') + '></div>' +
+        '<div class="form-row"><label>申请号</label><input class="el-input" id="ptAppNo" value="' + (p.appNo || '') + '"></div>' +
+        '<div class="form-row"><label>专利号（授权后，可选）</label><input class="el-input" id="ptNo" value="' + (p.patentNo || '') + '"></div>' +
+        '<div class="form-row"><label>申请日</label><input class="el-input" id="ptApplyDate" value="' + (p.applyDate || '') + '" placeholder="YYYY-MM-DD"></div>' +
+        '<div class="form-row"><label>优先权日</label><input class="el-input" id="ptDate" value="' + (p.priorityDate || '') + '" placeholder="YYYY-MM-DD"></div>' +
+        '<div class="form-row"><label>申请国家/地区</label><input class="el-input" id="ptRegions" value="' + (p.regions || '') + '" placeholder="如 US / DE / UK"></div>' +
+        '<div class="form-row"><label>检索参考图（3 张）</label><div class="img-slots">' +
+          (function () {
+            var imgs = (p.imgs && p.imgs.length) ? p.imgs : [
+              { type: '包装图', url: '' }, { type: '产品宣传图', url: '' }, { type: '产品阴影图', url: '' }
+            ];
+            var labels = ['包装图', '产品宣传图', '产品阴影图'];
+            return labels.map(function (lab, i) {
+              var u = (imgs[i] && imgs[i].url) || '';
+              var box = u
+                ? '<img class="slot-box" src="' + u + '" alt="' + lab + '" style="object-fit:cover;padding:0;cursor:pointer;border-style:solid" data-act="previewPatentImg" data-src="' + u + '">'
+                : '<div class="slot-box">点击上传</div>';
+              return '<div class="img-slot">' + box + '<div style="font-size:12px;color:#909399">' + lab + '</div></div>';
+            }).join('');
+          })() +
+        '</div></div>' +
+        '<div class="dlg-actions">' +
+          '<button class="el-button" type="button" id="ptCancel">取消</button>' +
+          '<button class="el-button el-button--primary" type="button" id="ptOk">确定</button>' +
+        '</div>' +
+      '</div>';
+    mask.classList.add('show');
+    mask.onclick = function (e) {
+      var prev = e.target.closest('[data-act="previewPatentImg"]');
+      if (prev) {
+        e.stopPropagation();
+        openPatentPreview(prev.getAttribute('data-src'));
+        return;
+      }
+    };
+    document.getElementById('ptCancel').onclick = function () { mask.classList.remove('show'); mask.innerHTML = ''; mask.onclick = null; };
+    document.getElementById('ptOk').onclick = function () {
+      var skus = document.getElementById('ptSkus').value.trim();
+      if (!skus) { toast('请填写 SKU', true); return; }
+      var monthEl = document.getElementById('ptSalesMonth');
+      var salesMonth = monthEl ? monthEl.value.trim() : (p.salesMonth || '');
+      if (!salesMonth) { toast('请填写销量月份', true); return; }
+      if (isEdit) {
+        if (p.source !== 'amazon_sales') {
+          p.skus = skus;
+          p.name = document.getElementById('ptName').value.trim();
+          p.salesMonth = salesMonth;
+        }
+        p.appNo = document.getElementById('ptAppNo').value.trim();
+        p.patentNo = document.getElementById('ptNo').value.trim();
+        p.applyDate = document.getElementById('ptApplyDate').value.trim();
+        p.priorityDate = document.getElementById('ptDate').value.trim();
+        p.regions = document.getElementById('ptRegions').value.trim();
+        patentRecalcAfterSave(p);
+      } else {
+        var row = {
+          id: Date.now(),
+          skus: skus,
+          officialUrl: '',
+          amazonUrl: '',
+          siteUrl: '',
+          appNo: document.getElementById('ptAppNo').value.trim(),
+          patentNo: document.getElementById('ptNo').value.trim(),
+          applyDate: document.getElementById('ptApplyDate').value.trim(),
+          priorityDate: document.getElementById('ptDate').value.trim(),
+          regions: document.getElementById('ptRegions').value.trim(),
+          name: document.getElementById('ptName').value.trim(),
+          source: 'manual',
+          salesMonth: salesMonth,
+          syncTime: '',
+          amzSalesNote: '',
+          status: 'pending',
+          imgs: [
+            { type: '包装图', url: '', label: '包装' },
+            { type: '产品宣传图', url: '', label: '宣传' },
+            { type: '产品阴影图', url: '', label: '阴影' }
+          ]
+        };
+        patentRecalcAfterSave(row);
+        patents.push(row);
+      }
+      mask.classList.remove('show');
+      mask.innerHTML = '';
+      mask.onclick = null;
+      toast('保存成功');
+      render();
+    };
+  }
+
+  function srEsc(s) {
+    return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function srListingLow(d) {
+    return (d.simList || []).some(function (x) { return x.low; }) ? 1 : 0;
+  }
+  function srHitType(r) {
+    var p = [];
+    if (r.tm || r.tmCount) p.push('商标');
+    if (r.cp || r.cpCount) p.push('版权');
+    if (r.dp || r.dpDetail) p.push('外观');
+    return p.length ? p.join('/') : '—';
+  }
+  function srSellerKey(p, site, seller) { return p + '||' + site + '||' + seller; }
+  function buildRiskSellers() {
+    var map = {};
+    listings.forEach(function (r) {
+      if (r.status > 2) return;
+      var key = srSellerKey(r.platform, r.site, r.seller);
+      if (!map[key]) {
+        map[key] = { key:key, platform:r.platform, site:r.site, seller:r.seller, active:0, s0:0, s1:0, s2:0, tm:0, cp:0, dp:0, low:0, skus:{}, latest:'', listings:[] };
+      }
+      var s = map[key];
+      s.active += 1;
+      s['s' + r.status] += 1;
+      s.tm += r.tmCount || r.tm || 0;
+      s.cp += r.cpCount || r.cp || 0;
+      s.dp += r.dp || Number(r.dpDetail) || 0;
+      s.low += srListingLow(r);
+      if (r.sku) s.skus[r.sku] = (s.skus[r.sku] || 0) + 1;
+      var t = r.uTime || r.cTime;
+      if (!s.latest || t > s.latest) s.latest = t;
+      s.listings.push(r);
+    });
+    return Object.keys(map).map(function (k) {
+      var s = map[k];
+      s.skuCnt = Object.keys(s.skus).length;
+      s.hitCnt = (s.tm || 0) + (s.cp || 0) + (s.dp || 0);
+      s.listings.sort(function (a, b) { return (a.uTime || a.cTime) < (b.uTime || b.cTime) ? 1 : -1; });
+      return s;
+    });
+  }
+  function filteredRiskSellers() {
+    var rows = buildRiskSellers().filter(function (s) {
+      if (state.srSite && s.site !== state.srSite) return false;
+      if (state.srPlatform && s.platform !== state.srPlatform) return false;
+      if (state.srSeller && s.seller.toLowerCase().indexOf(state.srSeller.toLowerCase()) < 0) return false;
+      var day = (s.latest || '').slice(0, 10);
+      if (state.srFrom && day < state.srFrom) return false;
+      if (state.srTo && day > state.srTo) return false;
+      return true;
+    });
+    var key = state.srSortKey;
+    var dir = state.srSortDir === 'asc' ? 1 : -1;
+    rows.sort(function (a, b) {
+      var va = a[key] || 0, vb = b[key] || 0;
+      if (va === vb) return b.active - a.active;
+      return va < vb ? -dir : dir;
+    });
+    return rows;
+  }
+  function readSrFilters() {
+    var a = document.getElementById('srSite');
+    if (!a) return;
+    state.srSite = a.value;
+    state.srPlatform = document.getElementById('srPlatform').value;
+    state.srSeller = document.getElementById('srSeller').value.trim();
+    state.srFrom = document.getElementById('srFrom').value;
+    state.srTo = document.getElementById('srTo').value;
+  }
+  function pageSellerRisk() {
+    var rows = filteredRiskSellers();
+    var total = rows.length;
+    var maxPage = Math.max(1, Math.ceil(total / state.srPageSize));
+    if (state.srPage > maxPage) state.srPage = maxPage;
+    var start = (state.srPage - 1) * state.srPageSize;
+    var pageRows = rows.slice(start, start + state.srPageSize);
+    if (state.srDrawer && state.srKey && !rows.some(function (r) { return r.key === state.srKey; })) {
+      state.srDrawer = false; state.srKey = '';
+    }
+    var selected = (state.srDrawer && state.srKey) ? rows.find(function (s) { return s.key === state.srKey; }) : null;
+    var sites = [], plats = [];
+    buildRiskSellers().forEach(function (s) {
+      if (sites.indexOf(s.site) < 0) sites.push(s.site);
+      if (plats.indexOf(s.platform) < 0) plats.push(s.platform);
+    });
+    var sellerCnt = rows.length, activeN = 0, lowN = 0, skuMap = {};
+    rows.forEach(function (s) {
+      activeN += s.active; lowN += s.low;
+      Object.keys(s.skus).forEach(function (sku) { skuMap[sku] = 1; });
+    });
+    function sortTh(key, label) {
+      var on = state.srSortKey === key;
+      return '<th class="sr-sort' + (on ? ' is-on' : '') + '" data-act="srSort" data-key="' + key + '">' + label +
+        '<span class="arr">' + (on ? (state.srSortDir === 'asc' ? '▲' : '▼') : '↕') + '</span></th>';
+    }
+    var body = pageRows.map(function (s) {
+      return '<tr class="' + (state.srDrawer && s.key === state.srKey ? 'active' : '') + '">' +
+        '<td>' + srEsc(s.seller) + '</td><td>' + srEsc(s.site) + '</td><td>' + srEsc(s.platform) + '</td>' +
+        '<td><b>' + s.active + '</b></td><td>' + s.skuCnt + '</td><td>' + s.low + '</td><td>' + s.hitCnt + '</td>' +
+        '<td>' + srEsc(s.latest || '') + '</td>' +
+        '<td><button class="el-button is-text" data-act="srOpen" data-key="' + srEsc(s.key) + '">查看</button></td></tr>';
+    }).join('');
+    var drawer = '';
+    if (selected) {
+      var topL = selected.listings.slice(0, 5).map(function (r) {
+        return '<tr><td><a href="javascript:;" data-act="detail" data-id="' + r.id + '">' + srEsc(r.code) + '</a></td><td>' + srEsc(r.title) + '</td><td>' + srHitType(r) + '</td></tr>';
+      }).join('');
+      var topS = Object.keys(selected.skus).map(function (sku) { return { sku:sku, cnt:selected.skus[sku] }; })
+        .sort(function (a, b) { return b.cnt - a.cnt; }).slice(0, 5)
+        .map(function (x) { return '<tr><td>' + srEsc(x.sku) + '</td><td>' + x.cnt + '</td></tr>'; }).join('');
+      drawer = '<div class="sr-mask" data-act="srClose"></div><aside class="sr-drawer">' +
+        '<div class="sr-hd"><div><div class="name">' + srEsc(selected.seller) + '</div>' +
+        '<div class="meta">' + srEsc(selected.site) + ' / ' + srEsc(selected.platform) +
+        ' · 更新时间 ' + srEsc(selected.latest || '—') + '</div></div>' +
+        '<button type="button" class="sr-x" data-act="srClose">×</button></div>' +
+        '<div class="sr-bd"><div class="sr-metrics">' +
+          '<div class="sr-m"><div class="k">活跃风险 Listing 数</div><div class="n em">' + selected.active + '</div></div>' +
+          '<div class="sr-m"><div class="k">涉及 SKU 数</div><div class="n">' + selected.skuCnt + '</div></div>' +
+        '</div>' +
+        '<div class="sr-sec"><h4>未关闭状态拆分</h4><div class="sr-strip">' +
+          '<div class="c"><div class="l">待确认</div><div class="n">' + selected.s0 + '</div></div>' +
+          '<div class="c"><div class="l">待投诉</div><div class="n">' + selected.s1 + '</div></div>' +
+          '<div class="c"><div class="l">投诉中</div><div class="n">' + selected.s2 + '</div></div></div></div>' +
+        '<div class="sr-sec"><h4>Listing（Top 5）</h4><table class="sr-mini"><thead><tr><th>风控编号</th><th>标题</th><th>类型</th></tr></thead><tbody>' +
+        (topL || '<tr><td colspan="3" style="color:#909399">无</td></tr>') + '</tbody></table></div>' +
+        '<div class="sr-sec"><h4>涉及 SKU 数（Top 5）</h4><table class="sr-mini"><thead><tr><th>SKU</th><th>关联 Listing 数</th></tr></thead><tbody>' +
+        (topS || '<tr><td colspan="2" style="color:#909399">无</td></tr>') + '</tbody></table></div>' +
+        '<div class="sr-sec"><h4>风险命中数</h4><div style="font-size:13px;color:#606266;line-height:1.8">商标 ' + selected.tm + ' · 版权 ' + selected.cp + ' · 外观 ' + selected.dp + ' · 低价 Listing ' + selected.low + '</div></div>' +
+        '</div>' +
+        '<div class="sr-ft">' +
+          '<button class="el-button el-button--primary el-button--small" data-act="srToList" data-sname="' + srEsc(selected.seller) + '" data-splatform="' + srEsc(selected.platform) + '" data-ssite="' + srEsc(selected.site) + '">去列表处理</button>' +
+        '</div></aside>';
+    }
+    return '<div class="sr-wrap"><div class="sr-search search-space">' +
+      '<input class="el-input" id="srSeller" style="width:180px" placeholder="卖家名称" value="' + srEsc(state.srSeller) + '">' +
+      '<select class="el-select" id="srSite" style="width:110px"><option value="">站点</option>' +
+      sites.map(function (s) { return '<option value="' + srEsc(s) + '"' + (state.srSite===s?' selected':'') + '>' + srEsc(s) + '</option>'; }).join('') + '</select>' +
+      '<select class="el-select" id="srPlatform" style="width:140px"><option value="">平台</option>' +
+      plats.map(function (s) { return '<option value="' + srEsc(s) + '"' + (state.srPlatform===s?' selected':'') + '>' + srEsc(s) + '</option>'; }).join('') + '</select>' +
+      '<span style="font-size:13px;color:#606266;white-space:nowrap">更新时间</span>' +
+      '<input class="el-input" id="srFrom" type="date" style="width:140px" value="' + srEsc(state.srFrom) + '">' +
+      '<span style="color:#c0c4cc">-</span>' +
+      '<input class="el-input" id="srTo" type="date" style="width:140px" value="' + srEsc(state.srTo) + '">' +
+      '<button class="el-button el-button--primary" data-act="srSearch">查询</button>' +
+      '<button class="el-button" data-act="srReset">重置</button></div>' +
+      '<div class="sr-kpi">' +
+        '<div class="sr-card"><div class="t">活跃风险卖家数</div><div class="v">' + sellerCnt + '</div></div>' +
+        '<div class="sr-card"><div class="t">活跃风险 Listing 数</div><div class="v">' + activeN + '</div></div>' +
+        '<div class="sr-card"><div class="t">涉及 SKU 数</div><div class="v">' + Object.keys(skuMap).length + '</div></div>' +
+        '<div class="sr-card"><div class="t">低价风险 Listing 数</div><div class="v">' + lowN + '</div></div>' +
+      '</div>' +
+      '<div class="sr-table-wrap"><table class="sr-table"><thead><tr>' +
+        '<th>卖家名称</th><th>站点</th><th>平台</th>' +
+        sortTh('active','活跃风险 Listing 数') + sortTh('skuCnt','涉及 SKU 数') +
+        sortTh('low','低价风险 Listing 数') + sortTh('hitCnt','风险命中数') +
+        sortTh('latest','更新时间') +
+        '<th>操作</th></tr></thead><tbody>' +
+        (body || '<tr><td colspan="9" style="text-align:center;padding:32px;color:#909399">无匹配卖家</td></tr>') +
+      '</tbody></table></div>' +
+      '<div class="sr-pager">共 ' + total + ' 个卖家' +
+        '<button class="el-button el-button--small" data-act="srPrev"' + (state.srPage<=1?' disabled':'') + '>上一页</button>' +
+        '<span>' + state.srPage + ' / ' + maxPage + '</span>' +
+        '<button class="el-button el-button--small" data-act="srNext"' + (state.srPage>=maxPage?' disabled':'') + '>下一页</button></div></div>' +
+      drawer;
+  }
+
+  function setHeader(title) { document.getElementById('headerTitle').textContent = title; }
+
+  function render() {
+    var topPages = { listing: 1, detail: 1, complaint: 1, check: 1 };
+    document.querySelectorAll('.menu-item').forEach(function (el) {
+      var nav = el.getAttribute('data-nav');
+      var active = false;
+      if (nav === 'listing') active = !!topPages[state.page];
+      else if (nav === 'sellerRisk') active = state.page === 'sellerRisk';
+      else if (nav === 'patent') active = state.page === 'patent';
+      el.classList.toggle('active', active);
+    });
+    var main = document.getElementById('main');
+    main.classList.toggle('is-board', state.page === 'sellerRisk');
+    if (state.page === 'listing') { setHeader('Listing侵权风控'); main.innerHTML = pageListing(); }
+    else if (state.page === 'detail') { setHeader(state.detailType===1?'提交确认':'查看详情'); main.innerHTML = pageDetail(); }
+    else if (state.page === 'complaint') { setHeader('提交投诉'); main.innerHTML = pageComplaint(); }
+    else if (state.page === 'check') { setHeader('查看投诉'); main.innerHTML = pageCheck(); }
+    else if (state.page === 'sellerRisk') { setHeader('卖家风险看板'); main.innerHTML = pageSellerRisk(); }
+    else if (state.page === 'patent') { setHeader('外观专利管理'); main.innerHTML = pagePatent(); }
+    document.querySelectorAll('.el-select').forEach(function (sel) {
+      sel.classList.toggle('has-val', !!sel.value);
+      sel.addEventListener('change', function () { sel.classList.toggle('has-val', !!sel.value); });
+    });
+    var patentSel = document.getElementById('patentStatusSel');
+    if (patentSel) {
+      patentSel.onchange = function () {
+        state.patentStatusFilter = patentSel.value || '';
+        render();
+      };
+    }
+  }
+
+  function complaintModeOf(p) {
+    if (isEmailComplaint(p)) return 'email';
+    if (isPortalComplaint(p)) return 'portal';
+    return '';
+  }
+
+  document.querySelector('.layout-menu').addEventListener('click', function (e) {
+    var item = e.target.closest('.menu-item');
+    if (!item) return;
+    var nav = item.getAttribute('data-nav');
+    if (nav === 'listing') {
+      state.listSite = '';
+      state.listPlatform = '';
+      state.listSeller = '';
+    }
+    state.page = nav;
+    render();
+  });
+
+  document.getElementById('main').addEventListener('click', function (e) {
+    var t = e.target.closest('[data-act],[data-batch],[data-seller],#checkAll');
+    if (!t) return;
+    if (t.id === 'checkAll') {
+      document.querySelectorAll('[data-check]').forEach(function (c) { c.checked = t.checked; });
+      return;
+    }
+    var act = t.getAttribute('data-act');
+    var batch = t.getAttribute('data-batch');
+    var sellerAct = t.getAttribute('data-seller');
+    var id = Number(t.getAttribute('data-id'));
+
+    if (act === 'search') {
+      var ls = document.getElementById('listSite');
+      var lp = document.getElementById('listPlatform');
+      var ln = document.getElementById('listSeller');
+      if (ls) state.listSite = ls.value;
+      if (lp) state.listPlatform = lp.value;
+      if (ln) state.listSeller = ln.value.trim();
+      render();
+      return;
+    }
+    if (act === 'srSearch') { readSrFilters(); state.srPage = 1; render(); return; }
+    if (act === 'srReset') {
+      state.srSite = ''; state.srPlatform = ''; state.srSeller = ''; state.srFrom = ''; state.srTo = '';
+      state.srSortKey = 'active'; state.srSortDir = 'desc'; state.srPage = 1; state.srDrawer = false; state.srKey = '';
+      render(); return;
+    }
+    if (act === 'srSort') {
+      var sk = t.getAttribute('data-key');
+      if (state.srSortKey === sk) state.srSortDir = state.srSortDir === 'desc' ? 'asc' : 'desc';
+      else { state.srSortKey = sk; state.srSortDir = 'desc'; }
+      state.srPage = 1; render(); return;
+    }
+    if (act === 'srOpen') { state.srKey = t.getAttribute('data-key'); state.srDrawer = true; render(); return; }
+    if (act === 'srClose') { state.srDrawer = false; state.srKey = ''; render(); return; }
+    if (act === 'srPrev') { if (state.srPage > 1) { state.srPage--; render(); } return; }
+    if (act === 'srNext') { state.srPage++; render(); return; }
+    if (act === 'srToList') {
+      var u = new URL(location.href);
+      u.searchParams.set('page', 'listing');
+      u.searchParams.set('seller', t.getAttribute('data-sname') || '');
+      u.searchParams.set('site', t.getAttribute('data-ssite') || '');
+      u.searchParams.set('platform', t.getAttribute('data-splatform') || '');
+      window.open(u.toString(), '_blank', 'noopener');
+      return;
+    }
+    if (act === 'patentAdd') { openPatentDialog('add'); return; }
+    if (act === 'patentImport') { toast('请选择导入文件'); return; }
+    if (act === 'patentPause') {
+      var pp = findPatent(id);
+      if (!pp) return;
+      confirmBox('确认暂停检索？暂停后将不再纳入 Amazon 外观专利检索。再次检索请点启用检索。', function () {
+        pp.status = 'paused';
+        toast('已暂停检索');
+        render();
+      });
+      return;
+    }
+    if (act === 'patentEnable') {
+      var pe = findPatent(id);
+      if (!pe) return;
+      if (!patentCanEnable(pe)) { toast('请先补全专利号/申请号与至少 1 张检索参考图', true); return; }
+      confirmBox('确认启用检索？启用后将纳入 Amazon 外观专利检索。', function () {
+        pe.status = 'ready';
+        toast('已启用检索');
+        render();
+      });
+      return;
+    }
+    if (act === 'patentEdit') {
+      var ep = findPatent(id);
+      if (ep) openPatentDialog('edit', ep);
+      return;
+    }
+    if (act === 'patentDelete') {
+      confirmBox('确定删除该外观专利记录吗？', function () {
+        patents = patents.filter(function (x) { return x.id !== id; });
+        toast('已删除（原型）');
+        render();
+      });
+      return;
+    }
+    if (act === 'previewPatentImg') {
+      openPatentPreview(t.getAttribute('data-src'));
+      return;
+    }
+    if (act === 'back') { state.page = 'listing'; state.batchIds = []; render(); return; }
+    if (act === 'confirm') { state.detailId = id; state.detailType = 1; state.oppImgIdx = 0; state.patentImgIdx = 0; state.page = 'detail'; render(); return; }
+    if (act === 'detail') { state.detailId = id; state.detailType = 0; state.oppImgIdx = 0; state.patentImgIdx = 0; state.page = 'detail'; render(); return; }
+    if (act === 'pickOppImg') {
+      state.oppImgIdx = Number(t.getAttribute('data-idx')) || 0;
+      render();
+      return;
+    }
+    if (act === 'pickPatentImg') {
+      state.patentImgIdx = Number(t.getAttribute('data-idx')) || 0;
+      render();
+      return;
+    }
+    if (act === 'complaint') {
+      var c = findListing(id);
+      if (!c || !canSystemComplaint(c.platform)) { toast('该平台不支持系统内投诉', true); return; }
+      state.complaintId = id; state.complaintMode = complaintModeOf(c.platform); state.page = 'complaint'; render(); return;
+    }
+    if (act === 'check') { state.complaintId = id; state.page = 'check'; render(); return; }
+    if (act === 'close') {
+      closeReasonBox('关闭此单', function (reason, remark) {
+        applyClose([id], reason, remark);
+        toast('操作成功'); state.page = 'listing'; render();
+      });
+      return;
+    }
+    if (act === 'doConfirm') {
+      confirmBox('确定操作所选数据吗？', function () {
+        var r = findListing(id); if (r && r.status === 0) { r.status = 1; r.cfTime = '2026-07-23 12:00:00'; r.cfUser = '当前用户'; }
+        toast('操作成功'); state.page = 'listing'; render();
+      });
+      return;
+    }
+    if (act === 'evidenceReport') {
+      toast('报告下载（原型演示）');
+      return;
+    }
+    if (act === 'evidence' || act === 'evidenceRetry') {
+      var er = findListing(id);
+      if (!er) return;
+      if (!canClickEvidence(er)) { toast('当前状态不可存证', true); return; }
+      if (hasPendingEvidence(er)) { toast('已有存证中任务，请勿重复提交', true); return; }
+      confirmBox('确认为该 Listing 发起存证？', function () {
+        startEvidence(er);
+        toast(act === 'evidenceRetry' ? '已重新发起存证' : '已发起存证');
+        render();
+      });
+      return;
+    }
+    if (act === 'submitComplaint') {
+      confirmBox('确定操作所选数据吗？', function () {
+        var r = findListing(id); if (r) { r.status = 2; r.sTime = '2026-07-23 12:05:00'; r.sUser = '当前用户'; }
+        toast('操作成功'); state.page = 'listing'; render();
+      });
+      return;
+    }
+    if (act === 'success' || act === 'reject' || act === 'fixStart' || act === 'fixDone') {
+      var row = findListing(id);
+      if (!row) return;
+      if ((act === 'success' || act === 'reject') && row.status !== 1 && row.status !== 2) {
+        toast('仅待投诉或投诉中可标记结果', true);
+        return;
+      }
+      if ((act === 'fixStart' || act === 'fixDone') && row.status !== 2) {
+        toast('仅投诉中可订正', true);
+        return;
+      }
+      confirmBox('确定操作所选数据吗？', function () {
+        var r = findListing(id); if (!r) return;
+        if (act === 'success') r.status = 3;
+        if (act === 'reject') r.status = 4;
+        if (act === 'fixStart') r.fixed = 1;
+        if (act === 'fixDone') r.fixed = 2;
+        toast('操作成功'); render();
+      });
+      return;
+    }
+    if (batch) {
+      var ids = Array.prototype.slice.call(document.querySelectorAll('[data-check]:checked')).map(function (c) { return Number(c.getAttribute('data-check')); });
+      if (!ids.length) { toast('请选择对应行', true); return; }
+      if (batch === 'close') {
+        var closeRows = selectedListings(ids);
+        for (var ci = 0; ci < closeRows.length; ci++) {
+          if (closeRows[ci].status !== 0 && closeRows[ci].status !== 1) {
+            toast('仅待确认或待投诉可关闭', true);
+            return;
+          }
+        }
+        closeReasonBox('批量关闭', function (reason, remark) {
+          applyClose(ids, reason, remark);
+          toast('操作成功'); render();
+        });
+        return;
+      }
+      if (batch === 'success' || batch === 'reject') {
+        var resultErr = validateBatchResult(ids);
+        if (resultErr) { toast(resultErr, true); return; }
+      }
+      if (batch === 'fixStart' || batch === 'fixDone') {
+        var fixRows = selectedListings(ids);
+        for (var fi = 0; fi < fixRows.length; fi++) {
+          if (fixRows[fi].status !== 2) { toast('请选择投诉中状态的数据', true); return; }
+          if (batch === 'fixDone' && fixRows[fi].fixed !== 1) { toast('请选择已启动订正的数据', true); return; }
+        }
+      }
+      confirmBox('确定操作所选数据吗？', function () {
+        ids.forEach(function (cid) {
+          var r = findListing(cid); if (!r) return;
+          if (batch === 'success' && (r.status === 1 || r.status === 2)) r.status = 3;
+          if (batch === 'reject' && (r.status === 1 || r.status === 2)) r.status = 4;
+          if (batch === 'fixStart' && r.status === 2) r.fixed = 1;
+          if (batch === 'fixDone' && r.status === 2 && r.fixed === 1) r.fixed = 2;
+        });
+        toast('操作成功'); render();
+      });
+      return;
+    }
+    if (sellerAct) {
+      var s = sellers.find(function (x) { return x.id === id; });
+      if (!s) return;
+      confirmBox('确认要将卖家' + s.name + '执行' + (sellerAct==='on'?'启用':'取消') + '授权操作吗?', function () {
+        s.status = sellerAct==='on'?1:0;
+        toast('操作成功'); render();
+      });
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
